@@ -153,7 +153,9 @@ A justificativa técnica:
  
 - O aplicativo depende fortemente de **recursos nativos de mídia** — câmera, galeria, gravação e reprodução de áudio, e um cronômetro que precisa continuar contando com o app em segundo plano. O ecossistema do Expo cobre todos esses casos com módulos mantidos, evitando a escrita de código nativo
 - TypeScript dá **tipagem estática compartilhada** entre app e backend.
-- O ciclo de desenvolvimento com *fast refresh* encurta a iteração de UI, que é intensa neste projeto
+
+---
+
 Flutter foi considerado e é tecnicamente adequado, com desempenho de renderização superior. A decisão pendeu para React Native por permitir compartilhar linguagem e tipos com o backend em TypeScript, reduzindo o custo de manutenção em um projeto que será conduzido apenas por uma pessoa durante o semestre.
  
 ---

@@ -1,0 +1,57 @@
+# ---------------------------------------------------------------
+# Cozinhei — .gitignore
+# ---------------------------------------------------------------
+local/
+
+# Dependências
+node_modules/
+.pnp
+.pnp.js
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+expo-env.d.ts
+
+# Builds nativos
+android/
+ios/
+*.apk
+*.aab
+*.ipa
+
+# Metro / bundler
+.metro-health-check*
+*.jsbundle
+
+# Ambiente
+.env
+.env.*
+!.env.example
+
+# Logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+*.log
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.idea/
+*.swp
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# Testes / cobertura
+coverage/
+
+# Supabase (local)
+supabase/.branches/
+supabase/.temp/

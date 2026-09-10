@@ -1,0 +1,22 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    // Sem `baseUrl`: a opção foi depreciada no TypeScript 6 e `paths` já é
+    // resolvido em relação a este arquivo.
+    // `moduleDetection: "force"` (herdado do preset do Expo) trata todo .d.ts
+    // como módulo, o que esconderia os globais do Jest. Declarar "jest" aqui
+    // os traz de volta para os arquivos de teste.
+    "types": ["jest"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ],
+  "exclude": ["node_modules"]
+}

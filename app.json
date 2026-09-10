@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "Cozinhei",
+    "slug": "cozinhei",
+    "version": "0.2.0",
+    "orientation": "portrait",
+    "scheme": "cozinhei",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "backgroundColor": "#F2F3F0",
+    "splash": {
+      "backgroundColor": "#12211C",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "br.com.cozinhei.app"
+    },
+    "android": {
+      "package": "br.com.cozinhei.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#12211C"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#12211C",
+          "resizeMode": "contain"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

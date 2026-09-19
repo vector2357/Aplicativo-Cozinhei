@@ -1,16 +1,3 @@
-/**
- * Tela 04 — Entrando.
- *
- * Carregamento após autenticar. Existe porque a espera precisa ser visível:
- * silêncio durante uma operação de rede parece travamento, e o app trata
- * "carregando" como estado de primeira classe, não caso de borda.
- *
- * O texto diz o que está sendo trazido ("suas 21 execuções e a despensa
- * salva") em vez de um genérico "aguarde": a espera fica mais curta quando
- * se sabe o que está acontecendo.
- *
- * Cancelar é obrigatório e volta ao login. Nunca prenda o usuário num spinner.
- */
 import { useRouter } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';

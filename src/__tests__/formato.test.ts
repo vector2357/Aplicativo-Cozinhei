@@ -1,8 +1,3 @@
-/**
- * Formatação brasileira. É a base de leitura de toda ficha: se `1,07` sair
- * como `1.07`, a coluna de custos deixa de alinhar e a comparação entre
- * execuções — que é o ponto do produto — some.
- */
 import {
   dataPorExtenso,
   estrelas,

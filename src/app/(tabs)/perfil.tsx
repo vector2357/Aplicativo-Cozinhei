@@ -1,4 +1,3 @@
-/** Tela 25 — Perfil. Conteúdo previsto para a etapa 03. */
 import { TelaEmConstrucao } from '@/components/ui/TelaEmConstrucao';
 
 export default function TelaPerfil() {

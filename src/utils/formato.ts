@@ -1,10 +1,3 @@
-/**
- * Cozinhei — formatação brasileira.
- *
- * Regra de design: nota `4,5`, dinheiro `R$ 12,80`, data `19 ago`,
- * tempo `1h05`. Nenhuma tela deve montar essas strings à mão.
- */
-
 /** Nota (0–5) no padrão brasileiro: 4.5 -> "4,5". */
 export const formatarNota = (nota: number): string =>
   nota.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });

@@ -23,6 +23,20 @@ porta de entrada do aplicativo.
 A numeração acompanha o inventário de 25 telas previsto na proposta, para que a
 correspondência com as próximas etapas fique clara.
 
+### Capturas
+
+As imagens abaixo são capturas do aplicativo em execução, feitas no emulador
+Pixel 7 (1080×2400, 411pt de largura), com o pacote em modo de produção.
+
+| | |
+| --- | --- |
+| ![Entrar](telas/01-entrar.png) | ![Criar conta](telas/02-criar-conta.png) |
+| **01 — Entrar** | **02 — Criar conta** |
+| ![Conta Google](telas/03-conta-google.png) | ![Entrando](telas/04-entrando.png) |
+| **Escolha da conta Google**, a partir da tela 01 | **04 — Entrando** |
+| ![Início](telas/05-inicio.png) | |
+| **05 — Início** | |
+
 ### O fluxo
 
 ```
@@ -221,11 +235,13 @@ Disso decorre a regra de uma ação âmbar por tela: se duas parecem principais,
 uma delas não é. A tela de Início não tem nenhuma, porque a ação âmbar dela é o
 botão `+` da barra de abas.
 
-### Todo dado quantitativo é monoespaçado
+### Todo dado quantitativo tem um papel tipográfico próprio
 
-Nota, custo, tempo, número de tentativa e data usam DM Mono. A razão é
-funcional: os numerais tabulares alinham verticalmente nas listas, e é esse
-alinhamento que permite comparar execuções correndo o olho pela coluna. Toda a
+Nota, custo, tempo, número de tentativa e data usam os estilos `data`,
+`dataMeta` e `overline` — o papel `mono` do tema, hoje servido por Poppins.
+A categoria é o que importa: todo dado passa por ela, o que mantém a leitura
+das listas consistente. O alinhamento vertical das colunas é garantido pelo
+layout (largura fixa da calha), não mais por numerais tabulares. Toda a
 formatação passa por helpers em `src/utils/formato.ts`, no padrão brasileiro.
 
 ### A ficha é numerada, e a foto vem em segundo plano

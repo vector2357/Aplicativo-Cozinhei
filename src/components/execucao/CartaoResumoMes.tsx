@@ -1,13 +1,3 @@
-/**
- * Resumo do mês, em fundo escuro.
- *
- * É um dos três únicos contextos em que `backgroundDark` é permitido (os
- * outros dois são a gravação de áudio e o cronômetro). Não é variação
- * estética: o cartão precisa ganhar a atenção da tela inteira num relance.
- *
- * A nota média é âmbar por ser um valor de nota — mesmo papel das estrelas.
- * O defeito citado no insight é vinho, porque vinho SEMPRE significa defeito.
- */
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Botao } from '@/components/ui';

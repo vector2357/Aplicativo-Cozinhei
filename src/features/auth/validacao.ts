@@ -1,11 +1,3 @@
-/**
- * Validação dos formulários de entrada.
- *
- * Fica fora das telas de propósito: são regras de negócio, e na etapa 03 o
- * servidor vai reaproveitar as mesmas para responder erro de cadastro.
- * As mensagens são em caixa baixa, como todo texto de interface do app.
- */
-
 /** Mínimo pedido na tela de criar conta ("use 8 caracteres ou mais"). */
 export const MINIMO_SENHA = 8;
 

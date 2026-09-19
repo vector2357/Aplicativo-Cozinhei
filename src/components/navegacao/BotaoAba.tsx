@@ -1,30 +1,3 @@
-/**
- * Um botão da barra de abas: ícone semântico empilhado sobre o rótulo.
- *
- * Usado como filho de `<TabTrigger asChild>`, que injeta `isFocused`,
- * `onPress` e o resto das props de Pressable. Por isso o componente precisa
- * encaminhar a ref e espalhar as props recebidas — sem isso o toque não
- * navega.
- *
- * O desenho de cada ícone e a regra de estado (contorno inativo, sólido
- * selecionado) vivem em `IconeAba`. Aqui só se decide a composição: ícone em
- * cima, rótulo embaixo, os dois centralizados na fatia.
- *
- * ── A ordem do array de estilo NÃO é cosmética ──────────────────────────
- *
- * O `<TabTrigger>` também injeta um `style` PRÓPRIO:
- * `{ flexDirection: 'row', justifyContent: 'space-between' }`
- * (`styles.tabTrigger`, em `expo-router/build/ui/TabTrigger.js`).
- *
- * Se esse `style` vier DEPOIS do nosso no array, ele vence: a aba deixa de
- * empilhar ícone sobre rótulo e passa a alinhá-los lado a lado, com o ícone
- * grudado na borda esquerda da fatia e o rótulo na direita. O resultado é
- * que o rótulo de cada aba encosta no ícone da aba SEGUINTE, sem um pixel de
- * respiro — as abas parecem esmagadas e emparelhadas erradas, e o rótulo de
- * "histórico" ainda encosta no botão `+`. Foi exatamente o que aconteceu.
- *
- * Por isso `style` entra PRIMEIRO e os nossos estilos por último.
- */
 import { forwardRef } from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
 import type { StyleProp, View as ViewTipo, ViewStyle } from 'react-native';
@@ -103,7 +76,7 @@ const estilos = StyleSheet.create({
    * texto assume a largura natural e transborda para a aba vizinha, porque
    * `alignItems: 'center'` centraliza mas não limita.
    */
-  rotulo: { fontSize: 10, alignSelf: 'stretch', textAlign: 'center' },
+  rotulo: { fontSize: 11, alignSelf: 'stretch', textAlign: 'center' },
 });
 
 /** Reexportado para quem monta a barra não precisar conhecer dois módulos. */

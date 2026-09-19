@@ -1,13 +1,6 @@
-/**
- * Botão flutuante de registrar execução — o `+` sobreposto no centro da
- * barra de abas.
- *
- * É a única ação âmbar de qualquer tela que exibe a barra. Registrar é a
- * ação central do produto: o app inteiro existe para que essa ficha exista.
- */
 import { Pressable, StyleSheet, Text } from 'react-native';
 
-import { color, radius, shadow, touch } from '@/theme';
+import { color, interacao, radius, shadow, touch } from '@/theme';
 
 export function BotaoRegistrar({ onPress, base }: { onPress: () => void; base: number }) {
   return (
@@ -35,11 +28,14 @@ const estilos = StyleSheet.create({
     height: touch.fabSize,
     borderRadius: radius.fab,
     backgroundColor: color.amber,
+    // Separa o âmbar do fundo claro: 2.04:1 sozinho, abaixo do mínimo.
+    borderWidth: 1.5,
+    borderColor: color.ink,
     alignItems: 'center',
     justifyContent: 'center',
     ...shadow.fab,
   },
-  pressionado: { opacity: 0.85 },
+  pressionado: { transform: [{ scale: interacao.escalaPressionado }] },
   sinal: {
     fontSize: 30,
     lineHeight: 34,

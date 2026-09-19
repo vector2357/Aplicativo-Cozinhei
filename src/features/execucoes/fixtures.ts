@@ -1,16 +1,3 @@
-/**
- * Cozinhei — dados de exemplo da etapa 02.
- *
- * NÃO há persistência nem servidor nesta etapa (ver `local/etapas/ETAPA 02`).
- * Estes fixtures são a única fonte de dados das telas e serão substituídos
- * pelo Supabase na etapa seguinte — as telas consomem os TIPOS de
- * `types/dominio.ts`, então a troca não deve tocar em componente nenhum.
- *
- * Os números vêm de `local/design/README.md`, seção 10: usuária Marina
- * Salles, 21 execuções em 9 pratos desde abril de 2026, nota média 3,3,
- * tendência de alta. O prato de referência é o bolo de cenoura, em 4
- * tentativas: 2,0 -> 3,0 -> 3,0 -> 4,5.
- */
 import type { Execucao, ReceitaGuia, ResumoMes, Usuario } from '@/types/dominio';
 
 export const USUARIO_EXEMPLO: Usuario = {

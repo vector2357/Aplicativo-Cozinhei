@@ -1,10 +1,3 @@
-/**
- * Marcador neutro do Google.
- *
- * ATENÇÃO — é deliberadamente um placeholder, igual ao protótipo. Na etapa
- * em que o login com Google for de fato integrado, troque por o logo oficial
- * fornecido pelo SDK do Google Sign-In, respeitando as diretrizes de marca.
- */
 import { StyleSheet, Text, View } from 'react-native';
 
 import { color, fontFamily } from '@/theme';

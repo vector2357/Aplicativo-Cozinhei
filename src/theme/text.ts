@@ -1,9 +1,3 @@
-/**
- * Cozinhei — estilos de texto prontos.
- *
- * Aplique o objeto inteiro (`style={text.dishTitle}`), não campos soltos.
- * `letterSpacing` em React Native é em pontos absolutos, não em `em`.
- */
 import { TextStyle } from 'react-native';
 
 import { fontFamily } from './fonts';
@@ -101,14 +95,22 @@ export const text = {
     lineHeight: 20,
     color: color.ink,
   },
-  /** Rótulo de eixo/seção em caixa alta. Sempre mono, sempre com tracking. */
+  /**
+   * Rótulo de eixo/seção em caixa alta. Sempre papel mono, sempre com tracking.
+   *
+   * 11px, e não 10: caixa alta com tracking largo já é mais difícil de ler que
+   * caixa baixa, e este estilo pinta o RÓTULO DOS CAMPOS de formulário — o
+   * texto que diz ao usuário o que digitar. A cor é `stoneOnLight` porque o
+   * uso é sobre fundo claro; sobre fundo escuro, sobrescreva com `stone`
+   * (ver `CartaoResumoMes`).
+   */
   overline: {
     fontFamily: fontFamily.mono,
-    fontSize: 10,
-    lineHeight: 13,
+    fontSize: 11,
+    lineHeight: 14,
     letterSpacing: 1,
     textTransform: 'uppercase',
-    color: color.stone,
+    color: color.stoneOnLight,
   },
   /** TODO dado quantitativo: nota, custo, tempo, número de tentativa. */
   data: {
@@ -117,11 +119,17 @@ export const text = {
     lineHeight: 18,
     color: color.ink,
   },
-  /** Metadado em mono: "tentativa 04 · 55 min · R$ 18,40". */
+  /**
+   * Metadado em mono: "tentativa 04 · 55 min · R$ 18,40".
+   *
+   * 12px, e não 10.5: este estilo também carrega MENSAGEM DE ERRO e dica de
+   * formato — o texto que o usuário precisa ler para conseguir agir. Erro em
+   * corpo minúsculo é erro que não se lê.
+   */
   dataMeta: {
     fontFamily: fontFamily.mono,
-    fontSize: 10.5,
-    lineHeight: 14,
+    fontSize: 12,
+    lineHeight: 16,
     color: color.inkFaint,
   },
 } as const satisfies Record<string, TextStyle>;

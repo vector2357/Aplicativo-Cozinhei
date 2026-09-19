@@ -1,25 +1,22 @@
-/**
- * Tela 01 — Entrar. Tela inicial da aplicação.
- *
- * Estrutura (protótipo, tela 01): marca, seletor entrar/criar, e-mail e
- * senha, promessa de continuidade, ação principal na zona do polegar,
- * divisor "ou" e entrada pelo Google.
- *
- * A escolha de conta Google é um BOTTOM SHEET sobre esta tela (tela 03), não
- * uma rota: é uma escolha modal, e toda escolha modal no app é bottom sheet.
- *
- * Um detalhe de layout que parece bobo e não é: o espaçador `flex: 1` entre
- * os campos e a ação principal só empurra o botão para baixo quando sobra
- * altura. Em tela curta o ScrollView assume e nada fica inalcançável.
- */
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { SheetContaGoogle } from '@/components/auth/SheetContaGoogle';
-import { Botao, Campo, Divisor, MarcaGoogle, SeletorSegmentado, Tela } from '@/components/ui';
+import {
+  Botao,
+  Campo,
+  Divisor,
+  MarcaGoogle,
+  SeletorSegmentado,
+  SheetEmConstrucao,
+  Tela,
+} from '@/components/ui';
 import { useAuth } from '@/features/auth/AuthContext';
 import { ErrosEntrar, semErros, validarEntrar } from '@/features/auth/validacao';
+import { DESTINOS } from '@/features/navegacao/destinos';
+import { useEmConstrucao } from '@/hooks/useEmConstrucao';
+import { useErrosFormulario } from '@/hooks/useErrosFormulario';
 import { useLayoutResponsivo } from '@/hooks/useLayoutResponsivo';
 import { color, radius, spacing, text } from '@/theme';
 
@@ -30,21 +27,22 @@ export default function TelaEntrar() {
 
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  const [erros, setErros] = useState<ErrosEntrar>({});
+  const { erros, definirErros, limparErro } = useErrosFormulario<ErrosEntrar>();
   const [sheetGoogle, setSheetGoogle] = useState(false);
+  const emConstrucao = useEmConstrucao();
 
   function aoEntrar() {
     const encontrados = validarEntrar({ email, senha });
-    setErros(encontrados);
+    definirErros(encontrados);
     if (!semErros(encontrados)) return;
     entrar({ email, senha });
-    router.push('/entrando');
+    router.replace('/entrando');
   }
 
   function aoEscolherConta(conta: { nome: string; email: string; iniciais: string }) {
     setSheetGoogle(false);
     entrarComGoogle(conta);
-    router.push('/entrando');
+    router.replace('/entrando');
   }
 
   return (
@@ -79,7 +77,10 @@ export default function TelaEntrar() {
               rotulo="e-mail"
               placeholder="marina@email.com"
               value={email}
-              onChangeText={setEmail}
+              onChangeText={(valor) => {
+                setEmail(valor);
+                limparErro('email');
+              }}
               erro={erros.email}
               keyboardType="email-address"
               autoCapitalize="none"
@@ -91,7 +92,10 @@ export default function TelaEntrar() {
               rotulo="senha"
               placeholder="••••••••"
               value={senha}
-              onChangeText={setSenha}
+              onChangeText={(valor) => {
+                setSenha(valor);
+                limparErro('senha');
+              }}
               erro={erros.senha}
               secureTextEntry
               autoComplete="current-password"
@@ -102,8 +106,9 @@ export default function TelaEntrar() {
             <Botao
               titulo="esqueci minha senha"
               variante="fantasma"
-              onPress={() => {}}
+              onPress={() => emConstrucao.anunciar(DESTINOS.recuperarSenha)}
               style={estilos.esqueci}
+              accessibilityHint="explica quando a recuperação de senha fica disponível"
             />
           </View>
 
@@ -135,7 +140,13 @@ export default function TelaEntrar() {
         acao="entrar"
         onFechar={() => setSheetGoogle(false)}
         onEscolher={aoEscolherConta}
+        onOutraConta={() => {
+          setSheetGoogle(false);
+          emConstrucao.anunciar(DESTINOS.outraConta);
+        }}
       />
+
+      <SheetEmConstrucao destino={emConstrucao.destino} onFechar={emConstrucao.fechar} />
     </Tela>
   );
 }
@@ -150,7 +161,7 @@ const estilos = StyleSheet.create({
   },
   cabecalho: { marginTop: spacing.xl },
   cabecalhoCompacto: { marginTop: spacing.sm },
-  assinatura: { marginTop: spacing.sm, fontSize: 11, color: color.inkFaint },
+  assinatura: { marginTop: spacing.sm, color: color.inkFaint },
   campos: { gap: spacing.sm, marginTop: spacing.xl },
   // Alinha o texto do link à margem apesar do padding que garante os 44pt.
   esqueci: { alignSelf: 'flex-start', marginLeft: -8 },

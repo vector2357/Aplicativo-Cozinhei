@@ -1,13 +1,3 @@
-/**
- * Placeholder listrado no lugar de foto ou vídeo.
- *
- * Pendência de design conhecida (README de design, seção 11): as fotos reais
- * ainda não existem, então toda mídia no app é este padrão diagonal. Quando
- * a fotografia entrar, este componente vira o fallback de carregamento.
- *
- * React Native não tem `repeating-linear-gradient`; as faixas são Views
- * rotacionadas dentro de um contêiner com `overflow: hidden`.
- */
 import { useMemo } from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 

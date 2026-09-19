@@ -1,18 +1,3 @@
-/**
- * Cozinhei — vocabulário do domínio.
- *
- * Os termos abaixo aparecem na interface e devem aparecer no código com o
- * MESMO nome (ver `local/design/README.md`, seção 1). Não traduza para inglês.
- *
- * Execução     — uma vez que o usuário cozinhou algo. Unidade central do app.
- * Tentativa    — número sequencial de uma execução dentro de um prato ("04").
- * Prato        — agrupador de execuções da mesma receita.
- * Receita-guia — receita de referência importada de fora. Não é uma execução.
- * Qualidade    — chip do que deu certo. Sempre oliva.
- * Defeito      — chip do que deu errado. Sempre vinho. Abre o diagnóstico.
- * Despensa     — ingredientes que o usuário já usou, com contagem.
- */
-
 /** Chip de avaliação. O tipo determina a cor — nunca escolha a cor na tela. */
 export type TipoChip = 'qualidade' | 'defeito';
 

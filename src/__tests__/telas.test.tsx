@@ -1,12 +1,3 @@
-/**
- * As quatro telas da etapa 02 e o fluxo entre elas.
- *
- *   entrar (/) -> criar conta (/criar-conta) -> entrando -> início (/inicio)
- *
- * O `expo-router` é substituído por um mock: o que interessa testar aqui é a
- * DECISÃO de navegar — que só deve acontecer com o formulário válido — e não
- * o roteador, que é código de terceiros.
- */
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -99,7 +90,45 @@ describe('01 · Entrar (tela inicial)', () => {
     await fireEvent.changeText(screen.getByLabelText('e-mail'), 'marina@email.com');
     await fireEvent.changeText(screen.getByLabelText('senha'), 'segredo123');
     await fireEvent.press(screen.getByRole('button', { name: 'entrar' }));
-    expect(mockEmpurrar).toHaveBeenCalledWith('/entrando');
+    expect(mockSubstituir).toHaveBeenCalledWith('/entrando');
+  });
+
+  /**
+   * Com `push`, o login continuava vivo embaixo das abas e o botão de voltar
+   * do Android o trazia de volta, ainda com os erros da tentativa anterior.
+   * `replace` troca a tela em vez de empilhar.
+   */
+  it('SUBSTITUI a tela ao entrar, para o voltar do sistema não ressuscitar o login', async () => {
+    await render(<TelaEntrar />, { wrapper: comSessao });
+    await fireEvent.changeText(screen.getByLabelText('e-mail'), 'marina@email.com');
+    await fireEvent.changeText(screen.getByLabelText('senha'), 'segredo123');
+    await fireEvent.press(screen.getByRole('button', { name: 'entrar' }));
+    expect(mockEmpurrar).not.toHaveBeenCalled();
+  });
+
+  /**
+   * Vinho significa "algo deu errado" em todo o app. Mantê-lo num campo que o
+   * usuário já corrigiu gasta o significado da cor — e era o que acontecia,
+   * porque a validação só rodava no envio.
+   */
+  it('o erro do campo some quando o usuário o corrige', async () => {
+    await render(<TelaEntrar />, { wrapper: comSessao });
+    await fireEvent.press(screen.getByRole('button', { name: 'entrar' }));
+    expect(screen.getByText('informe seu e-mail')).toBeTruthy();
+
+    await fireEvent.changeText(screen.getByLabelText('e-mail'), 'marina@email.com');
+
+    expect(screen.queryByText('informe seu e-mail')).toBeNull();
+  });
+
+  it('corrigir um campo não apaga o erro do outro, que continua errado', async () => {
+    await render(<TelaEntrar />, { wrapper: comSessao });
+    await fireEvent.press(screen.getByRole('button', { name: 'entrar' }));
+
+    await fireEvent.changeText(screen.getByLabelText('e-mail'), 'marina@email.com');
+
+    // A senha segue vazia: esconder o aviso dela seria mentir.
+    expect(screen.getByText('informe sua senha')).toBeTruthy();
   });
 
   it('o segmento "criar conta" leva ao cadastro', async () => {
@@ -114,7 +143,8 @@ describe('01 · Entrar (tela inicial)', () => {
     expect(screen.getByText(/escolha a conta Google/)).toBeTruthy();
 
     await fireEvent.press(screen.getByLabelText('Marina Salles, marina.salles@gmail.com'));
-    expect(mockEmpurrar).toHaveBeenCalledWith('/entrando');
+    expect(mockSubstituir).toHaveBeenCalledWith('/entrando');
+    expect(mockEmpurrar).not.toHaveBeenCalled();
   });
 });
 
@@ -154,7 +184,35 @@ describe('02 · Criar conta', () => {
       }),
     );
     await fireEvent.press(screen.getByRole('button', { name: 'criar minha conta' }));
-    expect(mockEmpurrar).toHaveBeenCalledWith('/entrando');
+    expect(mockSubstituir).toHaveBeenCalledWith('/entrando');
+    expect(mockEmpurrar).not.toHaveBeenCalled();
+  });
+
+  it('o erro da senha curta some ao digitar uma senha maior', async () => {
+    await render(<TelaCriarConta />, { wrapper: comSessao });
+    await fireEvent.changeText(screen.getByLabelText('senha'), 'curta');
+    await fireEvent.press(screen.getByRole('button', { name: 'criar minha conta' }));
+    expect(screen.getByText('use 8 caracteres ou mais')).toBeTruthy();
+
+    await fireEvent.changeText(screen.getByLabelText('senha'), 'oitocaracteres');
+
+    // A dica do campo tem o mesmo texto da mensagem de erro; o que precisa
+    // sumir é a marcação de erro, então conta-se quantas vezes ele aparece.
+    expect(screen.queryAllByText('use 8 caracteres ou mais')).toHaveLength(1);
+  });
+
+  it('aceitar os termos apaga o aviso de que eles eram obrigatórios', async () => {
+    await render(<TelaCriarConta />, { wrapper: comSessao });
+    await fireEvent.press(screen.getByRole('button', { name: 'criar minha conta' }));
+    expect(screen.getByText('é preciso aceitar os termos para criar a conta')).toBeTruthy();
+
+    await fireEvent.press(
+      screen.getByRole('checkbox', {
+        name: 'aceito os termos de uso e a política de privacidade',
+      }),
+    );
+
+    expect(screen.queryByText('é preciso aceitar os termos para criar a conta')).toBeNull();
   });
 
   it('o segmento "entrar" volta ao login', async () => {

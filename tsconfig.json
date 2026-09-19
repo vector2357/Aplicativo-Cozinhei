@@ -7,7 +7,12 @@
     // `moduleDetection: "force"` (herdado do preset do Expo) trata todo .d.ts
     // como módulo, o que esconderia os globais do Jest. Declarar "jest" aqui
     // os traz de volta para os arquivos de teste.
-    "types": ["jest"],
+    //
+    // "node" entra pelos testes de CONVENÇÃO, que leem a própria fonte do
+    // projeto (`fs`, `path`) para verificar regras que o renderizador de
+    // teste não consegue observar — ver `__tests__/tema.test.tsx`. Nenhum
+    // módulo de `src/` que roda no aparelho deve importar API de Node.
+    "types": ["jest", "node"],
     "paths": {
       "@/*": ["./src/*"]
     }

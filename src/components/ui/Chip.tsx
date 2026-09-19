@@ -1,16 +1,6 @@
-/**
- * Chip de avaliação.
- *
- * A cor vem do TIPO, nunca de escolha da tela: qualidade é sempre oliva,
- * defeito é sempre vinho. Chip neutro é branco com borda — nunca cinza
- * colorido, porque só existe chip colorido quando a cor carrega significado.
- *
- * Um chip de defeito é acionável (abre o diagnóstico), e o rótulo de
- * acessibilidade precisa anunciar isso — não basta repetir o texto.
- */
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { chipVariant, text } from '@/theme';
+import { chipVariant, interacao, text } from '@/theme';
 import type { TipoChip } from '@/types/dominio';
 
 type Props = {
@@ -67,5 +57,5 @@ const estilos = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   rotulo: { fontSize: 10.5, lineHeight: 15 },
-  pressionado: { opacity: 0.7 },
+  pressionado: { opacity: interacao.opacidadePressionado },
 });

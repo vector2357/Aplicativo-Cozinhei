@@ -1,16 +1,3 @@
-/**
- * Navegador de abas — teste de integração.
- *
- * Este arquivo existe por causa de um bug real: os `<TabTrigger>` estavam
- * dentro de uma `View` extra, a varredura do Expo Router não os enxergou, e o
- * navegador nasceu com ZERO rotas. Em execução isso estoura
- * "Couldn't find any screens for the navigator" ao entrar em `/inicio`.
- *
- * Nada pegava esse erro: os testes de tela renderizam `TelaInicio`
- * diretamente, sem montar `(tabs)/_layout.tsx`, e `expo export` só empacota,
- * não executa. É preciso montar o roteador DE VERDADE — é o que
- * `renderRouter` faz, lendo as rotas do diretório `src/app` real.
- */
 import { fireEvent, renderRouter, screen } from 'expo-router/testing-library';
 
 import { color } from '@/theme';

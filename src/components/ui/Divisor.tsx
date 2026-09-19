@@ -1,7 +1,3 @@
-/**
- * Divisor com rótulo central ("ou"). Separa a entrada por e-mail da entrada
- * por provedor externo nas telas de login e cadastro.
- */
 import { StyleSheet, Text, View } from 'react-native';
 
 import { color, spacing, text } from '@/theme';

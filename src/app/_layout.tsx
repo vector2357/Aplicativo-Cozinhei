@@ -1,13 +1,3 @@
-/**
- * Layout raiz.
- *
- * Faz três coisas, nesta ordem: carrega as três famílias tipográficas,
- * segura a splash até elas estarem prontas e envolve o app na sessão.
- *
- * Segurar a splash importa: sem isso a primeira renderização sai na fonte
- * de sistema e "salta" ao trocar, o que é especialmente feio nos números em
- * DM Mono, cuja largura tabular muda o alinhamento inteiro da lista.
- */
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -49,7 +39,19 @@ export default function LayoutRaiz() {
             <Stack.Screen name="criar-conta" />
             {/* Sem gesto de voltar: cancelar é a única saída da autenticação. */}
             <Stack.Screen name="entrando" options={{ gestureEnabled: false }} />
+            {/*
+              As abas são a raiz depois do login: chega-se aqui por `replace`,
+              a pilha fica com uma tela só, e o voltar do sistema sai do app em
+              vez de ressuscitar a tela de entrada.
+            */}
             <Stack.Screen name="(tabs)" options={{ gestureEnabled: false }} />
+            {/*
+              Telas de segundo nível. `slide_from_right` em vez do `fade` das
+              demais: aqui o movimento carrega informação — entrou-se num
+              nível, e o gesto de arrastar da borda desfaz o mesmo caminho.
+            */}
+            <Stack.Screen name="evolucao" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="execucao/[id]" options={{ animation: 'slide_from_right' }} />
           </Stack>
         </AuthProvider>
       </SafeAreaProvider>

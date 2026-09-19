@@ -1,7 +1,3 @@
-/**
- * Regras dos formulários de entrada. Vivem fora das telas porque na etapa 03
- * o servidor vai reaproveitá-las.
- */
 import {
   MINIMO_SENHA,
   semErros,

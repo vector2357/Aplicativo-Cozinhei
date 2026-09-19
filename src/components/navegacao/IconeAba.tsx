@@ -1,29 +1,3 @@
-/**
- * Ícones semânticos da barra de abas.
- *
- * Substituem as formas geométricas da etapa 02, que diziam QUAL aba estava
- * selecionada mas não diziam O QUE cada aba é:
- *
- *   início     casa                 a porta de entrada do app
- *   histórico  linha do tempo       é o termo que a própria tela usa. Relógio
- *                                   foi descartado — relógio já é o cronômetro
- *   pratos     prato visto de cima  herda o círculo que marcava a aba antes
- *   perfil     pessoa               a convenção mais estável de barra inferior
- *
- * ── Como o estado é desenhado ───────────────────────────────────────────
- *
- * A regra de estado é a mesma de antes: **contorno quando inativa, sólido
- * quando selecionada**. Só a cor e o preenchimento mudam entre os dois —
- * `caminho` e `viewBox` são idênticos nos dois estados, de propósito. É isso
- * que garante que o ícone não muda de tamanho nem de posição ao ser tocado, e
- * que os quatro ocupem exatamente a mesma caixa.
- *
- * Nenhum ícone usa vinho, oliva ou âmbar: âmbar é exclusivo do botão de
- * registrar, e as outras duas cores são reservadas a defeito e qualidade.
- *
- * A especificação completa (grade, traço, tamanho, cor) e o porquê de cada
- * escolha estão no vault da barra de abas.
- */
 import Svg, { Circle, Path } from 'react-native-svg';
 
 import { color } from '@/theme';

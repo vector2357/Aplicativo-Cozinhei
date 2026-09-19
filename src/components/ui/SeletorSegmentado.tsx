@@ -1,10 +1,3 @@
-/**
- * Seletor segmentado: entrar / criar conta.
- *
- * Duas opções mutuamente exclusivas dentro de um trilho. A opção ativa é
- * uma superfície branca elevada; a inativa é transparente. Cada segmento
- * tem 44pt de altura mesmo com o texto pequeno.
- */
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { color, radius, shadow, text, touch } from '@/theme';

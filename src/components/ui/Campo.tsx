@@ -1,10 +1,3 @@
-/**
- * Campo de texto com rótulo em caixa alta monoespaçada.
- *
- * O rótulo é `overline` (DM Mono, tracking largo) porque marca um dado, não
- * uma frase. A dica opcional abaixo do campo também é mono — é instrução
- * sobre o formato do dado, como "use 8 caracteres ou mais".
- */
 import { forwardRef } from 'react';
 import { StyleSheet, Text, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
 

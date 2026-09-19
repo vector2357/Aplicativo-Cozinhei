@@ -1,15 +1,3 @@
-/**
- * Sessão do usuário — MOCK da etapa 02.
- *
- * A etapa 02 não tem persistência nem servidor: nenhuma credencial é
- * verificada e nada sai do aparelho. O contexto existe para que as telas já
- * conversem com a forma final da API — `entrar`, `criarConta`, `sair` e um
- * `usuario` — de modo que a troca por Supabase Auth na etapa seguinte
- * aconteça só aqui dentro.
- *
- * `autenticar` tem um atraso proposital: é ele que dá conteúdo à tela
- * "entrando", que no app real cobre a ida ao servidor.
- */
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 
 import { USUARIO_EXEMPLO } from '@/features/execucoes/fixtures';

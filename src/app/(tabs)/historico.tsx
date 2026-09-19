@@ -1,4 +1,3 @@
-/** Tela 06 — Histórico. Conteúdo previsto para a etapa 03. */
 import { TelaEmConstrucao } from '@/components/ui/TelaEmConstrucao';
 
 export default function TelaHistorico() {

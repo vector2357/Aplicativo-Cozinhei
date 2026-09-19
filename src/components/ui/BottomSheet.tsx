@@ -1,13 +1,3 @@
-/**
- * Bottom sheet.
- *
- * Regra de design: TODA escolha modal é bottom sheet, nunca diálogo
- * centralizado — inclusive a seleção de conta Google. O app é usado com uma
- * mão só, e o alcance do polegar fica na metade inferior da tela.
- *
- * O scrim é tocável e fecha o sheet, mas o gesto precisa ter um rótulo de
- * acessibilidade próprio: para um leitor de tela ele não é "o fundo".
- */
 import { ReactNode } from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';

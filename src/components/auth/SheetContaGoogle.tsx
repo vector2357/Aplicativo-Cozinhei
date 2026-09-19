@@ -1,18 +1,8 @@
-/**
- * Tela 03 — escolha de conta Google, como bottom sheet.
- *
- * Não é rota própria: aparece sobre a tela de login ou de cadastro, que
- * ficam esmaecidas atrás do scrim. Toda escolha modal do app é bottom sheet,
- * nunca diálogo centralizado.
- *
- * A frase sobre o que o app recebe não é enfeite jurídico: declarar o
- * escopo no momento da escolha é o que torna a permissão informada.
- */
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Botao, BottomSheet, MarcaGoogle } from '@/components/ui';
 import { CONTAS_GOOGLE } from '@/features/execucoes/fixtures';
-import { color, fontFamily, radius, spacing, text, touch } from '@/theme';
+import { color, fontFamily, interacao, radius, spacing, text } from '@/theme';
 
 type Conta = { nome: string; email: string; iniciais: string };
 
@@ -22,9 +12,14 @@ type Props = {
   onEscolher: (conta: Conta) => void;
   /** Muda só o verbo da frase de contexto. */
   acao: 'entrar' | 'criar conta';
+  /**
+   * Chamado por "usar outra conta". Enquanto o fluxo oficial do provedor não
+   * existe, a tela de cima anuncia o destino em vez de deixar o toque mudo.
+   */
+  onOutraConta: () => void;
 };
 
-export function SheetContaGoogle({ visivel, onFechar, onEscolher, acao }: Props) {
+export function SheetContaGoogle({ visivel, onFechar, onEscolher, acao, onOutraConta }: Props) {
   return (
     <BottomSheet
       visivel={visivel}
@@ -64,7 +59,8 @@ export function SheetContaGoogle({ visivel, onFechar, onEscolher, acao }: Props)
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="usar outra conta"
-          onPress={() => {}}
+          accessibilityHint="explica quando entrar com outra conta fica disponível"
+          onPress={onOutraConta}
           style={({ pressed }) => [estilos.outraConta, pressed && estilos.pressionado]}
         >
           <Text style={[text.body, estilos.outraContaTexto]}>usar outra conta</Text>
@@ -101,7 +97,7 @@ const estilos = StyleSheet.create({
     borderColor: 'rgba(18,33,28,0.1)',
     borderRadius: radius.card,
   },
-  pressionado: { opacity: 0.7 },
+  pressionado: { opacity: interacao.opacidadePressionado },
   avatar: {
     width: 38,
     height: 38,

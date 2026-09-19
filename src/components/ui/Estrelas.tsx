@@ -1,9 +1,3 @@
-/**
- * Nota em estrelas + o valor numérico em mono.
- *
- * As duas leituras andam juntas: a estrela dá o relance, o número em DM Mono
- * alinha na coluna e permite comparar execuções correndo o olho pela lista.
- */
 import { StyleSheet, Text, View } from 'react-native';
 
 import { color, text } from '@/theme';

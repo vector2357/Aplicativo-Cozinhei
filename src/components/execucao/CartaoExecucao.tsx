@@ -1,19 +1,7 @@
-/**
- * Ficha de execução em lista.
- *
- * Elemento-assinatura do produto. Na variante `ficha` (histórico) o número
- * da tentativa aparece em monoespaçada numa CALHA à esquerda, separada por
- * um filete: a numeração codifica a informação mais importante do app, que é
- * a repetição deliberada de um prato ao longo do tempo.
- *
- * Consequência: a foto é secundária. Miniatura de 52–56pt, nunca herói. Uma
- * grade de fotos grandes seria o padrão de qualquer app de comida e
- * destruiria a leitura de progresso.
- */
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Chip, Estrelas, MidiaPlaceholder } from '@/components/ui';
-import { color, radius, spacing, text } from '@/theme';
+import { color, interacao, radius, spacing, text } from '@/theme';
 import type { Execucao } from '@/types/dominio';
 import { formatarMoeda } from '@/utils/formato';
 
@@ -85,7 +73,7 @@ const estilos = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
-  pressionado: { opacity: 0.7 },
+  pressionado: { opacity: interacao.opacidadePressionado },
   calha: {
     width: 34,
     alignItems: 'center',
@@ -96,7 +84,7 @@ const estilos = StyleSheet.create({
     paddingRight: spacing.sm,
   },
   calhaNumero: { ...text.data, fontSize: 17, lineHeight: 18 },
-  calhaRotulo: { ...text.overline, fontSize: 8, letterSpacing: 0.6, marginTop: 3 },
+  calhaRotulo: { ...text.overline, fontSize: 9, letterSpacing: 0.6, marginTop: 3 },
   corpo: { flex: 1, minWidth: 0 },
   meta: { marginTop: 3 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 5, marginTop: spacing.xs },

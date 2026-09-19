@@ -1,15 +1,6 @@
-/**
- * Botão. Quatro variantes, escolhidas por SIGNIFICADO e não por estética.
- *
- * `principal` é âmbar e só pode aparecer UMA VEZ por tela (regra de design:
- * se duas ações parecem principais, uma delas não é). Texto sobre âmbar é
- * sempre tinta escura — nunca branco, o contraste não fecha.
- *
- * Todas as variantes respeitam o piso de 44pt de alvo tocável.
- */
 import { ActivityIndicator, Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
-import { color, radius, text, touch } from '@/theme';
+import { color, interacao, radius, text, touch } from '@/theme';
 
 export type VarianteBotao = 'principal' | 'secundaria' | 'fantasma' | 'contornoEscuro';
 
@@ -104,7 +95,7 @@ const estilos = StyleSheet.create({
   comBorda: { borderWidth: 1 },
   // Fantasma é um link: alvo de 44pt sem caixa visível.
   fantasma: { minHeight: touch.minTarget, paddingHorizontal: 8 },
-  pressionado: { opacity: 0.72 },
+  pressionado: { opacity: interacao.opacidadePressionado },
   inativo: { opacity: 0.45 },
   icone: { alignItems: 'center', justifyContent: 'center' },
 });

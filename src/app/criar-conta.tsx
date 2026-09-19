@@ -1,22 +1,22 @@
-/**
- * Tela 02 — Criar conta.
- *
- * Mesma moldura da tela 01: mesma marca, mesmo seletor segmentado, mesmos
- * campos, mesmo divisor. A repetição é intencional — trocar de aba não pode
- * parecer trocar de aplicativo.
- *
- * Duas diferenças de conteúdo: a assinatura vira um convite à ação
- * ("registre a primeira tentativa hoje") e existe o aceite de termos, que é
- * um alvo de 48pt porque um checkbox de 22pt sozinho é impossível de acertar.
- */
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { SheetContaGoogle } from '@/components/auth/SheetContaGoogle';
-import { Botao, Campo, Divisor, MarcaGoogle, SeletorSegmentado, Tela } from '@/components/ui';
+import {
+  Botao,
+  Campo,
+  Divisor,
+  MarcaGoogle,
+  SeletorSegmentado,
+  SheetEmConstrucao,
+  Tela,
+} from '@/components/ui';
 import { useAuth } from '@/features/auth/AuthContext';
 import { ErrosCriarConta, MINIMO_SENHA, semErros, validarCriarConta } from '@/features/auth/validacao';
+import { DESTINOS } from '@/features/navegacao/destinos';
+import { useEmConstrucao } from '@/hooks/useEmConstrucao';
+import { useErrosFormulario } from '@/hooks/useErrosFormulario';
 import { useLayoutResponsivo } from '@/hooks/useLayoutResponsivo';
 import { color, radius, spacing, text } from '@/theme';
 
@@ -29,21 +29,27 @@ export default function TelaCriarConta() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [termos, setTermos] = useState(false);
-  const [erros, setErros] = useState<ErrosCriarConta>({});
+  const { erros, definirErros, limparErro } = useErrosFormulario<ErrosCriarConta>();
   const [sheetGoogle, setSheetGoogle] = useState(false);
+  const emConstrucao = useEmConstrucao();
 
   function aoCriar() {
     const encontrados = validarCriarConta({ nome, email, senha, termos });
-    setErros(encontrados);
+    definirErros(encontrados);
     if (!semErros(encontrados)) return;
     criarConta({ nome, email, senha });
-    router.push('/entrando');
+    router.replace('/entrando');
   }
 
   function aoEscolherConta(conta: { nome: string; email: string; iniciais: string }) {
     setSheetGoogle(false);
     entrarComGoogle(conta);
-    router.push('/entrando');
+    router.replace('/entrando');
+  }
+
+  function alternarTermos() {
+    setTermos((atual) => !atual);
+    limparErro('termos');
   }
 
   return (
@@ -80,7 +86,10 @@ export default function TelaCriarConta() {
               rotulo="como te chamamos"
               placeholder="Marina"
               value={nome}
-              onChangeText={setNome}
+              onChangeText={(valor) => {
+                setNome(valor);
+                limparErro('nome');
+              }}
               erro={erros.nome}
               autoCapitalize="words"
               autoComplete="name"
@@ -90,7 +99,10 @@ export default function TelaCriarConta() {
               rotulo="e-mail"
               placeholder="marina@email.com"
               value={email}
-              onChangeText={setEmail}
+              onChangeText={(valor) => {
+                setEmail(valor);
+                limparErro('email');
+              }}
               erro={erros.email}
               keyboardType="email-address"
               autoCapitalize="none"
@@ -102,7 +114,10 @@ export default function TelaCriarConta() {
               placeholder="oito caracteres ou mais"
               dica={`use ${MINIMO_SENHA} caracteres ou mais`}
               value={senha}
-              onChangeText={setSenha}
+              onChangeText={(valor) => {
+                setSenha(valor);
+                limparErro('senha');
+              }}
               erro={erros.senha}
               secureTextEntry
               autoComplete="new-password"
@@ -117,7 +132,7 @@ export default function TelaCriarConta() {
             accessibilityRole="checkbox"
             accessibilityState={{ checked: termos }}
             accessibilityLabel="aceito os termos de uso e a política de privacidade"
-            onPress={() => setTermos((atual) => !atual)}
+            onPress={alternarTermos}
             style={estilos.termos}
           >
             <View style={[estilos.caixaTermos, termos && estilos.caixaTermosMarcada]}>
@@ -153,7 +168,13 @@ export default function TelaCriarConta() {
         acao="criar conta"
         onFechar={() => setSheetGoogle(false)}
         onEscolher={aoEscolherConta}
+        onOutraConta={() => {
+          setSheetGoogle(false);
+          emConstrucao.anunciar(DESTINOS.outraConta);
+        }}
       />
+
+      <SheetEmConstrucao destino={emConstrucao.destino} onFechar={emConstrucao.fechar} />
     </Tela>
   );
 }
@@ -168,7 +189,7 @@ const estilos = StyleSheet.create({
   },
   cabecalho: { marginTop: spacing.xl },
   cabecalhoCompacto: { marginTop: spacing.sm },
-  assinatura: { marginTop: spacing.sm, fontSize: 11, color: color.inkFaint },
+  assinatura: { marginTop: spacing.sm, color: color.inkFaint },
   campos: { gap: spacing.sm, marginTop: spacing.xl },
   espacador: { flex: 1, minHeight: spacing.lg },
   termos: {

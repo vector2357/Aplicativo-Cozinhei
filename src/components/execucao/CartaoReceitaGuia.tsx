@@ -1,14 +1,7 @@
-/**
- * Receita-guia no carrossel horizontal da tela de início.
- *
- * Receita-guia NÃO é execução: é referência importada de fora, usada como
- * ponto de partida. Por isso ela pode dar destaque à imagem — o que não vale
- * para a ficha de execução, onde a foto é deliberadamente secundária.
- */
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { MidiaPlaceholder } from '@/components/ui';
-import { color, fontFamily, radius, spacing, text } from '@/theme';
+import { color, fontFamily, interacao, radius, spacing, text } from '@/theme';
 import type { ReceitaGuia } from '@/types/dominio';
 
 export const LARGURA_CARTAO_GUIA = 148;
@@ -48,7 +41,7 @@ const estilos = StyleSheet.create({
     borderRadius: radius.card,
     overflow: 'hidden',
   },
-  pressionado: { opacity: 0.7 },
+  pressionado: { opacity: interacao.opacidadePressionado },
   corpo: { paddingHorizontal: 11, paddingTop: spacing.sm, paddingBottom: 12 },
   nome: {
     fontFamily: fontFamily.displaySemibold,
@@ -56,5 +49,5 @@ const estilos = StyleSheet.create({
     lineHeight: 17,
     color: color.ink,
   },
-  meta: { fontSize: 10, marginTop: 5 },
+  meta: { marginTop: 5 },
 });

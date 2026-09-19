@@ -1,14 +1,3 @@
-/**
- * Componentes reutilizáveis.
- *
- * O que está sendo protegido aqui não é pixel: são as três regras de design
- * que quebram em silêncio se alguém mexer no lugar errado — a cor semântica
- * dos chips, o piso de 44pt de alvo tocável e o rótulo de acessibilidade
- * que anuncia que um defeito abre o diagnóstico.
- *
- * `render` e `fireEvent` são assíncronos na v14 do testing-library: sem o
- * `await` a árvore ainda não existe quando a consulta roda.
- */
 import { fireEvent, render, screen } from '@testing-library/react-native';
 
 import { CartaoExecucao } from '@/components/execucao';

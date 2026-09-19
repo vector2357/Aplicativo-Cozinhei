@@ -1,14 +1,3 @@
-/**
- * Cozinhei — design tokens
- * Fonte da verdade para cores, tipografia, espaçamento e raios.
- *
- * Regra de ouro: nenhum valor literal de cor ou tamanho no código de tela.
- * Se um valor não existe aqui, ele não deveria existir na interface.
- *
- * Espelha `local/design/tokens.ts`. A única adaptação é `fontFamily`, que usa
- * os nomes exportados pelos pacotes @expo-google-fonts (ver theme/fonts.ts).
- */
-
 /* ------------------------------------------------------------------ *
  * COR
  *
@@ -16,6 +5,23 @@
  * significa qualidade e nada mais. Âmbar aparece em exatamente três
  * lugares: estrelas de nota, cronômetro em contagem e a ação principal
  * de cada tela (uma por tela).
+ *
+ * ── Contraste: o número vale contra UM fundo, não em geral ─────────────
+ *
+ * Toda razão anotada abaixo é contra o fundo onde a cor de fato aparece —
+ * `background` (#F2F3F0) para as telas claras, `surface` (#FFFFFF) dentro
+ * de cartão e campo, `backgroundDark` (#12211C) nas três telas escuras.
+ * Medir contra branco quando o fundo real é #F2F3F0 infla o resultado e foi
+ * o que mascarou, até a etapa 03, quatro cores reprovadas.
+ *
+ * O piso é o da WCAG 2.1 AA: 4.5:1 para texto normal, 3:1 para texto grande
+ * e para componente de interface não textual (critério 1.4.11).
+ *
+ * Cor que aparece sobre os dois fundos é DOIS tokens, não um: ver
+ * `stone` / `stoneOnLight`. Uma cor só nunca serve bem aos dois lados, e
+ * essa separação é o que vai permitir o modo escuro sem refazer a paleta.
+ *
+ * `src/__tests__/contraste.test.ts` calcula cada par e falha abaixo do piso.
  * ------------------------------------------------------------------ */
 export const color = {
   /** Fundo de todas as telas claras. */
@@ -25,18 +31,25 @@ export const color = {
   /** Fundo das telas escuras: cronômetro, gravação de áudio, cartão de resumo. */
   backgroundDark: '#12211C',
 
-  /** Texto principal. Também é o fundo escuro — mesma tinta. */
+  /** Texto principal. Também é o fundo escuro — mesma tinta. 14.9:1. */
   ink: '#12211C',
-  /** Texto secundário sobre fundo claro. Contraste 7.1:1. */
+  /** Texto secundário sobre fundo claro. 5.2:1. */
   inkMuted: '#5F6862',
-  /** Rótulos e metadados sobre fundo claro. Contraste 4.6:1. */
-  inkFaint: '#6E756F',
-  /** Texto de apoio em botões/chips neutros. */
+  /** Metadados sobre fundo claro. 5.0:1. */
+  inkFaint: '#636A64',
+  /** Texto de apoio em botões/chips neutros. 8.7:1. */
   inkSoft: '#3C4741',
-  /** Rótulos monoespaçados em caixa alta. Só para texto >= 14px ou não textual. */
+  /**
+   * Rótulo em caixa alta sobre fundo ESCURO. 6.1:1 contra `backgroundDark`.
+   *
+   * Não use sobre fundo claro: ali esta cor marca 2.4:1 e reprova a WCAG AA.
+   * O par claro é `stoneOnLight` — ver o bloco de contraste abaixo.
+   */
   stone: '#9A9E97',
-  /** Aba não selecionada na barra inferior. */
-  tabInativa: '#8A918B',
+  /** Rótulo em caixa alta sobre fundo CLARO. 4.5:1 contra `background`. */
+  stoneOnLight: '#6A716B',
+  /** Aba não selecionada na barra inferior. 4.7:1 contra `surface`. */
+  tabInativa: '#6F766F',
 
   /** Texto principal sobre fundo escuro. */
   inkOnDark: '#F2F3F0',
@@ -140,6 +153,29 @@ export const touch = {
   field: 52,
   fabSize: 62,
   tabBarHeight: 64,
+} as const;
+
+/* ------------------------------------------------------------------ *
+ * INTERAÇÃO — o feedback do toque
+ *
+ * O estado pressionado precisa ser perceptível e INSTANTÂNEO: sem
+ * resposta visível, o usuário toca de novo, e o toque repetido é o
+ * sintoma clássico de interface em que não se confia.
+ *
+ * Um valor só no app inteiro. Antes da etapa 03 havia três (0.70, 0.72 e
+ * 0.85), o que não era escolha — era descuido acumulado, e fazia o mesmo
+ * gesto responder diferente conforme o componente.
+ * ------------------------------------------------------------------ */
+export const interacao = {
+  /** Opacidade de QUALQUER superfície pressionada. */
+  opacidadePressionado: 0.72,
+  /**
+   * Escala do botão flutuante pressionado.
+   *
+   * O `+` é a única peça que encolhe em vez de esmaecer: clarear âmbar tira
+   * dele justamente a cor que o identifica como a ação principal do app.
+   */
+  escalaPressionado: 0.96,
 } as const;
 
 /* ------------------------------------------------------------------ *

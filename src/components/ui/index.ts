@@ -1,6 +1,7 @@
 export { Botao } from './Botao';
 export type { VarianteBotao } from './Botao';
 export { BottomSheet } from './BottomSheet';
+export { CabecalhoTela } from './CabecalhoTela';
 export { Campo } from './Campo';
 export { Cartao } from './Cartao';
 export { Chip } from './Chip';
@@ -10,4 +11,7 @@ export { MarcaGoogle } from './MarcaGoogle';
 export { MidiaPlaceholder } from './MidiaPlaceholder';
 export { SeletorSegmentado } from './SeletorSegmentado';
 export type { OpcaoSegmento } from './SeletorSegmentado';
+export { SheetEmConstrucao } from './SheetEmConstrucao';
+export type { DestinoEmConstrucao } from './SheetEmConstrucao';
 export { Tela } from './Tela';
+export { TelaEmConstrucao } from './TelaEmConstrucao';

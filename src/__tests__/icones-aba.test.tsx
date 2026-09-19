@@ -1,18 +1,3 @@
-/**
- * Ícones semânticos da barra de abas.
- *
- * O que está sendo protegido aqui são as quatro promessas da proposta de
- * ícones — as que quebram em silêncio se alguém mexer no lugar errado:
- *
- *   1. o ícone muda de CONTORNO para SÓLIDO quando a aba é selecionada,
- *      e a cor acompanha (cinza inativo -> tinta ativa);
- *   2. os quatro ocupam exatamente a MESMA caixa, no mesmo `viewBox`;
- *   3. o ícone não muda de tamanho ao ser tocado;
- *   4. o ícone cabe na aba junto com o rótulo, sem estourar a barra.
- *
- * `render` e `fireEvent` são assíncronos na v14 do testing-library: sem o
- * `await` a árvore ainda não existe quando a consulta roda.
- */
 import { render, screen } from '@testing-library/react-native';
 
 import { BotaoAba } from '@/components/navegacao/BotaoAba';

@@ -1,17 +1,3 @@
-/**
- * Estilos da barra de abas flutuante.
- *
- * Ficam fora do layout porque o layout precisa manter os `<TabTrigger>` como
- * filhos DIRETOS do `<TabList>`. A varredura que o Expo Router faz para
- * descobrir as rotas (`parseTriggersFromChildren`, em `expo-router/build/ui/
- * Tabs.js`) só desce por Fragments e pelo próprio `TabList` — qualquer `View`
- * no meio do caminho faz os triggers ficarem invisíveis e o navegador nascer
- * sem nenhuma rota, em silêncio.
- *
- * Por isso `barra` é aplicado NO `TabList`, que já renderiza uma `View` e
- * aceita `style`. Ele acumula os dois papéis que antes estavam separados —
- * ancorar no rodapé e desenhar a pílula.
- */
 import { StyleSheet } from 'react-native';
 
 import { color, radius, shadow, spacing, touch } from '@/theme';

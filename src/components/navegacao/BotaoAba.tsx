@@ -1,17 +1,11 @@
 import { forwardRef } from 'react';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet, Text, useWindowDimensions } from 'react-native';
 import type { StyleProp, View as ViewTipo, ViewStyle } from 'react-native';
 
+import { folgaEntreAbas } from '@/components/navegacao/estilosBarraAbas';
 import { IconeAba, TAMANHO_ICONE_ABA } from '@/components/navegacao/IconeAba';
 import type { NomeIconeAba } from '@/components/navegacao/IconeAba';
-import { color, text } from '@/theme';
-
-/**
- * Teto do ajuste de fonte do sistema. A fatia de cada aba é fixa (um quarto
- * do que sobra da barra); deixar o rótulo crescer sem limite recria a
- * sobreposição em aparelho com fonte grande.
- */
-const ESCALA_MAXIMA_ROTULO = 1.15;
+import { color, escalaDeFonte, text } from '@/theme';
 
 /** Respiro entre o ícone e o rótulo. */
 const RESPIRO = 5;
@@ -36,20 +30,22 @@ export const BotaoAba = forwardRef<ViewTipo, Props>(function BotaoAba(
   { rotulo, icone, isFocused = false, style, ...props },
   ref,
 ) {
+  const { width } = useWindowDimensions();
+
   return (
     <Pressable
       ref={ref}
       accessibilityRole="tab"
       accessibilityState={{ selected: isFocused }}
       accessibilityLabel={rotulo}
-      style={[style, estilos.aba]}
+      style={[style, estilos.aba, { marginHorizontal: folgaEntreAbas(width) }]}
       {...props}
     >
       <IconeAba nome={icone} ativo={isFocused} />
       <Text
         style={[text.label, estilos.rotulo, { color: isFocused ? color.ink : color.tabInativa }]}
         numberOfLines={1}
-        maxFontSizeMultiplier={ESCALA_MAXIMA_ROTULO}
+        maxFontSizeMultiplier={escalaDeFonte.emAba}
       >
         {rotulo}
       </Text>

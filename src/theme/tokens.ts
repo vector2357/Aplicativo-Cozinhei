@@ -48,6 +48,11 @@ export const color = {
   stone: '#9A9E97',
   /** Rótulo em caixa alta sobre fundo CLARO. 4.5:1 contra `background`. */
   stoneOnLight: '#6A716B',
+  /**
+   * Borda de controle marcável (a caixa dos termos). 3.4:1 contra `surface`
+   * — é componente de interface não textual, piso de 3:1 pela WCAG 1.4.11.
+   */
+  borderControl: '#767E77',
   /** Aba não selecionada na barra inferior. 4.7:1 contra `surface`. */
   tabInativa: '#6F766F',
 
@@ -84,6 +89,21 @@ export const color = {
   borderStrong: 'rgba(18, 33, 28, 0.14)',
   borderDashed: 'rgba(18, 33, 28, 0.22)',
   borderOnDark: 'rgba(242, 243, 240, 0.20)',
+
+  /**
+   * Controle desabilitado: superfície, texto e borda.
+   *
+   * Existe porque esmaecer com `opacity` é a saída errada: ela derruba o
+   * contraste do texto junto, e um botão desabilitado CONTINUA precisando ser
+   * lido — é ele que diz o que ainda não dá para fazer. Estas cores fecham
+   * 5.2:1 de texto sobre a própria superfície, e entram no teste de contraste
+   * como qualquer outro par.
+   */
+  inativoFundo: '#E3E5E1',
+  inativoTexto: '#575F59',
+  inativoBorda: '#C9CDC7',
+  /** O mesmo papel sobre `backgroundDark`. 4.9:1. */
+  inativoTextoOnDark: '#868D87',
 
   /** Preenchimento neutro: trilhas de gráfico, barras inativas, toggle desligado. */
   fillNeutral: 'rgba(18, 33, 28, 0.14)',
@@ -153,6 +173,15 @@ export const touch = {
   field: 52,
   fabSize: 62,
   tabBarHeight: 64,
+  /**
+   * Vão morto entre dois alvos vizinhos (Aula 10, Lei de Fitts).
+   *
+   * Alvos encostados um no outro medem 44pt cada e ainda assim erram: o dedo
+   * cobre ~10pt além do ponto que o usuário mira, e sem folga esse excesso
+   * cai no vizinho. O erro não avisa — aciona a coisa errada. 8pt é o piso
+   * que separa "errei o alvo" de "o app fez outra coisa".
+   */
+  deadSpace: 8,
 } as const;
 
 /* ------------------------------------------------------------------ *
@@ -166,6 +195,29 @@ export const touch = {
  * 0.85), o que não era escolha — era descuido acumulado, e fazia o mesmo
  * gesto responder diferente conforme o componente.
  * ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------ *
+ * ESCALA DE FONTE — até onde o texto pode crescer
+ *
+ * O ajuste de fonte do sistema chega a 200% no Android e a ~235% no iOS, e
+ * o padrão do React Native é acompanhar sem teto. Texto corrido DEVE
+ * acompanhar: é o principal recurso de quem enxerga pouco, e limitá-lo é
+ * tirar acessibilidade em nome do layout.
+ *
+ * O teto existe só onde o container NÃO pode crescer junto — calha de
+ * largura fixa, fatia de aba, rótulo de uma linha. Ali o texto sem limite
+ * não fica maior: quebra em duas linhas ou some, e o usuário perde a
+ * informação inteira em vez de ganhar tamanho.
+ *
+ * Regra prática: se você está prestes a pôr um teto, primeiro tente deixar
+ * o container crescer. O teto é a segunda escolha.
+ * ------------------------------------------------------------------ */
+export const escalaDeFonte = {
+  /** Rótulo dentro de caixa de largura fixa (calha, aba). */
+  emCaixaFixa: 1.3,
+  /** Fatia de aba: quatro precisam caber lado a lado com o vão do `+`. */
+  emAba: 1.15,
+} as const;
+
 export const interacao = {
   /** Opacidade de QUALQUER superfície pressionada. */
   opacidadePressionado: 0.72,

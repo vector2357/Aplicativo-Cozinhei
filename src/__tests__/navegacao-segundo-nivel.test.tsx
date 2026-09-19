@@ -27,9 +27,21 @@ jest.mock('expo-router', () => ({
 import TelaExecucao from '@/app/execucao/[id]';
 import TelaEvolucao from '@/app/evolucao';
 import { CabecalhoTela } from '@/components/ui';
+import { AuthProvider } from '@/features/auth/AuthContext';
+import { AvisoProvider } from '@/features/aviso/AvisoContext';
+import { EXECUCOES } from '@/features/execucoes/fixtures';
 
 const comArea = ({ children }: { children: React.ReactNode }) => (
   <SafeAreaProvider initialMetrics={METRICAS}>{children}</SafeAreaProvider>
+);
+
+/** A moldura completa: área segura, sessão e avisos, como o app monta. */
+const comSessao = ({ children }: { children: React.ReactNode }) => (
+  <SafeAreaProvider initialMetrics={METRICAS}>
+    <AuthProvider>
+      <AvisoProvider>{children}</AvisoProvider>
+    </AuthProvider>
+  </SafeAreaProvider>
 );
 
 beforeEach(() => {
@@ -97,16 +109,15 @@ describe('CabecalhoTela', () => {
 });
 
 describe('/evolucao', () => {
-  it('se identifica e diz o que vai mostrar', async () => {
-    await render(<TelaEvolucao />, { wrapper: comArea });
+  it('se identifica e mostra os números da evolução', async () => {
+    await render(<TelaEvolucao />, { wrapper: comSessao });
 
     expect(screen.getByRole('header', { name: 'sua evolução' })).toBeTruthy();
-    expect(screen.getByText('em construção')).toBeTruthy();
-    expect(screen.getByText(/painéis de nota, custo e defeitos/)).toBeTruthy();
+    expect(await screen.findByText('a curva de cada prato repetido')).toBeTruthy();
   });
 
   it('tem voltar — é alcançada por push, não é aba', async () => {
-    await render(<TelaEvolucao />, { wrapper: comArea });
+    await render(<TelaEvolucao />, { wrapper: comSessao });
 
     await fireEvent.press(screen.getByRole('button', { name: 'voltar para início' }));
 
@@ -116,36 +127,32 @@ describe('/evolucao', () => {
 
 describe('/execucao/[id]', () => {
   it('usa o nome do prato como título, confirmando onde se chegou', async () => {
-    await render(<TelaExecucao />, { wrapper: comArea });
+    await render(<TelaExecucao />, { wrapper: comSessao });
 
-    // O id 'e1' é o arroz de forno, nos fixtures.
-    expect(await screen.findByRole('header', { name: 'Arroz de forno' })).toBeTruthy();
-  });
-
-  it('descreve a ficha com o número da tentativa buscada', async () => {
-    await render(<TelaExecucao />, { wrapper: comArea });
-
-    expect(await screen.findByText(/ficha completa da tentativa 02/)).toBeTruthy();
+    // Do próprio conjunto: qual prato é o primeiro muda quando os dados de
+    // exemplo crescem, e o teste não deveria quebrar por isso.
+    expect(await screen.findByRole('header', { name: EXECUCOES[0].prato })).toBeTruthy();
   });
 
   it('busca a execução do id que a rota entregou', async () => {
-    mockParametrosDaRota = { id: 'e2' };
-    await render(<TelaExecucao />, { wrapper: comArea });
+    const outra = EXECUCOES[2];
+    mockParametrosDaRota = { id: outra.id };
+    await render(<TelaExecucao />, { wrapper: comSessao });
 
-    expect(await screen.findByRole('header', { name: 'Bolo de cenoura' })).toBeTruthy();
+    expect(await screen.findByRole('header', { name: outra.prato })).toBeTruthy();
   });
 
   /** Deep link com id inválido não pode quebrar a tela. */
-  it('com id desconhecido, cai num título genérico em vez de estourar', async () => {
+  it('com id desconhecido, explica que não encontrou e oferece voltar', async () => {
     mockParametrosDaRota = { id: 'nao-existe' };
-    await render(<TelaExecucao />, { wrapper: comArea });
+    await render(<TelaExecucao />, { wrapper: comSessao });
 
-    expect(await screen.findByRole('header', { name: 'execução' })).toBeTruthy();
-    expect(screen.getByText(/ficha completa da execução/)).toBeTruthy();
+    expect(await screen.findByText('não encontrei esta execução')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'voltar' })).toBeTruthy();
   });
 
   it('tem voltar', async () => {
-    await render(<TelaExecucao />, { wrapper: comArea });
+    await render(<TelaExecucao />, { wrapper: comSessao });
 
     await fireEvent.press(await screen.findByRole('button', { name: 'voltar para a lista' }));
 

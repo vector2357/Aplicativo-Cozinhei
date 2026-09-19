@@ -6,6 +6,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AuthProvider } from '@/features/auth/AuthContext';
+import { AvisoProvider } from '@/features/aviso/AvisoContext';
 import { color, fontAssets } from '@/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {
@@ -28,31 +29,39 @@ export default function LayoutRaiz() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <AuthProvider>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: color.background },
-              animation: 'fade',
-            }}
-          >
-            <Stack.Screen name="index" />
-            <Stack.Screen name="criar-conta" />
-            {/* Sem gesto de voltar: cancelar é a única saída da autenticação. */}
-            <Stack.Screen name="entrando" options={{ gestureEnabled: false }} />
-            {/*
-              As abas são a raiz depois do login: chega-se aqui por `replace`,
-              a pilha fica com uma tela só, e o voltar do sistema sai do app em
-              vez de ressuscitar a tela de entrada.
-            */}
-            <Stack.Screen name="(tabs)" options={{ gestureEnabled: false }} />
-            {/*
-              Telas de segundo nível. `slide_from_right` em vez do `fade` das
-              demais: aqui o movimento carrega informação — entrou-se num
-              nível, e o gesto de arrastar da borda desfaz o mesmo caminho.
-            */}
-            <Stack.Screen name="evolucao" options={{ animation: 'slide_from_right' }} />
-            <Stack.Screen name="execucao/[id]" options={{ animation: 'slide_from_right' }} />
-          </Stack>
+          {/*
+            Por dentro da sessão e por fora do Stack: o aviso sobrevive à troca
+            de tela, que é o que permite confirmar "execução salva" já na tela
+            seguinte à que salvou.
+          */}
+          <AvisoProvider>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: { backgroundColor: color.background },
+                animation: 'fade',
+              }}
+            >
+              <Stack.Screen name="index" />
+              <Stack.Screen name="criar-conta" />
+              {/* Sem gesto de voltar: cancelar é a única saída da autenticação. */}
+              <Stack.Screen name="entrando" options={{ gestureEnabled: false }} />
+              {/*
+                As abas são a raiz depois do login: chega-se aqui por `replace`,
+                a pilha fica com uma tela só, e o voltar do sistema sai do app em
+                vez de ressuscitar a tela de entrada.
+              */}
+              <Stack.Screen name="(tabs)" options={{ gestureEnabled: false }} />
+              {/*
+                Telas de segundo nível. `slide_from_right` em vez do `fade` das
+                demais: aqui o movimento carrega informação — entrou-se num
+                nível, e o gesto de arrastar da borda desfaz o mesmo caminho.
+              */}
+              <Stack.Screen name="evolucao" options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="execucao/[id]" options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="prato/[id]" options={{ animation: 'slide_from_right' }} />
+            </Stack>
+          </AvisoProvider>
         </AuthProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

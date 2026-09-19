@@ -33,6 +33,22 @@ export const DESTINOS = {
       'a receita de referência com ingredientes e modo de preparo, e as suas execuções feitas a partir dela.',
   },
 
+  /** "acessibilidade", nos ajustes do perfil. */
+  ajustesAcessibilidade: {
+    titulo: 'ajustes de acessibilidade',
+    etapa: 'etapa 04',
+    descricao:
+      'aumentar o texto, ligar o alto contraste e reduzir as animações sem depender dos ajustes do aparelho.',
+  },
+
+  /** "retenção de áudio", nos ajustes do perfil. */
+  retencaoDeAudio: {
+    titulo: 'retenção de áudio',
+    etapa: 'etapa 04',
+    descricao:
+      'por quanto tempo os áudios das suas fichas ficam guardados antes de serem apagados.',
+  },
+
   /** Os três caminhos do sheet "como registrar". */
   registrarPorAudio: {
     titulo: 'gravar um áudio',

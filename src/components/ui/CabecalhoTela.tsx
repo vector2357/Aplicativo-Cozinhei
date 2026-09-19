@@ -1,20 +1,10 @@
 import { useRouter } from 'expo-router';
 import { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
 
-import { color, interacao, spacing, text, touch } from '@/theme';
-
-/**
- * Grade e traço do desenho. Iguais aos dos ícones de aba, para que a seta
- * pese o mesmo que o resto da interface.
- *
- * A família completa de ícones (filtro, busca, editar, excluir) chega junto
- * das telas que vão precisar dela; até lá, esta seta vive aqui.
- */
-const GRADE = 24;
-const TRACO = 1.7;
-const TAMANHO_SETA = 22;
+import { Icone } from './Icone';
+import { useFocoNoTitulo } from '@/hooks/useFocoNoTitulo';
+import { interacao, spacing, text, touch } from '@/theme';
 
 type Props = {
   titulo: string;
@@ -30,6 +20,13 @@ type Props = {
 
 export function CabecalhoTela({ titulo, origem, acao }: Props) {
   const router = useRouter();
+  /*
+    Ao empilhar uma tela, o leitor de tela costuma manter o foco onde estava —
+    no controle que a abriu, que agora está na tela de baixo. Quem entrou fica
+    sem saber que chegou. Mover o foco para o título resolve, e o título é o
+    lugar certo: ele diz onde se está.
+  */
+  const tituloRef = useFocoNoTitulo();
 
   return (
     <View style={estilos.cabecalho}>
@@ -39,24 +36,15 @@ export function CabecalhoTela({ titulo, origem, acao }: Props) {
         onPress={() => router.back()}
         style={({ pressed }) => [estilos.voltar, pressed && estilos.pressionado]}
       >
-        <Svg
-          testID="icone-voltar"
-          width={TAMANHO_SETA}
-          height={TAMANHO_SETA}
-          viewBox={`0 0 ${GRADE} ${GRADE}`}
-          accessibilityElementsHidden
-          importantForAccessibility="no-hide-descendants"
-          fill="none"
-          stroke={color.ink}
-          strokeWidth={TRACO}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <Path d="M14.5 5.2 7.7 12l6.8 6.8" />
-        </Svg>
+        <Icone nome="voltar" />
       </Pressable>
 
-      <Text style={[text.screenTitle, estilos.titulo]} numberOfLines={1} accessibilityRole="header">
+      <Text
+        ref={tituloRef}
+        style={[text.screenTitle, estilos.titulo]}
+        numberOfLines={1}
+        accessibilityRole="header"
+      >
         {titulo}
       </Text>
 

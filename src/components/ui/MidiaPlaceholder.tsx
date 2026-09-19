@@ -23,6 +23,7 @@ export function MidiaPlaceholder({ largura = '100%', altura, raio = 10, style }:
 
   return (
     <View
+      testID="midia-placeholder"
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
       style={[

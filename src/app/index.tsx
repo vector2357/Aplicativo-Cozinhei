@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { SheetContaGoogle } from '@/components/auth/SheetContaGoogle';
 import {
@@ -17,6 +17,7 @@ import { ErrosEntrar, semErros, validarEntrar } from '@/features/auth/validacao'
 import { DESTINOS } from '@/features/navegacao/destinos';
 import { useEmConstrucao } from '@/hooks/useEmConstrucao';
 import { useErrosFormulario } from '@/hooks/useErrosFormulario';
+import { useAlturaDoTeclado } from '@/hooks/useAlturaDoTeclado';
 import { useLayoutResponsivo } from '@/hooks/useLayoutResponsivo';
 import { color, radius, spacing, text } from '@/theme';
 
@@ -24,6 +25,10 @@ export default function TelaEntrar() {
   const router = useRouter();
   const { entrar, entrarComGoogle } = useAuth();
   const { compacta } = useLayoutResponsivo();
+  const alturaDoTeclado = useAlturaDoTeclado();
+  // Com o teclado aberto, o recuo é a altura dele mais o respiro de sempre:
+  // é o que faz sobrar conteúdo para rolar até a ação principal.
+  const recuoInferior = alturaDoTeclado ? alturaDoTeclado + spacing.lg : spacing.xxl;
 
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -47,15 +52,21 @@ export default function TelaEntrar() {
 
   return (
     <Tela>
-      <KeyboardAvoidingView
+      <ScrollView
+        testID="rolagem-do-formulario"
         style={estilos.preenche}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        /*
+          O espaço do teclado é reservado no PRÓPRIO conteúdo, e não por um
+          `KeyboardAvoidingView`: com `edgeToEdgeEnabled` no `app.json` a
+          janela do Android não é redimensionada quando o teclado sobe, e a
+          moldura não tinha o que encolher. Sem esta reserva, a ação principal
+          ficava atrás do teclado e não havia excesso para rolar até ela.
+        */
+        contentContainerStyle={[estilos.conteudo, { paddingBottom: recuoInferior }]}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        showsVerticalScrollIndicator={false}
       >
-        <ScrollView
-          contentContainerStyle={estilos.conteudo}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
           <View style={[estilos.cabecalho, compacta && estilos.cabecalhoCompacto]}>
             <Text style={text.brand}>Cozinhei</Text>
             <Text style={[text.overline, estilos.assinatura]}>seu diário de cozinha</Text>
@@ -132,8 +143,7 @@ export default function TelaEntrar() {
             onPress={() => setSheetGoogle(true)}
             accessibilityHint="abre a lista de contas Google deste aparelho"
           />
-        </ScrollView>
-      </KeyboardAvoidingView>
+      </ScrollView>
 
       <SheetContaGoogle
         visivel={sheetGoogle}
@@ -157,7 +167,6 @@ const estilos = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: spacing.screenHWide,
     paddingTop: spacing.lg,
-    paddingBottom: spacing.xxl,
   },
   cabecalho: { marginTop: spacing.xl },
   cabecalhoCompacto: { marginTop: spacing.sm },
@@ -167,7 +176,7 @@ const estilos = StyleSheet.create({
   esqueci: { alignSelf: 'flex-start', marginLeft: -8 },
   espacador: { flex: 1, minHeight: spacing.lg },
   promessa: {
-    backgroundColor: 'rgba(18,33,28,0.04)',
+    backgroundColor: color.fillSubtle,
     borderWidth: 1,
     borderColor: color.borderHairline,
     borderRadius: radius.field,

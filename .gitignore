@@ -2,6 +2,7 @@
 # Cozinhei — .gitignore
 # ---------------------------------------------------------------
 local/
+.claude/
 
 # Dependências
 node_modules/

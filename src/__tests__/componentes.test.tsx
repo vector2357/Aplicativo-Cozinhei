@@ -7,7 +7,9 @@ import type { Execucao } from '@/types/dominio';
 
 const EXECUCAO: Execucao = {
   id: 'teste',
+  pratoId: 'p1',
   prato: 'Bolo de cenoura',
+  mes: 'agosto de 2026',
   tentativa: '04',
   data: '19 ago',
   tempo: '1h05',
@@ -68,12 +70,12 @@ describe('Botao', () => {
 describe('Chip', () => {
   it('pinta qualidade de oliva', async () => {
     await render(<Chip texto="massa fofa" tipo="qualidade" />);
-    expect(estiloDe(screen.getByText('massa fofa')).color).toBe(chipVariant.quality.foreground);
+    expect(estiloDe(screen.getByText(/massa fofa/)).color).toBe(chipVariant.quality.foreground);
   });
 
   it('pinta defeito de vinho', async () => {
     await render(<Chip texto="borda seca" tipo="defeito" />);
-    expect(estiloDe(screen.getByText('borda seca')).color).toBe(chipVariant.defect.foreground);
+    expect(estiloDe(screen.getByText(/borda seca/)).color).toBe(chipVariant.defect.foreground);
   });
 
   it('anuncia que um defeito acionável abre o diagnóstico', async () => {
@@ -122,8 +124,8 @@ describe('CartaoExecucao', () => {
     expect(screen.getByText('04')).toBeTruthy();
     expect(screen.getByText('tent.')).toBeTruthy();
     expect(screen.getByText(/19 ago · 1h05 · R\$/)).toBeTruthy();
-    expect(screen.getByText('massa fofa')).toBeTruthy();
-    expect(screen.getByText('borda seca')).toBeTruthy();
+    expect(screen.getByText(/massa fofa/)).toBeTruthy();
+    expect(screen.getByText(/borda seca/)).toBeTruthy();
   });
 
   it('na variante resumo esconde a calha e os chips', async () => {
@@ -136,7 +138,11 @@ describe('CartaoExecucao', () => {
   it('é tocável e identifica a execução para o leitor de tela', async () => {
     const aoTocar = jest.fn();
     await render(<CartaoExecucao execucao={EXECUCAO} onPress={aoTocar} />);
-    await fireEvent.press(screen.getByLabelText('Bolo de cenoura, tentativa 04, 19 ago'));
+    // O rótulo passou a carregar também a nota — sem ela, a lista era
+    // percorrida sem se ouvir o dado que ela existe para dar.
+    await fireEvent.press(
+      screen.getByLabelText('Bolo de cenoura, tentativa 04, 19 ago, nota 4,5 de 5'),
+    );
     expect(aoTocar).toHaveBeenCalledTimes(1);
   });
 });

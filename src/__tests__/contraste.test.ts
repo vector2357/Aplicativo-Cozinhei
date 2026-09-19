@@ -59,6 +59,30 @@ const TEXTO_SOBRE_SUPERFICIE: Par[] = [
   { uso: 'metadado em cartão', frente: color.inkFaint, fundo: color.surface, piso: PISO_TEXTO_NORMAL },
   { uso: 'nome de conta no sheet', frente: color.inkSoft, fundo: color.surface, piso: PISO_TEXTO_NORMAL },
   { uso: 'placeholder de campo', frente: color.stoneOnLight, fundo: color.surface, piso: PISO_TEXTO_NORMAL },
+  // O par que faltava: âmbar puro sobre branco marca 2.27:1, e foi assim que
+  // uma métrica de 40px e os glifos das estrelas passaram despercebidos.
+  { uso: 'glifos das estrelas', frente: color.amberInk, fundo: color.surface, piso: PISO_TEXTO_NORMAL },
+  { uso: 'métrica de painel claro', frente: color.ink, fundo: color.surface, piso: PISO_TEXTO_NORMAL },
+];
+
+/**
+ * Controle desabilitado.
+ *
+ * O par mais fácil de esquecer: como o controle está inativo, dá para achar
+ * que a legibilidade não importa. Importa mais — é esse texto que diz o que
+ * ainda não dá para fazer, e ele precisa ser lido para a espera fazer sentido.
+ */
+const TEXTO_DESABILITADO: Par[] = [
+  { uso: 'texto de botão desabilitado', frente: color.inativoTexto, fundo: color.inativoFundo, piso: PISO_TEXTO_NORMAL },
+  { uso: 'link desabilitado sobre o fundo claro', frente: color.inativoTexto, fundo: color.background, piso: PISO_TEXTO_NORMAL },
+  { uso: 'botão desabilitado sobre fundo escuro', frente: color.inativoTextoOnDark, fundo: color.backgroundDark, piso: PISO_TEXTO_NORMAL },
+];
+
+/** Texto sobre o aviso de rodapé, que tem fundo próprio por tom. */
+const TEXTO_EM_AVISO: Par[] = [
+  { uso: 'aviso de sucesso', frente: color.inkOnDark, fundo: color.oliveInk, piso: PISO_TEXTO_NORMAL },
+  { uso: 'aviso de erro', frente: color.inkOnWine, fundo: color.wine, piso: PISO_TEXTO_NORMAL },
+  { uso: 'aviso neutro', frente: color.inkOnDark, fundo: color.ink, piso: PISO_TEXTO_NORMAL },
 ];
 
 /** Texto sobre o fundo escuro: cartão de resumo, gravação e cronômetro. */
@@ -89,7 +113,13 @@ const TEXTO_EM_CHIP: Par[] = [
  */
 const COMPONENTES: Par[] = [
   { uso: 'anel do botão de registrar', frente: color.ink, fundo: color.background, piso: PISO_COMPONENTE },
+  // A caixa dos termos é marcável, e quando está desmarcada a borda é a
+  // única coisa que a desenha: aqui o piso de 3:1 vale por inteiro.
+  { uso: 'borda da caixa de termos', frente: color.borderControl, fundo: color.surface, piso: PISO_COMPONENTE },
   { uso: 'borda de campo de formulário', frente: '#DDE0DC', fundo: color.surface, piso: 1.3 },
+  // Não precisa gritar: precisa ser visivelmente outra superfície.
+  { uso: 'superfície de controle desabilitado', frente: color.inativoFundo, fundo: color.background, piso: 1.1 },
+  { uso: 'borda de controle desabilitado', frente: color.inativoBorda, fundo: color.background, piso: 1.3 },
 ];
 
 function verificar(grupo: string, pares: Par[]) {
@@ -111,6 +141,8 @@ describe('contraste da paleta (WCAG 2.1 AA)', () => {
   verificar('texto sobre fundo escuro', TEXTO_SOBRE_ESCURO);
   verificar('texto grande', TEXTO_GRANDE);
   verificar('texto em chip', TEXTO_EM_CHIP);
+  verificar('controle desabilitado', TEXTO_DESABILITADO);
+  verificar('aviso de rodapé', TEXTO_EM_AVISO);
   verificar('componentes não textuais', COMPONENTES);
 
   describe('a fórmula', () => {
@@ -131,7 +163,23 @@ describe('contraste da paleta (WCAG 2.1 AA)', () => {
    * só não serve aos dois fundos. Este teste trava a separação: se alguém
    * unificar os tokens de novo, um dos dois lados reprova e o teste avisa.
    */
-  describe('tokens de dupla face', () => {
+  /**
+ * O âmbar é cor de identidade e vive sobre fundo escuro ou como superfície
+ * de ação — nunca como texto sobre claro. Este teste trava a fronteira: se
+ * alguém voltar a pintar texto de âmbar sobre branco, falha aqui.
+ */
+describe('o âmbar sabe onde pode aparecer', () => {
+  it('sobre fundo escuro, serve como texto', () => {
+    expect(razaoDeContraste(color.amber, color.backgroundDark)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('sobre superfície clara, NÃO serve — use amberInk', () => {
+    expect(razaoDeContraste(color.amber, color.surface)).toBeLessThan(3);
+    expect(razaoDeContraste(color.amberInk, color.surface)).toBeGreaterThanOrEqual(4.5);
+  });
+});
+
+describe('tokens de dupla face', () => {
     it('stone serve ao fundo escuro e reprovaria no claro', () => {
       expect(razaoDeContraste(color.stone, color.backgroundDark)).toBeGreaterThanOrEqual(4.5);
       expect(razaoDeContraste(color.stone, color.background)).toBeLessThan(4.5);

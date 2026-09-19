@@ -2,6 +2,8 @@ import { fireEvent, render, screen } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AuthProvider } from '@/features/auth/AuthContext';
+import { AvisoProvider } from '@/features/aviso/AvisoContext';
+import { EXECUCOES_RECENTES } from '@/features/execucoes/fixtures';
 import { DESTINOS } from '@/features/navegacao/destinos';
 
 const METRICAS = {
@@ -29,9 +31,16 @@ import TelaInicio from '@/app/(tabs)/inicio';
 import TelaCriarConta from '@/app/criar-conta';
 import TelaEntrar from '@/app/index';
 
+/**
+ * A moldura que toda tela encontra em execução: área segura, sessão e o
+ * provedor de avisos. Renderizar uma tela sem ela é testar algo que o app
+ * nunca monta.
+ */
 const comSessao = ({ children }: { children: React.ReactNode }) => (
   <SafeAreaProvider initialMetrics={METRICAS}>
-    <AuthProvider>{children}</AuthProvider>
+    <AuthProvider>
+      <AvisoProvider>{children}</AvisoProvider>
+    </AuthProvider>
   </SafeAreaProvider>
 );
 
@@ -121,25 +130,31 @@ describe('controles com rota navegam de verdade', () => {
   });
 
   it('a ficha de execução abre a execução correspondente', async () => {
+    const primeira = EXECUCOES_RECENTES[0];
     await render(<TelaInicio />, { wrapper: comSessao });
 
-    await fireEvent.press(screen.getByLabelText(/Arroz de forno, tentativa 02/));
+    await fireEvent.press(
+      await screen.findByLabelText(new RegExp(`^${primeira.prato}, tentativa ${primeira.tentativa}, ${primeira.data}`)),
+    );
 
     // Rota tipada: caminho do arquivo mais o id em `params`.
     expect(mockEmpurrar).toHaveBeenCalledWith({
       pathname: '/execucao/[id]',
-      params: { id: 'e1' },
+      params: { id: primeira.id },
     });
   });
 
   it('cada ficha leva à SUA execução, não sempre à primeira', async () => {
+    const segunda = EXECUCOES_RECENTES[1];
     await render(<TelaInicio />, { wrapper: comSessao });
 
-    await fireEvent.press(screen.getByLabelText(/Bolo de cenoura, tentativa 04/));
+    await fireEvent.press(
+      await screen.findByLabelText(new RegExp(`^${segunda.prato}, tentativa ${segunda.tentativa}, ${segunda.data}`)),
+    );
 
     expect(mockEmpurrar).toHaveBeenCalledWith({
       pathname: '/execucao/[id]',
-      params: { id: 'e2' },
+      params: { id: segunda.id },
     });
   });
 });

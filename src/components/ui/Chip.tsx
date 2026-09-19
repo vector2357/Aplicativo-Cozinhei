@@ -1,5 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { Icone } from './Icone';
+import type { NomeIcone } from './Icone';
 import { chipVariant, interacao, text } from '@/theme';
 import type { TipoChip } from '@/types/dominio';
 
@@ -18,10 +20,24 @@ const PALETA = {
 
 export function Chip({ texto: rotulo, tipo = 'neutro', onPress }: Props) {
   const paleta = PALETA[tipo];
+  /*
+    A forma acompanha a cor. Oliva e vinho são o mesmo tom acinzentado para
+    quem tem daltonismo de eixo vermelho-verde, que é o mais comum — sem o
+    símbolo, qualidade e defeito ficariam indistinguíveis.
+
+    Ícone desenhado, e não caractere: as setas e o tique de Unicode não
+    existem na Poppins, e o que aparece é o retângulo de glifo ausente.
+  */
+  const simbolo: NomeIcone | null =
+    tipo === 'defeito' ? 'alerta' : tipo === 'qualidade' ? 'certo' : null;
+
   const conteudo = (
-    <Text style={[text.label, estilos.rotulo, { color: paleta.foreground }]} numberOfLines={1}>
-      {rotulo}
-    </Text>
+    <>
+      {simbolo ? <Icone nome={simbolo} tamanho={11} cor={paleta.foreground} /> : null}
+      <Text style={[text.label, estilos.rotulo, { color: paleta.foreground }]} numberOfLines={1}>
+        {rotulo}
+      </Text>
+    </>
   );
   const caixa = [
     estilos.chip,
@@ -29,7 +45,17 @@ export function Chip({ texto: rotulo, tipo = 'neutro', onPress }: Props) {
   ];
 
   if (!onPress) {
-    return <View style={caixa}>{conteudo}</View>;
+    // Mesmo sem toque, o tipo precisa ser dito: a seta é visual, e o leitor
+    // de tela leria só o texto do chip.
+    return (
+      <View
+        style={caixa}
+        accessible
+        accessibilityLabel={tipo === 'neutro' ? rotulo : `${tipo}: ${rotulo}`}
+      >
+        {conteudo}
+      </View>
+    );
   }
 
   return (
@@ -50,12 +76,15 @@ export function Chip({ texto: rotulo, tipo = 'neutro', onPress }: Props) {
 
 const estilos = StyleSheet.create({
   chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
     borderWidth: 1,
     borderRadius: 6,
     paddingHorizontal: 7,
     paddingVertical: 3,
     alignSelf: 'flex-start',
   },
-  rotulo: { fontSize: 10.5, lineHeight: 15 },
+  rotulo: { fontSize: 11, lineHeight: 15 },
   pressionado: { opacity: interacao.opacidadePressionado },
 });

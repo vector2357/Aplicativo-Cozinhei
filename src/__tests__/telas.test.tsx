@@ -1,7 +1,13 @@
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
+import fs from 'fs';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AuthProvider } from '@/features/auth/AuthContext';
+import { AvisoProvider } from '@/features/aviso/AvisoContext';
+import { EXECUCOES, EXECUCOES_RECENTES, MES_CORRENTE } from '@/features/execucoes/fixtures';
+
+/** As execuções do mês corrente, que o cartão de resumo conta. */
+const EXECUCOES_DE_AGOSTO = EXECUCOES.filter((execucao) => execucao.mes === MES_CORRENTE);
 import { color } from '@/theme';
 
 /**
@@ -35,9 +41,16 @@ import TelaEntrando from '@/app/entrando';
 import TelaEntrar from '@/app/index';
 
 /** Toda tela precisa da área segura e da sessão em volta. */
+/**
+ * A moldura que toda tela encontra em execução: área segura, sessão e o
+ * provedor de avisos. Renderizar uma tela sem ela é testar algo que o app
+ * nunca monta.
+ */
 const comSessao = ({ children }: { children: React.ReactNode }) => (
   <SafeAreaProvider initialMetrics={METRICAS}>
-    <AuthProvider>{children}</AuthProvider>
+    <AuthProvider>
+      <AvisoProvider>{children}</AvisoProvider>
+    </AuthProvider>
   </SafeAreaProvider>
 );
 
@@ -243,6 +256,19 @@ describe('04 · Entrando', () => {
     expect(mockSubstituir).toHaveBeenCalledWith('/');
   });
 
+  /**
+   * Voltar ao login sem dizer nada deixa a dúvida de ter tocado no lugar
+   * certo. O aviso é o retorno da ação — e, como vive no layout raiz, ele
+   * sobrevive à troca de tela que o próprio cancelar provoca.
+   */
+  it('cancelar avisa que a entrada foi cancelada', async () => {
+    await render(<TelaEntrando />, { wrapper: comSessao });
+
+    await fireEvent.press(screen.getByRole('button', { name: 'cancelar' }));
+
+    expect(screen.getByText('entrada cancelada')).toBeTruthy();
+  });
+
   it('ao terminar de autenticar, segue para o início', async () => {
     await render(<TelaEntrando />, { wrapper: comSessao });
     // Antes do atraso terminar ninguém navega — a espera é real.
@@ -262,24 +288,32 @@ describe('04 · Entrando', () => {
 
 describe('05 · Início', () => {
   it('mostra o resumo do mês, os recentes e as receitas-guia', async () => {
+    // A tela busca os dados pelo repositório, que é assíncrono de propósito:
+    // as asserções esperam o conteúdo chegar em vez de assumir o 1º render.
     await render(<TelaInicio />, { wrapper: comSessao });
 
-    // Resumo do mês.
-    expect(screen.getByText('agosto até aqui')).toBeTruthy();
-    expect(screen.getByText('6')).toBeTruthy();
-    expect(screen.getByText('3,8')).toBeTruthy();
+    // Resumo do mês. Os números são contados a partir das execuções, não
+    // escritos à mão — por isso vêm dos fixtures, e não literais aqui.
+    expect(await screen.findByText('agosto até aqui')).toBeTruthy();
+    expect(screen.getByText(String(EXECUCOES_DE_AGOSTO.length))).toBeTruthy();
     expect(screen.getByText('massa crua no meio')).toBeTruthy();
 
     // Continuar de onde parou.
     expect(screen.getByText('continuar de onde parou')).toBeTruthy();
-    expect(screen.getByText('Arroz de forno')).toBeTruthy();
-    expect(screen.getByText('Bolo de cenoura')).toBeTruthy();
+    EXECUCOES_RECENTES.forEach((execucao) => {
+      expect(
+        screen.getByLabelText(
+          new RegExp(`^${execucao.prato}, tentativa ${execucao.tentativa}, ${execucao.data}`),
+        ),
+      ).toBeTruthy();
+    });
 
     // Receitas-guia.
     expect(screen.getByText('suas receitas-guia')).toBeTruthy();
     expect(screen.getByText('Bolo de cenoura da vó')).toBeTruthy();
     expect(screen.getByText('Pão de queijo mineiro')).toBeTruthy();
   });
+
 
   it('cumprimenta o usuário pelo primeiro nome', async () => {
     await render(<TelaInicio />, { wrapper: comSessao });
@@ -288,12 +322,82 @@ describe('05 · Início', () => {
 
   it('o avatar leva ao perfil', async () => {
     await render(<TelaInicio />, { wrapper: comSessao });
-    await fireEvent.press(screen.getByRole('button', { name: 'MS' }));
+    await fireEvent.press(screen.getByRole('button', { name: /^perfil de/ }));
     expect(mockNavegar).toHaveBeenCalledWith('/perfil');
   });
 
   it('não tem nenhuma superfície âmbar: a única ação âmbar é o + da barra', async () => {
     await render(<TelaInicio />, { wrapper: comSessao });
     expect(temFundo(screen.toJSON(), color.amber)).toBe(false);
+  });
+});
+
+describe('D-03 · o teclado não pode cobrir a ação principal', () => {
+  /**
+   * O defeito: `edgeToEdgeEnabled` no `app.json` faz o Android NÃO
+   * redimensionar a janela quando o teclado sobe, então o
+   * `KeyboardAvoidingView` não tinha o que encolher. Somado ao `flexGrow: 1`
+   * do conteúdo, o `ScrollView` ficava sem excesso e a ação principal era
+   * inalcançável — nem rolando.
+   *
+   * A correção reserva a altura do teclado no próprio conteúdo.
+   */
+
+  /** O recuo inferior do conteúdo rolável da tela. */
+  function recuoDaRolagem(): number {
+    const rolagem = screen.getByTestId('rolagem-do-formulario');
+    const plano: Record<string, unknown> = {};
+    const empilhar = (valor: unknown) => {
+      if (Array.isArray(valor)) valor.forEach(empilhar);
+      else if (valor && typeof valor === 'object') Object.assign(plano, valor);
+    };
+    empilhar(rolagem.props.contentContainerStyle);
+    return plano.paddingBottom as number;
+  }
+
+  it('a rolagem do formulário reserva espaço no rodapé', async () => {
+    await render(<TelaCriarConta />, { wrapper: comSessao });
+
+    expect(recuoDaRolagem()).toBeGreaterThan(0);
+  });
+
+  it('arrastar a lista dispensa o teclado — o gesto que o usuário já faz', async () => {
+    await render(<TelaCriarConta />, { wrapper: comSessao });
+
+    expect(screen.getByTestId('rolagem-do-formulario').props.keyboardDismissMode).toBe('on-drag');
+  });
+
+  it('o toque chega ao botão mesmo com o teclado aberto', async () => {
+    await render(<TelaCriarConta />, { wrapper: comSessao });
+
+    expect(
+      screen.getByTestId('rolagem-do-formulario').props.keyboardShouldPersistTaps,
+    ).toBe('handled');
+  });
+
+  it('a mesma reserva existe na tela de entrar', async () => {
+    await render(<TelaEntrar />, { wrapper: comSessao });
+
+    expect(recuoDaRolagem()).toBeGreaterThan(0);
+    expect(screen.getByTestId('rolagem-do-formulario').props.keyboardDismissMode).toBe('on-drag');
+  });
+
+  /**
+   * O `KeyboardAvoidingView` saiu de cena: ele dependia de a janela encolher,
+   * e com `edgeToEdgeEnabled` ela não encolhe. Deixá-lo daria a impressão de
+   * que o problema está tratado.
+   */
+  it('não há mais KeyboardAvoidingView nas telas de formulário', () => {
+    const fonte = [
+      fs.readFileSync('src/app/criar-conta.tsx', 'utf8'),
+      fs.readFileSync('src/app/index.tsx', 'utf8'),
+    ];
+
+    // O nome ainda aparece no comentário que explica POR QUE ele saiu — o que
+    // não pode voltar é o import e o elemento.
+    fonte.forEach((arquivo) => {
+      expect(arquivo).not.toMatch(/import\s*\{[^}]*KeyboardAvoidingView/);
+      expect(arquivo).not.toContain('<KeyboardAvoidingView');
+    });
   });
 });

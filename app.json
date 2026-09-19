@@ -15,7 +15,11 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "br.com.cozinhei.app"
+      "bundleIdentifier": "br.com.cozinhei.app",
+      "infoPlist": {
+        "CFBundleDevelopmentRegion": "pt-BR",
+        "CFBundleLocalizations": ["pt-BR"]
+      }
     },
     "android": {
       "package": "br.com.cozinhei.app",

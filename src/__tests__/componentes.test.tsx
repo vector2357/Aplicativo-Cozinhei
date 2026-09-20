@@ -119,20 +119,48 @@ describe('SeletorSegmentado', () => {
 });
 
 describe('CartaoExecucao', () => {
+  /*
+    `includeHiddenElements` aqui não é detalhe de teste: o conteúdo do cartão
+    é invisível para o leitor de tela DE PROPÓSITO, porque o rótulo do cartão
+    já diz tudo. Estas consultas olham o que o usuário VÊ; a árvore do leitor
+    é assunto do teste logo abaixo.
+  */
+  const visivel = { includeHiddenElements: true } as const;
+
   it('na variante ficha mostra a calha da tentativa, custo e chips', async () => {
     await render(<CartaoExecucao execucao={EXECUCAO} variante="ficha" onPress={() => {}} />);
-    expect(screen.getByText('04')).toBeTruthy();
-    expect(screen.getByText('tent.')).toBeTruthy();
-    expect(screen.getByText(/19 ago · 1h05 · R\$/)).toBeTruthy();
-    expect(screen.getByText(/massa fofa/)).toBeTruthy();
-    expect(screen.getByText(/borda seca/)).toBeTruthy();
+    expect(screen.getByText('04', visivel)).toBeTruthy();
+    expect(screen.getByText('tent.', visivel)).toBeTruthy();
+    expect(screen.getByText(/19 ago · 1h05 · R\$/, visivel)).toBeTruthy();
+    expect(screen.getByText(/massa fofa/, visivel)).toBeTruthy();
+    expect(screen.getByText(/borda seca/, visivel)).toBeTruthy();
   });
 
   it('na variante resumo esconde a calha e os chips', async () => {
     await render(<CartaoExecucao execucao={EXECUCAO} variante="resumo" onPress={() => {}} />);
-    expect(screen.queryByText('tent.')).toBeNull();
+    expect(screen.queryByText('tent.', visivel)).toBeNull();
+    expect(screen.queryByText('massa fofa', visivel)).toBeNull();
+    expect(screen.getByText('tentativa 04 · 19 ago', visivel)).toBeTruthy();
+  });
+
+  /*
+    Medido com `uiautomator` num aparelho real: o chip e as estrelas apareciam
+    como nós próprios DENTRO do cartão, e o TalkBack parava três vezes na
+    mesma ficha, repetindo "qualidade: massa fofa". O `accessible` do
+    `Pressable` resolve isso no iOS e não resolve no Android.
+  */
+  it('o leitor de tela para UMA vez por ficha, não uma vez por peça', async () => {
+    await render(<CartaoExecucao execucao={EXECUCAO} variante="ficha" onPress={() => {}} />);
+
+    // Sem `includeHiddenElements`: é exatamente o que o leitor enxerga.
     expect(screen.queryByText('massa fofa')).toBeNull();
-    expect(screen.getByText('tentativa 04 · 19 ago')).toBeTruthy();
+    expect(screen.queryByLabelText('qualidade: massa fofa')).toBeNull();
+    expect(screen.queryByLabelText(/^nota 4,5 de 5$/)).toBeNull();
+
+    // E o que sobrou diz tudo o que as peças escondidas mostravam.
+    const cartao = screen.getByLabelText(/massa fofa/);
+    expect(cartao.props.accessibilityLabel).toContain('nota 4,5 de 5');
+    expect(cartao.props.accessibilityLabel).toContain('defeito: borda seca');
   });
 
   it('é tocável e identifica a execução para o leitor de tela', async () => {

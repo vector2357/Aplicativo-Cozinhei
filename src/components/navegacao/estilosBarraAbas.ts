@@ -36,6 +36,16 @@ export const estilosBarraAbas = StyleSheet.create({
 const MARGEM_DA_BARRA = spacing.md * 2;
 /** Respiro interno da pílula, somado dos dois lados. */
 const RESPIRO_INTERNO = 6 * 2;
+/**
+ * A borda da pílula, dos dois lados.
+ *
+ * Parece detalhe e não é: esta conta só serve se descontar TUDO o que a
+ * barra come antes de sobrar largura para as abas. Faltando estes 2dp, a
+ * função acha que há mais espaço do que há, distribui folga demais, e a
+ * fatia cai abaixo do piso — medido em 43,4dp num aparelho de 308dp,
+ * exatamente os 0,6dp que a borda ocupa.
+ */
+const BORDA_DA_BARRA = 1 * 2;
 /** Quantas abas dividem o que sobra. */
 const ABAS = 4;
 
@@ -55,7 +65,12 @@ const ABAS = 4;
  * folga encolhe até onde o alvo continua legal, e só.
  */
 export function folgaEntreAbas(larguraDaTela: number): number {
-  const util = larguraDaTela - MARGEM_DA_BARRA - RESPIRO_INTERNO - estilosBarraAbas.vao.width;
+  const util =
+    larguraDaTela -
+    MARGEM_DA_BARRA -
+    BORDA_DA_BARRA -
+    RESPIRO_INTERNO -
+    estilosBarraAbas.vao.width;
   const sobra = util / ABAS - touch.minTarget;
 
   // `sobra` é o que existe acima do alvo mínimo; metade fica de cada lado.

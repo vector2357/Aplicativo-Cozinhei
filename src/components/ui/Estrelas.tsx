@@ -7,15 +7,28 @@ type Props = {
   nota: number;
   /** Tamanho das estrelas. O número acompanha em proporção. */
   compacto?: boolean;
+  /**
+   * Cala a peça para o leitor de tela.
+   *
+   * Usado por quem já diz tudo num rótulo só — os cartões de lista. Sem
+   * isto, o TalkBack para no cartão E em cada peça dentro dele, repetindo a
+   * mesma informação três vezes por ficha.
+   *
+   * Não basta o cartão marcar `no-hide-descendants` no pai: uma peça que
+   * declara `accessible` volta para a árvore por conta própria, e foi isso
+   * que a medição com `uiautomator` mostrou. Quem se cala é quem fala.
+   */
+  silencioso?: boolean;
 };
 
-export function Estrelas({ nota, compacto = false }: Props) {
+export function Estrelas({ nota, compacto = false, silencioso = false }: Props) {
   return (
     <View
       style={estilos.caixa}
-      accessible
+      accessible={!silencioso}
       accessibilityRole="text"
-      accessibilityLabel={`nota ${formatarNota(nota)} de 5`}
+      accessibilityLabel={silencioso ? undefined : `nota ${formatarNota(nota)} de 5`}
+      importantForAccessibility={silencioso ? 'no-hide-descendants' : undefined}
     >
       {/*
         Os glifos saem da leitura: soltos, o leitor de tela soletra "estrela

@@ -10,6 +10,18 @@ type Props = {
   tipo?: TipoChip | 'neutro';
   /** Só faz sentido em chips de defeito, que abrem o diagnóstico. */
   onPress?: () => void;
+  /**
+   * Cala a peça para o leitor de tela.
+   *
+   * Usado por quem já diz tudo num rótulo só — os cartões de lista. Sem
+   * isto, o TalkBack para no cartão E em cada peça dentro dele, repetindo a
+   * mesma informação três vezes por ficha.
+   *
+   * Não basta o cartão marcar `no-hide-descendants` no pai: uma peça que
+   * declara `accessible` volta para a árvore por conta própria, e foi isso
+   * que a medição com `uiautomator` mostrou. Quem se cala é quem fala.
+   */
+  silencioso?: boolean;
 };
 
 const PALETA = {
@@ -18,7 +30,7 @@ const PALETA = {
   neutro: chipVariant.neutral,
 } as const;
 
-export function Chip({ texto: rotulo, tipo = 'neutro', onPress }: Props) {
+export function Chip({ texto: rotulo, tipo = 'neutro', onPress, silencioso = false }: Props) {
   const paleta = PALETA[tipo];
   /*
     A forma acompanha a cor. Oliva e vinho são o mesmo tom acinzentado para
@@ -50,8 +62,11 @@ export function Chip({ texto: rotulo, tipo = 'neutro', onPress }: Props) {
     return (
       <View
         style={caixa}
-        accessible
-        accessibilityLabel={tipo === 'neutro' ? rotulo : `${tipo}: ${rotulo}`}
+        accessible={!silencioso}
+        accessibilityLabel={
+          silencioso || tipo === 'neutro' ? undefined : `${tipo}: ${rotulo}`
+        }
+        importantForAccessibility={silencioso ? 'no-hide-descendants' : undefined}
       >
         {conteudo}
       </View>

@@ -26,21 +26,29 @@ O foco não é ensinar receitas, e sim guardar de forma estruturada a prática d
 | --- | --- | --- |
 | 01 — Proposta e planejamento | concluída | [`docs/proposta.md`](docs/proposta.md) |
 | 02 — Protótipo de interface | concluída | [`docs/etapa-02.md`](docs/etapa-02.md) |
+| 03 — Navegação, UX e acessibilidade | concluída | [`docs/etapa-03.md`](docs/etapa-03.md) |
 
 ### Telas implementadas
 
-| Tela | Rota |
-| --- | --- |
-| Entrar (tela inicial) | `/` |
-| Criar conta | `/criar-conta` |
-| Entrando | `/entrando` |
-| Início | `/inicio` |
+| Tela | Rota | Como se chega |
+| --- | --- | --- |
+| Entrar (tela inicial) | `/` | abertura do app |
+| Criar conta | `/criar-conta` | seletor no topo da tela de entrar |
+| Entrando | `/entrando` | ao enviar o login |
+| Início | `/inicio` | aba "início" |
+| Histórico | `/historico` | aba "histórico" |
+| Pratos | `/pratos` | aba "pratos" |
+| Perfil | `/perfil` | aba "perfil" |
+| Prato | `/prato/[id]` | tocar um prato na lista de pratos |
+| Execução | `/execucao/[id]` | tocar uma ficha no histórico, no início ou num prato |
+| Evolução | `/evolucao` | botão "ver sua evolução", no cartão do mês |
 
 Mais os bottom sheets de escolha de conta Google e de "como registrar", e a
-barra de abas flutuante com botão de ação central.
+barra de abas flutuante com botão de ação central. As capturas estão em
+[`docs/telas/`](docs/telas/).
 
-Nesta etapa **não há persistência de dados nem comunicação com servidor**: os
-dados exibidos vêm de um conjunto fixo de exemplo, conforme o enunciado.
+Ainda **não há persistência de dados nem comunicação com servidor**: os dados
+exibidos vêm de um conjunto fixo de exemplo, conforme o enunciado.
 
 ## Como executar
 
@@ -72,7 +80,7 @@ npm run web       # navegador
 
 ```bash
 npm run typecheck   # TypeScript, modo estrito
-npm test            # 43 testes automatizados
+npm test            # 346 testes automatizados, em 18 suítes
 ```
 
 > O `.npmrc` na raiz fixa `legacy-peer-deps=true`, para resolver um conflito de
@@ -85,8 +93,8 @@ npm test            # 43 testes automatizados
 src/
 ├── app/            # rotas (Expo Router)
 ├── components/     # ui/ · execucao/ · navegacao/ · auth/
-├── features/       # regras de negócio: auth/ · execucoes/
-├── hooks/          # layout responsivo
+├── features/       # regras de negócio: auth/ · execucoes/ · aviso/ · navegacao/
+├── hooks/          # carregamento, teclado, foco, movimento, layout
 ├── theme/          # cor, tipografia, espaçamento
 ├── types/          # tipos do domínio
 ├── utils/          # formatação brasileira
@@ -97,3 +105,4 @@ src/
 
 - Proposta completa do projeto: [`docs/proposta.md`](docs/proposta.md)
 - Relatório da etapa 02: [`docs/etapa-02.md`](docs/etapa-02.md)
+- Relatório da etapa 03: [`docs/etapa-03.md`](docs/etapa-03.md)

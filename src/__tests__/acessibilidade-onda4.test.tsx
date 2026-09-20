@@ -188,13 +188,25 @@ describe('A-16 · alvos vizinhos não podem se encostar', () => {
     O alvo de 44pt é piso da WCAG; o vão morto é recomendação da Aula 10.
     Quando as duas não cabem, quem cede é a recomendação — nunca o piso.
   */
-  it.each([320, 360, 375, 390, 412, 430])(
+  it.each([308, 320, 360, 375, 390, 412, 430])(
     'em %ipt de largura a fatia da aba continua acima do alvo mínimo',
     (largura) => {
-      const barra = estilosBarraAbas.barra as { left: number; right: number; paddingHorizontal: number };
+      const barra = estilosBarraAbas.barra as {
+        left: number;
+        right: number;
+        paddingHorizontal: number;
+        borderWidth: number;
+      };
       const vao = (estilosBarraAbas.vao as { width: number }).width;
 
-      const util = largura - barra.left - barra.right - barra.paddingHorizontal * 2 - vao;
+      /*
+        A conta desconta TUDO o que a barra come — inclusive a borda. Ela
+        ficou de fora na primeira versão, e o aparelho entregou 43,4dp num
+        ecrã de 308dp: a função achava que havia 2dp a mais e distribuía
+        folga demais. Por isso 308 está na lista.
+      */
+      const util =
+        largura - barra.left - barra.right - barra.borderWidth * 2 - barra.paddingHorizontal * 2 - vao;
       const fatia = util / 4 - folgaEntreAbas(largura) * 2;
 
       expect(fatia).toBeGreaterThanOrEqual(touch.minTarget);

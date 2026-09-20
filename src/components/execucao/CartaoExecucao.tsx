@@ -60,6 +60,22 @@ export function CartaoExecucao({ execucao, onPress, variante = 'resumo' }: Props
       onPress={onPress}
       style={({ pressed }) => [estilos.cartao, pressed && estilos.pressionado]}
     >
+      {/*
+        Rede de segurança: esconde da árvore de acessibilidade qualquer peça
+        que venha a ser posta aqui sem pedir silêncio.
+
+        Quem de fato cala o chip e as estrelas é o `silencioso` que eles
+        recebem abaixo — medido com `uiautomator`, uma peça que declara
+        `accessible` volta para a árvore mesmo debaixo deste marcador. Ele
+        pega o caso contrário: a peça que não declara nada.
+
+        Nada se perde: o rótulo acima já carrega nota, chips, tempo e custo.
+      */}
+      <View
+        style={estilos.conteudo}
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+      >
       {ficha ? (
         <View style={[estilos.calha, { width: LARGURA_DA_CALHA * escalaDoSistema }]}>
           <Text style={estilos.calhaNumero} maxFontSizeMultiplier={escalaDeFonte.emCaixaFixa}>
@@ -102,13 +118,14 @@ export function CartaoExecucao({ execucao, onPress, variante = 'resumo' }: Props
         {ficha ? (
           <View style={estilos.chips}>
             {execucao.chips.map((chip) => (
-              <Chip key={chip.texto} texto={chip.texto} tipo={chip.tipo} />
+              <Chip key={chip.texto} texto={chip.texto} tipo={chip.tipo} silencioso />
             ))}
           </View>
         ) : null}
       </View>
 
-      <Estrelas nota={execucao.nota} compacto={ficha} />
+      <Estrelas nota={execucao.nota} compacto={ficha} silencioso />
+      </View>
     </Pressable>
   );
 }
@@ -120,10 +137,9 @@ const estilos = StyleSheet.create({
     borderColor: color.borderHairline,
     borderRadius: radius.card,
     padding: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
   },
+  /** A linha em si. Separada do cartão só para poder sair da árvore. */
+  conteudo: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   pressionado: { opacity: interacao.opacidadePressionado },
   calha: {
     alignItems: 'center',

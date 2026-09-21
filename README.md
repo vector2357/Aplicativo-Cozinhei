@@ -80,7 +80,7 @@ npm run web       # navegador
 
 ```bash
 npm run typecheck   # TypeScript, modo estrito
-npm test            # 346 testes automatizados, em 18 suítes
+npm test            # 368 testes automatizados, em 19 suítes
 ```
 
 > O `.npmrc` na raiz fixa `legacy-peer-deps=true`, para resolver um conflito de

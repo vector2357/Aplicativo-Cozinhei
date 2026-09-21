@@ -46,8 +46,11 @@ export default function TelaInicio() {
 
   return (
     <Tela edges={['top']}>
-      <ScrollView contentContainerStyle={estilos.rolagem} showsVerticalScrollIndicator={false}>
-        <View style={estilos.margem}>
+      <ScrollView
+        contentContainerStyle={[estilos.rolagem, semNada && estilos.rolagemVazia]}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={[estilos.margem, semNada && estilos.margemVazia]}>
           <View style={estilos.cabecalho}>
             <View style={estilos.saudacao}>
               <Text style={[text.overline, estilos.data]}>{hoje}</Text>
@@ -164,6 +167,15 @@ export default function TelaInicio() {
 
 const estilos = StyleSheet.create({
   rolagem: { paddingTop: spacing.xs, paddingBottom: spacing.scrollBottom },
+  /*
+    Conta nova: o convite é a tela inteira, e `flexGrow` é o que dá a ele
+    altura para se centralizar. Sem isto o conteúdo rolável assume a altura
+    natural, o convite cola na saudação e sobra branco embaixo — que foi
+    exatamente o que se via.
+  */
+  rolagemVazia: { flexGrow: 1 },
+  /** O `flexGrow` acima só chega ao convite se a margem também crescer. */
+  margemVazia: { flex: 1 },
   margem: { paddingHorizontal: spacing.screenH },
   cabecalho: {
     flexDirection: 'row',

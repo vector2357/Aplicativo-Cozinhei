@@ -8,13 +8,13 @@ import type { NomeIconeAba } from '@/components/navegacao/IconeAba';
 import { color, escalaDeFonte, text } from '@/theme';
 
 /** Respiro entre o ícone e o rótulo. */
-const RESPIRO = 5;
+const RESPIRO = 6;
 
 /**
- * Altura da fatia. Comporta o ícone, o respiro e a linha do rótulo com folga
- * dentro da barra de 64pt — ver a conta em `TAMANHO_ICONE_ABA`.
+ * Altura da fatia. Comporta o ícone (24), o respiro (6) e a linha do rótulo
+ * (~16) com folga dentro da barra de 72pt.
  */
-const ALTURA_ABA = 56;
+const ALTURA_ABA = 62;
 
 type Props = Omit<React.ComponentProps<typeof Pressable>, 'style' | 'children'> & {
   /** O TabTrigger repassa um estilo simples; a forma de função não é usada. */
@@ -72,7 +72,7 @@ const estilos = StyleSheet.create({
    * texto assume a largura natural e transborda para a aba vizinha, porque
    * `alignItems: 'center'` centraliza mas não limita.
    */
-  rotulo: { fontSize: 11, alignSelf: 'stretch', textAlign: 'center' },
+  rotulo: { fontSize: 12, alignSelf: 'stretch', textAlign: 'center' },
 });
 
 /** Reexportado para quem monta a barra não precisar conhecer dois módulos. */

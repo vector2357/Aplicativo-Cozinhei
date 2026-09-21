@@ -9,10 +9,10 @@ export type NomeIconeAba = (typeof NOMES_ICONE_ABA)[number];
 
 /**
  * Aresta do ícone na barra. Acima dos 18pt da forma geométrica antiga porque
- * contorno lê menor que sólido — e ainda cabe com folga na aba, que tem 56pt
- * de altura: 22 do ícone + 5 do respiro + 17 da linha do rótulo = 44pt.
+ * contorno lê menor que sólido — e ainda cabe com folga na aba, que tem 62pt
+ * de altura: 24 do ícone + 6 do respiro + 17 da linha do rótulo = 47pt.
  */
-export const TAMANHO_ICONE_ABA = 22;
+export const TAMANHO_ICONE_ABA = 24;
 
 /** Grade de desenho. Área útil de 20pt, com 2pt de folga em cada borda. */
 const GRADE = 24;

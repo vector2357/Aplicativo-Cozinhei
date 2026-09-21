@@ -144,10 +144,27 @@ describe('01 · Entrar (tela inicial)', () => {
     expect(screen.getByText('informe sua senha')).toBeTruthy();
   });
 
-  it('o segmento "criar conta" leva ao cadastro', async () => {
+  /*
+    Trocar de formulário NÃO navega. Navegar desmontava a tela inteira,
+    reiniciava o formulário, fechava o teclado e piscava — o que o usuário
+    lia como recarregamento. A troca é local, e é isso que permite animá-la.
+  */
+  it('o segmento "criar conta" troca o formulário sem navegar', async () => {
     await render(<TelaEntrar />, { wrapper: comSessao });
     await fireEvent.press(screen.getByRole('tab', { name: 'criar conta' }));
-    expect(mockSubstituir).toHaveBeenCalledWith('/criar-conta');
+
+    expect(mockSubstituir).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'criar minha conta' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'esqueci minha senha' })).toBeNull();
+  });
+
+  it('e o segmento volta, também sem navegar', async () => {
+    await render(<TelaEntrar />, { wrapper: comSessao });
+    await fireEvent.press(screen.getByRole('tab', { name: 'criar conta' }));
+    await fireEvent.press(screen.getByRole('tab', { name: 'entrar' }));
+
+    expect(mockSubstituir).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'entrar' })).toBeTruthy();
   });
 
   it('o botão do Google abre o sheet de contas, que entra ao escolher', async () => {
@@ -228,10 +245,24 @@ describe('02 · Criar conta', () => {
     expect(screen.queryByText('é preciso aceitar os termos para criar a conta')).toBeNull();
   });
 
-  it('o segmento "entrar" volta ao login', async () => {
+  it('o segmento "entrar" troca o formulário sem navegar', async () => {
     await render(<TelaCriarConta />, { wrapper: comSessao });
     await fireEvent.press(screen.getByRole('tab', { name: 'entrar' }));
-    expect(mockSubstituir).toHaveBeenCalledWith('/');
+
+    expect(mockSubstituir).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'esqueci minha senha' })).toBeTruthy();
+  });
+
+  /*
+    A rota continua existindo e continua abrindo no cadastro: é o que mantém
+    o link direto e a documentação válidos. O que deixou de existir é a
+    navegação ao tocar no seletor.
+  */
+  it('a rota /criar-conta abre no formulário de cadastro', async () => {
+    await render(<TelaCriarConta />, { wrapper: comSessao });
+
+    expect(screen.getByRole('button', { name: 'criar minha conta' })).toBeTruthy();
+    expect(screen.getByLabelText('como te chamamos')).toBeTruthy();
   });
 });
 

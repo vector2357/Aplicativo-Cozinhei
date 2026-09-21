@@ -13,6 +13,8 @@ export const NOMES_ICONE = [
   'mais',
   'alerta',
   'certo',
+  'olho',
+  'olho-fechado',
 ] as const;
 
 export type NomeIcone = (typeof NOMES_ICONE)[number];
@@ -66,6 +68,29 @@ export function Icone({ nome, tamanho = TAMANHO_ICONE, cor = color.ink }: Props)
 const DESENHOS: Record<NomeIcone, (cor: string) => React.ReactNode> = {
   /** Seta para a esquerda. Retorno. */
   voltar: () => <Path d="M14.5 5.2 7.7 12l6.8 6.8" />,
+
+  /*
+    Olho aberto e olho riscado: mostrar e esconder a senha.
+
+    O par é um só desenho com um traço a mais, de propósito. Dois desenhos
+    diferentes fariam o controle parecer que muda de função ao ser tocado,
+    quando ele faz sempre a mesma coisa — alternar. O risco diagonal é a
+    convenção que todo mundo já conhece de "está oculto".
+  */
+  olho: () => (
+    <>
+      <Path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z" />
+      <Circle cx={12} cy={12} r={2.9} />
+    </>
+  ),
+
+  'olho-fechado': () => (
+    <>
+      <Path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z" />
+      <Circle cx={12} cy={12} r={2.9} />
+      <Path d="M4.3 4.3 19.7 19.7" />
+    </>
+  ),
 
   /** X. Fecha sem decidir nada — diferente de voltar, que desfaz um passo. */
   fechar: () => <Path d="M6.4 6.4l11.2 11.2M17.6 6.4 6.4 17.6" />,

@@ -104,14 +104,30 @@ describe('fluxo · criar conta', () => {
     app.desmontar();
   });
 
-  it('alternar entre entrar e criar conta não empilha telas', async () => {
+  /*
+    O seletor deixou de navegar: entrar e criar conta são o mesmo lugar, e o
+    que troca é o formulário. A pilha não é tocada — nem para empilhar, nem
+    para substituir.
+  */
+  it('alternar entre entrar e criar conta não mexe na pilha', async () => {
     const app = await montarEm('/');
 
     await fireEvent.press(screen.getByRole('tab', { name: 'criar conta' }));
-    expect(app.caminho()).toBe('/criar-conta');
+    expect(app.caminho()).toBe('/');
+    expect(screen.getByRole('button', { name: 'criar minha conta' })).toBeTruthy();
 
     await fireEvent.press(screen.getByRole('tab', { name: 'entrar' }));
     expect(app.caminho()).toBe('/');
+    expect(screen.getByRole('button', { name: 'entrar' })).toBeTruthy();
+
+    app.desmontar();
+  });
+
+  it('mas a rota /criar-conta continua existindo, e abre no cadastro', async () => {
+    const app = await montarEm('/criar-conta');
+
+    expect(app.caminho()).toBe('/criar-conta');
+    expect(screen.getByRole('button', { name: 'criar minha conta' })).toBeTruthy();
 
     app.desmontar();
   });

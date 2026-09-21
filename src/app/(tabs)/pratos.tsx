@@ -3,7 +3,14 @@ import { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { CartaoPrato } from '@/components/execucao';
-import { EstadoErro, EstadoVazio, SheetEmConstrucao, SkeletonFicha, Tela } from '@/components/ui';
+import {
+  CabecalhoDeAba,
+  EstadoErro,
+  EstadoVazio,
+  SheetEmConstrucao,
+  SkeletonFicha,
+  Tela,
+} from '@/components/ui';
 import { listarPratos } from '@/features/execucoes/repositorio';
 import { useDonoDosDados } from '@/features/execucoes/useDonoDosDados';
 import { DESTINOS } from '@/features/navegacao/destinos';
@@ -35,11 +42,7 @@ export default function TelaPratos() {
 
   return (
     <Tela edges={['top']}>
-      <View style={estilos.margem}>
-        <Text style={text.screenTitle} accessibilityRole="header">
-          pratos
-        </Text>
-      </View>
+      <CabecalhoDeAba titulo="pratos" />
 
       {estado === 'carregando' ? (
         <View style={estilos.conteudoCarregando}>
@@ -114,7 +117,6 @@ export default function TelaPratos() {
 }
 
 const estilos = StyleSheet.create({
-  margem: { paddingHorizontal: spacing.screenH, paddingTop: spacing.xs },
   conteudoCarregando: { paddingHorizontal: spacing.screenH, paddingTop: spacing.lg },
   rolagem: {
     paddingHorizontal: spacing.screenH,

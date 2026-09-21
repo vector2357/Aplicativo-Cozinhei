@@ -3,6 +3,7 @@ export type { ConteudoAviso, TomAviso } from './Aviso';
 export { Botao } from './Botao';
 export type { VarianteBotao } from './Botao';
 export { BottomSheet } from './BottomSheet';
+export { CabecalhoDeAba } from './CabecalhoDeAba';
 export { CabecalhoTela } from './CabecalhoTela';
 export { Campo } from './Campo';
 export { Cartao } from './Cartao';

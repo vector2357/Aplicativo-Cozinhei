@@ -38,12 +38,12 @@ export default function TelaPerfil() {
 
   return (
     <Tela edges={['top']}>
-      <View style={estilos.margem}>
-        <Text style={text.screenTitle} accessibilityRole="header">
-          perfil
-        </Text>
-      </View>
-
+      {/*
+        Sem título de tela, de propósito. A aba já diz "perfil" e está
+        selecionada; repetir a palavra logo abaixo gasta a primeira linha da
+        tela para não informar nada. Quem identifica a tela aqui é o nome da
+        pessoa, que vem em seguida.
+      */}
       <ScrollView contentContainerStyle={estilos.rolagem} showsVerticalScrollIndicator={false}>
         <View style={estilos.identidade} accessible accessibilityLabel={`${usuario.nome}, ${usuario.email}, ${usuario.desde}`}>
           <View style={estilos.avatar}>
@@ -156,10 +156,11 @@ function Numero({ valor, rotulo }: { valor: string; rotulo: string }) {
 }
 
 const estilos = StyleSheet.create({
-  margem: { paddingHorizontal: spacing.screenH, paddingTop: spacing.xs },
   rolagem: {
     paddingHorizontal: spacing.screenH,
-    paddingTop: spacing.lg,
+    // Sem título de tela, este respiro é o que separa a identidade da barra
+    // de status. Era `lg` quando havia um título acima para fazer esse papel.
+    paddingTop: spacing.xl,
     paddingBottom: spacing.scrollBottom,
   },
   identidade: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },

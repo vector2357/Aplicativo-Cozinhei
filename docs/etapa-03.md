@@ -17,7 +17,7 @@ A navegação tem três níveis, e cada um usa um mecanismo diferente porque
 responde a uma pergunta diferente.
 
 ```
-  /  entrar  ⇄  /criar-conta
+  /  entrar  ·  criar conta        um seletor, uma tela só
        │
        └─ replace ─→  /entrando  ─ replace ─→  ┌─────────────────────────┐
                                                │   barra de abas         │
@@ -67,6 +67,10 @@ login.
 | Execução | `/execucao/[id]` | tocar uma ficha no histórico, no início ou dentro de um prato | seta, gesto de borda, botão do Android |
 | Evolução | `/evolucao` | botão "ver sua evolução", no cartão do mês | seta, gesto de borda, botão do Android |
 
+Entrar e criar conta são a **mesma tela**: o seletor no topo troca o
+formulário no lugar, sem sair dela. As duas rotas existem para quem chega por
+link direto, cada uma abrindo no seu formulário.
+
 As capturas de todas elas estão em [`telas/`](telas/).
 
 As duas rotas com `[id]` são dinâmicas: o mesmo arquivo atende qualquer
@@ -90,6 +94,10 @@ barra de abas.
 retorno. A seta não é o único caminho: o gesto de arrastar da borda e o botão
 de voltar do Android funcionam igualmente, e isso é deliberado — o canto
 superior esquerdo é justamente o ponto mais difícil de alcançar com o polegar.
+
+**Seletor segmentado.** No topo da tela de entrada, alterna entre entrar e
+criar conta. A opção ativa é uma superfície branca que desliza de um lado para
+o outro — só com toque, sem gesto de arrastar.
 
 **Bottom sheet.** Usado para escolhas curtas que se resolvem em segundos:
 escolher a conta Google, escolher como registrar uma execução. Um sheet fecha,
@@ -127,6 +135,14 @@ defeito de renderização.
 **Validação de formulário.** O erro aparece sob o campo que o causou, em
 vinho, com a borda do campo na mesma cor, e desaparece assim que o usuário
 começa a corrigir.
+
+**Senha visível quando se quer.** O campo de senha tem um botão de olho à
+direita. Um toque mostra o que foi digitado, outro esconde de novo, e o
+desenho do ícone diz em qual dos dois estados se está.
+
+**Cabeçalhos que se separam do conteúdo.** Nas telas com lista, o título fica
+parado enquanto a lista corre por baixo, e uma sombra curta marca essa
+separação.
 
 ---
 

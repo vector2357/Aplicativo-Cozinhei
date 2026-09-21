@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { CartaoExecucao } from '@/components/execucao';
 import {
+  CabecalhoDeAba,
   EstadoErro,
   EstadoVazio,
   SheetEmConstrucao,
@@ -31,11 +32,7 @@ export default function TelaHistorico() {
 
   return (
     <Tela edges={['top']}>
-      <View style={estilos.margem}>
-        <Text style={text.screenTitle} accessibilityRole="header">
-          histórico
-        </Text>
-      </View>
+      <CabecalhoDeAba titulo="histórico" />
 
       {estado === 'carregando' ? (
         <View style={estilos.conteudoCarregando}>
@@ -97,7 +94,6 @@ export default function TelaHistorico() {
 }
 
 const estilos = StyleSheet.create({
-  margem: { paddingHorizontal: spacing.screenH, paddingTop: spacing.xs },
   conteudoCarregando: { paddingHorizontal: spacing.screenH, paddingTop: spacing.lg },
   rolagem: {
     paddingHorizontal: spacing.screenH,

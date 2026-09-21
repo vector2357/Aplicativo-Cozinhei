@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Icone } from './Icone';
 import { useFocoNoTitulo } from '@/hooks/useFocoNoTitulo';
-import { interacao, spacing, text, touch } from '@/theme';
+import { color, interacao, shadow, spacing, text, touch } from '@/theme';
 
 type Props = {
   titulo: string;
@@ -54,13 +54,24 @@ export function CabecalhoTela({ titulo, origem, acao }: Props) {
 }
 
 const estilos = StyleSheet.create({
+  /*
+    Fica parado enquanto o conteúdo rola por baixo, e é a sombra que diz
+    isso. Sem ela o título e a primeira ficha encostam e viram um bloco só.
+
+    O `backgroundColor` não é decoração: sem fundo opaco a sombra pinta sobre
+    conteúdo transparente e o texto de baixo aparece através dela. E o
+    `zIndex` substitui a `elevation` que o token não tem — ver `shadow.cabecalho`.
+  */
   cabecalho: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.xs,
     paddingHorizontal: spacing.screenH,
     paddingTop: spacing.xs,
-    paddingBottom: spacing.sm,
+    paddingBottom: spacing.md,
+    backgroundColor: color.background,
+    zIndex: 1,
+    ...shadow.cabecalho,
   },
   voltar: {
     width: touch.minTarget,

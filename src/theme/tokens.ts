@@ -136,8 +136,16 @@ export const spacing = {
   screenH: 20,
   /** Padding horizontal das telas de entrada (login/cadastro). */
   screenHWide: 24,
-  /** Espaço livre no fim de uma lista rolável, sob a barra de abas. */
-  scrollBottom: 120,
+  /**
+   * Espaço livre no fim de uma lista rolável, sob a barra de abas.
+   *
+   * A conta: o maior recuo de rodapé que se espera (48pt, num Android com
+   * navegação por três botões) + a altura da barra + respiro. Quem mexer em
+   * `touch.tabBarHeight` precisa refazê-la — foi o que aconteceu quando a
+   * barra subiu de 64 para 72 e este número ficou para trás: no aparelho de
+   * três botões o último cartão passou a encostar na borda da barra.
+   */
+  scrollBottom: 136,
 } as const;
 
 /* ------------------------------------------------------------------ *
@@ -145,6 +153,13 @@ export const spacing = {
  * ------------------------------------------------------------------ */
 export const radius = {
   chip: 11,
+  /**
+   * Segmento do seletor, e a pílula que corre atrás dele.
+   *
+   * Existe como token porque os dois PRECISAM ser iguais: se um mudar sem o
+   * outro, a pílula deixa de coincidir com o segmento que ela marca.
+   */
+  segmento: 10,
   field: 13,
   card: 14,
   cardLarge: 16,
@@ -172,7 +187,7 @@ export const touch = {
   /** Altura de campo de formulário. */
   field: 52,
   fabSize: 62,
-  tabBarHeight: 64,
+  tabBarHeight: 72,
   /**
    * Vão morto entre dois alvos vizinhos (Aula 10, Lei de Fitts).
    *
@@ -184,17 +199,6 @@ export const touch = {
   deadSpace: 8,
 } as const;
 
-/* ------------------------------------------------------------------ *
- * INTERAÇÃO — o feedback do toque
- *
- * O estado pressionado precisa ser perceptível e INSTANTÂNEO: sem
- * resposta visível, o usuário toca de novo, e o toque repetido é o
- * sintoma clássico de interface em que não se confia.
- *
- * Um valor só no app inteiro. Antes da etapa 03 havia três (0.70, 0.72 e
- * 0.85), o que não era escolha — era descuido acumulado, e fazia o mesmo
- * gesto responder diferente conforme o componente.
- * ------------------------------------------------------------------ */
 /* ------------------------------------------------------------------ *
  * ESCALA DE FONTE — até onde o texto pode crescer
  *
@@ -218,6 +222,17 @@ export const escalaDeFonte = {
   emAba: 1.15,
 } as const;
 
+/* ------------------------------------------------------------------ *
+ * INTERAÇÃO — o feedback do toque
+ *
+ * O estado pressionado precisa ser perceptível e INSTANTÂNEO: sem
+ * resposta visível, o usuário toca de novo, e o toque repetido é o
+ * sintoma clássico de interface em que não se confia.
+ *
+ * Um valor só no app inteiro. Antes da etapa 03 havia três (0.70, 0.72 e
+ * 0.85), o que não era escolha — era descuido acumulado, e fazia o mesmo
+ * gesto responder diferente conforme o componente.
+ * ------------------------------------------------------------------ */
 export const interacao = {
   /** Opacidade de QUALQUER superfície pressionada. */
   opacidadePressionado: 0.72,
@@ -275,6 +290,28 @@ export const shadow = {
     shadowRadius: 40,
     shadowOffset: { width: 0, height: -10 },
     elevation: 16,
+  },
+  /**
+   * Cabeçalho fixo que tem conteúdo rolando por baixo.
+   *
+   * Sem ela, a primeira ficha da lista encosta no título e os dois viram um
+   * bloco só — não dá para ver que uma parte fica parada e a outra anda. A
+   * sombra é curta e fraca de propósito: ela precisa separar, não pesar.
+   */
+  cabecalho: {
+    /*
+      Só para baixo — e é por isso que não há `elevation` aqui.
+
+      `elevation` é elevação de verdade no Android: ela desenha sombra nos
+      QUATRO lados, e um cabeçalho no topo da tela ganharia uma faixa escura
+      por cima, contra a barra de status. `boxShadow` desenha onde se manda.
+      O deslocamento é maior que metade do desfoque, então nada sobe acima da
+      borda de baixo.
+
+      A ordem de pintura, que a `elevation` daria de graça, vem do `zIndex`
+      de quem usa este token.
+    */
+    boxShadow: [{ offsetX: 0, offsetY: 4, blurRadius: 6, color: 'rgba(18,33,28,0.10)' }],
   },
   segment: {
     shadowColor: '#12211C',

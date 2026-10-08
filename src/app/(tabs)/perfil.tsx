@@ -38,12 +38,7 @@ export default function TelaPerfil() {
 
   return (
     <Tela edges={['top']}>
-      {/*
-        Sem título de tela, de propósito. A aba já diz "perfil" e está
-        selecionada; repetir a palavra logo abaixo gasta a primeira linha da
-        tela para não informar nada. Quem identifica a tela aqui é o nome da
-        pessoa, que vem em seguida.
-      */}
+      {/* Sem título: a aba já diz "perfil", e quem identifica é o nome abaixo. */}
       <ScrollView contentContainerStyle={estilos.rolagem} showsVerticalScrollIndicator={false}>
         <View style={estilos.identidade} accessible accessibilityLabel={`${usuario.nome}, ${usuario.email}, ${usuario.desde}`}>
           <View style={estilos.avatar}>
@@ -70,11 +65,7 @@ export default function TelaPerfil() {
           />
         ) : null}
 
-        {/*
-          Conta nova não vê o painel. Três zeros e um travessão informam que
-          não há nada, o que ela já sabe — e não oferecem saída nenhuma. O
-          convite ocupa o mesmo lugar e leva ao primeiro registro.
-        */}
+        {/* Três zeros não oferecem saída; o convite leva ao primeiro registro. */}
         {estado === 'pronto' && dados && !dados.execucoes ? (
           <EstadoVazio
             titulo="seus números começam na primeira execução"
@@ -131,11 +122,7 @@ export default function TelaPerfil() {
           </View>
         </View>
 
-        {/*
-          Sair fica no fim da rolagem, longe do polegar em repouso e longe de
-          qualquer outra ação: é destrutivo para a sessão, e a Lei de Fitts
-          diz que ação destrutiva pede distância, não proximidade.
-        */}
+        {/* Ação destrutiva pede distância: fica no fim, longe das outras. */}
         <View style={estilos.saida}>
           <Botao titulo="sair da conta" variante="fantasma" onPress={encerrarSessao} />
         </View>
@@ -158,8 +145,7 @@ function Numero({ valor, rotulo }: { valor: string; rotulo: string }) {
 const estilos = StyleSheet.create({
   rolagem: {
     paddingHorizontal: spacing.screenH,
-    // Sem título de tela, este respiro é o que separa a identidade da barra
-    // de status. Era `lg` quando havia um título acima para fazer esse papel.
+    // Sem título de tela, é este respiro que separa a identidade da barra de status.
     paddingTop: spacing.xl,
     paddingBottom: spacing.scrollBottom,
   },

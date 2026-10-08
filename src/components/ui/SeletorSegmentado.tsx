@@ -17,13 +17,7 @@ type Props<T extends string> = {
   onChange: (valor: T) => void;
 };
 
-/**
- * Vão entre os dois segmentos.
- *
- * É o mesmo `deadSpace` da barra de abas, e pela mesma razão: dois alvos de
- * 44pt encostados erram, porque o dedo cobre mais área do que o ponto que a
- * pessoa mira.
- */
+/** Vão entre os segmentos: o mesmo `deadSpace` da barra de abas. */
 const FOLGA = touch.deadSpace;
 
 /** Respiro do trilho para os segmentos. Interno, não separa alvos. */
@@ -41,15 +35,7 @@ export function SeletorSegmentado<T extends string>({ opcoes, valor, onChange }:
     opcoes.findIndex((opcao) => opcao.valor === valor),
   );
 
-  /*
-    A pílula é um retângulo só, que anda — não um fundo que acende e apaga em
-    cada segmento. A diferença importa: o movimento é o que liga visualmente
-    o "de onde saiu" ao "para onde foi". Sem ele o controle pisca, e piscar
-    parece recarregamento.
-
-    A largura vem do layout porque os segmentos são `flex: 1`: só o aparelho
-    sabe quanto sobra depois da margem da tela.
-  */
+  // A largura vem do layout porque os segmentos são `flex: 1`.
   const larguraDoSegmento = larguraDoTrilho
     ? (larguraDoTrilho - RECUO * 2 - FOLGA * (opcoes.length - 1)) / opcoes.length
     : 0;
@@ -61,11 +47,7 @@ export function SeletorSegmentado<T extends string>({ opcoes, valor, onChange }:
   useEffect(() => {
     if (larguraDoSegmento === 0) return;
 
-    /*
-      A primeira posição é posta sem animação: animar a partir do zero faria
-      a pílula atravessar a tela quando a tela abre. Quem desligou movimento
-      no sistema recebe sempre o salto.
-    */
+    // A primeira posição não anima: sairia atravessando a tela.
     const semAnimar = !posicionado.current || reduzirMovimento;
     posicionado.current = true;
 

@@ -17,13 +17,11 @@ export function CartaoPrato({ prato, onPress }: Props) {
   return (
     <Pressable
       accessibilityRole="button"
-      // Um rótulo só, com tudo que o cartão mostra: sem isto o leitor de tela
-      // pararia quatro vezes dentro do mesmo cartão.
+      // Um rótulo só: senão o leitor de tela para quatro vezes no mesmo cartão.
       accessibilityLabel={
         `${prato.nome}, ${prato.tentativas} ${prato.tentativas === 1 ? 'tentativa' : 'tentativas'}, ` +
         `nota média ${formatarNota(prato.notaMedia)}, última vez ${prato.ultimaVez}` +
-        // A tira tem rótulo próprio, mas o agrupamento do cartão o descarta —
-        // e ela é a resposta à pergunta que o produto existe para responder.
+        // A tira tem rótulo próprio, mas o agrupamento do cartão o descarta.
         (repetido
           ? `, evolução de ${formatarNota(prato.evolucao[0])} a ` +
             `${formatarNota(prato.evolucao[prato.evolucao.length - 1])}`
@@ -34,11 +32,7 @@ export function CartaoPrato({ prato, onPress }: Props) {
       onPress={onPress}
       style={({ pressed }) => [estilos.cartao, pressed && estilos.pressionado]}
     >
-      {/*
-        Mesma rede de segurança do `CartaoExecucao`: quem cala as estrelas e o
-        chip é o `silencioso` deles; isto aqui pega a peça futura que esquecer
-        de pedir. O rótulo acima já diz tudo, inclusive a evolução.
-      */}
+      {/* Rede de segurança para a peça futura que esquecer de pedir silêncio. */}
       <View
         style={estilos.conteudo}
         accessibilityElementsHidden
@@ -78,7 +72,7 @@ const estilos = StyleSheet.create({
     borderRadius: radius.card,
     padding: 13,
   },
-  /** O conteúdo em si. Separado do cartão só para poder sair da árvore. */
+  /** Separado do cartão só para poder sair da árvore de acessibilidade. */
   conteudo: { gap: spacing.sm },
   pressionado: { opacity: interacao.opacidadePressionado },
   topo: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm },

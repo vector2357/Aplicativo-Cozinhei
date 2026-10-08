@@ -29,11 +29,7 @@ export default function LayoutRaiz() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <AuthProvider>
-          {/*
-            Por dentro da sessão e por fora do Stack: o aviso sobrevive à troca
-            de tela, que é o que permite confirmar "execução salva" já na tela
-            seguinte à que salvou.
-          */}
+          {/* Fora do Stack, para o aviso sobreviver à troca de tela. */}
           <AvisoProvider>
             <Stack
               screenOptions={{
@@ -46,17 +42,9 @@ export default function LayoutRaiz() {
               <Stack.Screen name="criar-conta" />
               {/* Sem gesto de voltar: cancelar é a única saída da autenticação. */}
               <Stack.Screen name="entrando" options={{ gestureEnabled: false }} />
-              {/*
-                As abas são a raiz depois do login: chega-se aqui por `replace`,
-                a pilha fica com uma tela só, e o voltar do sistema sai do app em
-                vez de ressuscitar a tela de entrada.
-              */}
+              {/* Raiz depois do login: o voltar do sistema sai do app. */}
               <Stack.Screen name="(tabs)" options={{ gestureEnabled: false }} />
-              {/*
-                Telas de segundo nível. `slide_from_right` em vez do `fade` das
-                demais: aqui o movimento carrega informação — entrou-se num
-                nível, e o gesto de arrastar da borda desfaz o mesmo caminho.
-              */}
+              {/* Segundo nível: o movimento diz que se entrou num nível. */}
               <Stack.Screen name="evolucao" options={{ animation: 'slide_from_right' }} />
               <Stack.Screen name="execucao/[id]" options={{ animation: 'slide_from_right' }} />
               <Stack.Screen name="prato/[id]" options={{ animation: 'slide_from_right' }} />

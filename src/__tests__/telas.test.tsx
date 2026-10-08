@@ -10,18 +10,13 @@ import { EXECUCOES, EXECUCOES_RECENTES, MES_CORRENTE } from '@/features/execucoe
 const EXECUCOES_DE_AGOSTO = EXECUCOES.filter((execucao) => execucao.mes === MES_CORRENTE);
 import { color } from '@/theme';
 
-/**
- * Medidas de área segura fixas. Fora do aparelho não há valor real, e sem
- * elas qualquer componente que chame `useSafeAreaInsets` — o BottomSheet, a
- * moldura de tela — quebra na renderização.
- */
+/** Medidas de área segura fixas. */
 const METRICAS = {
   frame: { x: 0, y: 0, width: 390, height: 844 },
   insets: { top: 47, left: 0, right: 0, bottom: 34 },
 };
 
-// O Jest exige que variáveis usadas dentro da fábrica de `jest.mock` tenham
-// o prefixo `mock`: a fábrica é içada para antes das declarações do módulo.
+// O Jest exige que variáveis usadas dentro da fábrica de `jest.mock` tenham o prefixo `mock`.
 const mockEmpurrar = jest.fn();
 const mockSubstituir = jest.fn();
 const mockNavegar = jest.fn();
@@ -40,12 +35,7 @@ import TelaCriarConta from '@/app/criar-conta';
 import TelaEntrando from '@/app/entrando';
 import TelaEntrar from '@/app/index';
 
-/** Toda tela precisa da área segura e da sessão em volta. */
-/**
- * A moldura que toda tela encontra em execução: área segura, sessão e o
- * provedor de avisos. Renderizar uma tela sem ela é testar algo que o app
- * nunca monta.
- */
+/** A moldura que toda tela encontra em execução: área segura, sessão e avisos. */
 const comSessao = ({ children }: { children: React.ReactNode }) => (
   <SafeAreaProvider initialMetrics={METRICAS}>
     <AuthProvider>
@@ -106,11 +96,7 @@ describe('01 · Entrar (tela inicial)', () => {
     expect(mockSubstituir).toHaveBeenCalledWith('/entrando');
   });
 
-  /**
-   * Com `push`, o login continuava vivo embaixo das abas e o botão de voltar
-   * do Android o trazia de volta, ainda com os erros da tentativa anterior.
-   * `replace` troca a tela em vez de empilhar.
-   */
+  /** Com `push`, o login seguia vivo sob as abas e o voltar do Android o trazia de volta. */
   it('SUBSTITUI a tela ao entrar, para o voltar do sistema não ressuscitar o login', async () => {
     await render(<TelaEntrar />, { wrapper: comSessao });
     await fireEvent.changeText(screen.getByLabelText('e-mail'), 'marina@email.com');
@@ -119,11 +105,7 @@ describe('01 · Entrar (tela inicial)', () => {
     expect(mockEmpurrar).not.toHaveBeenCalled();
   });
 
-  /**
-   * Vinho significa "algo deu errado" em todo o app. Mantê-lo num campo que o
-   * usuário já corrigiu gasta o significado da cor — e era o que acontecia,
-   * porque a validação só rodava no envio.
-   */
+  /** Vinho significa "algo deu errado" em todo o app. */
   it('o erro do campo some quando o usuário o corrige', async () => {
     await render(<TelaEntrar />, { wrapper: comSessao });
     await fireEvent.press(screen.getByRole('button', { name: 'entrar' }));
@@ -144,11 +126,7 @@ describe('01 · Entrar (tela inicial)', () => {
     expect(screen.getByText('informe sua senha')).toBeTruthy();
   });
 
-  /*
-    Trocar de formulário NÃO navega. Navegar desmontava a tela inteira,
-    reiniciava o formulário, fechava o teclado e piscava — o que o usuário
-    lia como recarregamento. A troca é local, e é isso que permite animá-la.
-  */
+  // Trocar de formulário não navega: navegar reiniciava o campo e fechava o teclado.
   it('o segmento "criar conta" troca o formulário sem navegar', async () => {
     await render(<TelaEntrar />, { wrapper: comSessao });
     await fireEvent.press(screen.getByRole('tab', { name: 'criar conta' }));
@@ -226,8 +204,7 @@ describe('02 · Criar conta', () => {
 
     await fireEvent.changeText(screen.getByLabelText('senha'), 'oitocaracteres');
 
-    // A dica do campo tem o mesmo texto da mensagem de erro; o que precisa
-    // sumir é a marcação de erro, então conta-se quantas vezes ele aparece.
+    // A dica do campo tem o mesmo texto da mensagem de erro.
     expect(screen.queryAllByText('use 8 caracteres ou mais')).toHaveLength(1);
   });
 
@@ -253,11 +230,7 @@ describe('02 · Criar conta', () => {
     expect(screen.getByRole('button', { name: 'esqueci minha senha' })).toBeTruthy();
   });
 
-  /*
-    A rota continua existindo e continua abrindo no cadastro: é o que mantém
-    o link direto e a documentação válidos. O que deixou de existir é a
-    navegação ao tocar no seletor.
-  */
+  // A rota continua existindo e continua abrindo no cadastro.
   it('a rota /criar-conta abre no formulário de cadastro', async () => {
     await render(<TelaCriarConta />, { wrapper: comSessao });
 
@@ -267,10 +240,7 @@ describe('02 · Criar conta', () => {
 });
 
 describe('04 · Entrando', () => {
-  // Timers falsos no bloco inteiro: a tela dispara um atraso de autenticação
-  // de verdade, que sem isso fica pendente e trava a limpeza entre testes.
-  // `setImmediate` precisa continuar real — é nele que o `act` assíncrono do
-  // testing-library se apoia para esvaziar a fila de renderização.
+  // Timers falsos no bloco inteiro: a tela dispara um atraso de autenticação de verdade.
   beforeEach(() => jest.useFakeTimers({ doNotFake: ['setImmediate'] }));
   afterEach(() => jest.useRealTimers());
 
@@ -287,11 +257,7 @@ describe('04 · Entrando', () => {
     expect(mockSubstituir).toHaveBeenCalledWith('/');
   });
 
-  /**
-   * Voltar ao login sem dizer nada deixa a dúvida de ter tocado no lugar
-   * certo. O aviso é o retorno da ação — e, como vive no layout raiz, ele
-   * sobrevive à troca de tela que o próprio cancelar provoca.
-   */
+  /** Voltar ao login sem dizer nada deixa a dúvida de ter tocado no lugar certo. */
   it('cancelar avisa que a entrada foi cancelada', async () => {
     await render(<TelaEntrando />, { wrapper: comSessao });
 
@@ -319,12 +285,10 @@ describe('04 · Entrando', () => {
 
 describe('05 · Início', () => {
   it('mostra o resumo do mês, os recentes e as receitas-guia', async () => {
-    // A tela busca os dados pelo repositório, que é assíncrono de propósito:
-    // as asserções esperam o conteúdo chegar em vez de assumir o 1º render.
+    // A tela busca os dados pelo repositório, que é assíncrono de propósito.
     await render(<TelaInicio />, { wrapper: comSessao });
 
-    // Resumo do mês. Os números são contados a partir das execuções, não
-    // escritos à mão — por isso vêm dos fixtures, e não literais aqui.
+    // Resumo do mês: os números vêm dos fixtures porque são contados, não escritos.
     expect(await screen.findByText('agosto até aqui')).toBeTruthy();
     expect(screen.getByText(String(EXECUCOES_DE_AGOSTO.length))).toBeTruthy();
     expect(screen.getByText('massa crua no meio')).toBeTruthy();
@@ -364,15 +328,7 @@ describe('05 · Início', () => {
 });
 
 describe('D-03 · o teclado não pode cobrir a ação principal', () => {
-  /**
-   * O defeito: `edgeToEdgeEnabled` no `app.json` faz o Android NÃO
-   * redimensionar a janela quando o teclado sobe, então o
-   * `KeyboardAvoidingView` não tinha o que encolher. Somado ao `flexGrow: 1`
-   * do conteúdo, o `ScrollView` ficava sem excesso e a ação principal era
-   * inalcançável — nem rolando.
-   *
-   * A correção reserva a altura do teclado no próprio conteúdo.
-   */
+  /** Com `edgeToEdgeEnabled` a janela não encolhe, e a ação principal ficava inalcançável. */
 
   /** O recuo inferior do conteúdo rolável da tela. */
   function recuoDaRolagem(): number {
@@ -413,19 +369,14 @@ describe('D-03 · o teclado não pode cobrir a ação principal', () => {
     expect(screen.getByTestId('rolagem-do-formulario').props.keyboardDismissMode).toBe('on-drag');
   });
 
-  /**
-   * O `KeyboardAvoidingView` saiu de cena: ele dependia de a janela encolher,
-   * e com `edgeToEdgeEnabled` ela não encolhe. Deixá-lo daria a impressão de
-   * que o problema está tratado.
-   */
+  /** O `KeyboardAvoidingView` saiu de cena: ele dependia de a janela encolher. */
   it('não há mais KeyboardAvoidingView nas telas de formulário', () => {
     const fonte = [
       fs.readFileSync('src/app/criar-conta.tsx', 'utf8'),
       fs.readFileSync('src/app/index.tsx', 'utf8'),
     ];
 
-    // O nome ainda aparece no comentário que explica POR QUE ele saiu — o que
-    // não pode voltar é o import e o elemento.
+    // O nome ainda aparece no comentário que explica POR QUE ele saiu.
     fonte.forEach((arquivo) => {
       expect(arquivo).not.toMatch(/import\s*\{[^}]*KeyboardAvoidingView/);
       expect(arquivo).not.toContain('<KeyboardAvoidingView');

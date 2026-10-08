@@ -31,11 +31,7 @@ import TelaInicio from '@/app/(tabs)/inicio';
 import TelaCriarConta from '@/app/criar-conta';
 import TelaEntrar from '@/app/index';
 
-/**
- * A moldura que toda tela encontra em execução: área segura, sessão e o
- * provedor de avisos. Renderizar uma tela sem ela é testar algo que o app
- * nunca monta.
- */
+/** A moldura que toda tela encontra em execução: área segura, sessão e o provedor de avisos. */
 const comSessao = ({ children }: { children: React.ReactNode }) => (
   <SafeAreaProvider initialMetrics={METRICAS}>
     <AuthProvider>
@@ -77,8 +73,7 @@ describe('controles sem rota anunciam o destino', () => {
 
     await fireEvent.press(screen.getByLabelText('usar outra conta'));
 
-    // O sheet de contas precisa sair antes: dois modais empilhados prendem o
-    // foco do leitor de tela no de baixo.
+    // O sheet de contas precisa sair antes: dois modais empilhados prendem o foco do leitor de tela.
     expect(screen.queryByText(/escolha a conta Google/)).toBeNull();
     expect(screen.getByText(DESTINOS.outraConta.titulo)).toBeTruthy();
   });
@@ -171,10 +166,7 @@ describe('catálogo de destinos', () => {
     });
   });
 
-  /**
-   * O recorte da etapa 03 é navegação, UX e acessibilidade. Tudo que depende
-   * de ia, mídia ou servidor é etapa 04 — e o selo precisa dizer a verdade.
-   */
+  /** O recorte da etapa 03 é navegação, UX e acessibilidade. */
   it('nenhum destino promete a etapa 03, que não vai entregá-los', () => {
     Object.values(DESTINOS).forEach((destino) => {
       expect(destino.etapa).not.toBe('etapa 03');

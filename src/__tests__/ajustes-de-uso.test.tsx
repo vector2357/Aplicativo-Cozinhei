@@ -48,13 +48,7 @@ function estiloDe(no: { props: { style?: unknown } }): Record<string, unknown> {
   return plano;
 }
 
-/* ------------------------------------------------------------------ *
- * O olho da senha
- *
- * Esconder a senha sem dar como conferi-la é o que faz alguém errar a
- * própria senha três vezes e não descobrir onde. O controle alterna, e o
- * desenho tem de dizer em qual dos dois estados se está.
- * ------------------------------------------------------------------ */
+// O olho da senha: esconder sem dar como conferir faz a pessoa errar a própria senha.
 
 describe('campo de senha · mostrar e ocultar', () => {
   it('nasce oculto, e o botão oferece mostrar', async () => {
@@ -118,12 +112,7 @@ describe('campo de senha · mostrar e ocultar', () => {
   });
 });
 
-/* ------------------------------------------------------------------ *
- * Os cabeçalhos fixos
- *
- * Eles ficam parados enquanto a lista corre por baixo. Sem sombra e sem
- * respiro, o título e a primeira ficha encostam e viram um bloco só.
- * ------------------------------------------------------------------ */
+// Os cabeçalhos fixos: ficam parados enquanto a lista corre por baixo.
 
 describe('cabeçalho de aba', () => {
   it('é um cabeçalho de verdade para o leitor de tela', async () => {
@@ -140,11 +129,7 @@ describe('cabeçalho de aba', () => {
     expect(caixa.backgroundColor).toBeDefined();
   });
 
-  /*
-    A sombra cai só para baixo. `elevation` é elevação de verdade no Android
-    e pinta nos quatro lados — num cabeçalho colado no topo da tela isso vira
-    uma faixa escura contra a barra de status.
-  */
+  // A sombra cai só para baixo: `elevation` escureceria também o topo da tela.
   it('a sombra não sobe: sem elevation, e o deslocamento cobre o desfoque', () => {
     expect(shadow.cabecalho).not.toHaveProperty('elevation');
 
@@ -160,9 +145,7 @@ describe('cabeçalho de aba', () => {
   });
 });
 
-/* ------------------------------------------------------------------ *
- * A barra de abas depois de crescer
- * ------------------------------------------------------------------ */
+// A barra de abas depois de crescer.
 
 describe('barra de abas · legibilidade', () => {
   it('a fatia da aba cabe dentro da barra, com folga', async () => {
@@ -178,10 +161,7 @@ describe('barra de abas · legibilidade', () => {
     expect(estiloDe(screen.getByRole('tab')).gap as number).toBeGreaterThanOrEqual(6);
   });
 
-  /*
-    Crescer a barra não pode comer a folga entre abas nem o alvo mínimo —
-    são as duas regras que a onda 4 travou.
-  */
+  // Crescer a barra não pode comer a folga entre abas nem o alvo mínimo.
   it('crescer a barra não desfez a folga entre alvos vizinhos', () => {
     const vao = (estilosBarraAbas.vao as { width: number }).width;
     expect(vao - touch.fabSize).toBe(touch.deadSpace * 2);
@@ -196,9 +176,7 @@ describe('barra de abas · legibilidade', () => {
   });
 });
 
-/* ------------------------------------------------------------------ *
- * O perfil sem título repetido
- * ------------------------------------------------------------------ */
+// O perfil sem título repetido.
 
 describe('perfil · sem título de tela', () => {
   it('não repete a palavra "perfil", que a aba já diz', async () => {

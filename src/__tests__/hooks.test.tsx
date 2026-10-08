@@ -5,13 +5,7 @@ import { useEmConstrucao } from '@/hooks/useEmConstrucao';
 import { useErrosFormulario } from '@/hooks/useErrosFormulario';
 import type { ErrosCriarConta } from '@/features/auth/validacao';
 
-/**
- * Executa um hook e devolve a referência viva do seu retorno.
- *
- * `@testing-library/react-native` v14 não traz `renderHook`, e o padrão do
- * projeto é testar pela árvore renderizada. Um componente-sonda resolve os
- * dois: o hook roda de verdade, dentro de um componente de verdade.
- */
+/** Executa um hook e devolve a referência viva do seu retorno. */
 async function executarHook<T>(usar: () => T): Promise<{ atual: () => T }> {
   let ultimo: T;
   function Sonda() {
@@ -40,10 +34,7 @@ describe('useErrosFormulario', () => {
     });
   });
 
-  /**
-   * O ponto do hook: corrigir o e-mail não pode apagar o aviso da senha, que
-   * continua errada. Limpar tudo esconderia um erro que ainda existe.
-   */
+  /** O ponto do hook: corrigir o e-mail não pode apagar o aviso da senha, que continua errada. */
   it('limpa apenas o campo pedido, preservando os outros', async () => {
     const hook = await executarHook(() => useErrosFormulario<ErrosCriarConta>());
     await act(async () => {

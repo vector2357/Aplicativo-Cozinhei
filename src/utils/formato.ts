@@ -9,10 +9,7 @@ export const formatarMoeda = (valor: number): string =>
 /** Número de tentativa sempre com dois dígitos: 4 -> "04". */
 export const formatarTentativa = (n: number): string => String(n).padStart(2, '0');
 
-/**
- * Estrelas cheias e vazias para a nota, arredondando para o inteiro mais
- * próximo. Sempre cinco glifos, para que a largura não dance na lista.
- */
+// Sempre cinco glifos, para a largura não dançar na lista.
 export const estrelas = (nota: number): string => {
   const cheias = Math.max(0, Math.min(5, Math.round(nota)));
   return '★'.repeat(cheias) + '☆'.repeat(5 - cheias);

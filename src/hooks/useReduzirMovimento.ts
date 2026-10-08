@@ -11,8 +11,7 @@ export function useReduzirMovimento(): boolean {
       .then((ativo) => {
         if (montado) setReduzir(ativo);
       })
-      // Plataforma que não responde à pergunta não é motivo para quebrar a
-      // tela: segue-se com o padrão, que é animar.
+      // Plataforma que não responde segue no padrão, que é animar.
       .catch(() => {});
 
     // O usuário pode ligar o ajuste com o app aberto.

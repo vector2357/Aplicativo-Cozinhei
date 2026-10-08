@@ -16,8 +16,7 @@ export function useFocoNoTitulo(pronto = true) {
   useEffect(() => {
     if (!pronto) return;
 
-    // Mover o foco no mesmo quadro da montagem não funciona: a transição
-    // ainda está rodando e o sistema devolve o foco para onde ele estava.
+    // No mesmo quadro da montagem o sistema devolve o foco para onde estava.
     const relogio = setTimeout(focar, ATRASO_MS);
     return () => clearTimeout(relogio);
   }, [pronto, focar]);

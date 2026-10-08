@@ -52,9 +52,7 @@ function ComReserva({ altura }: { altura: number }) {
 }
 
 beforeEach(() => {
-  // O aviso sai de cena por tempo; sem relógio falso o teste teria de esperar
-  // de verdade. `doNotFake: ['setImmediate']` vem do jest.config e é o que
-  // mantém o `act` assíncrono funcionando.
+  // O aviso sai de cena por tempo; sem relógio falso o teste teria de esperar de verdade.
   jest.useFakeTimers();
   jest.spyOn(AccessibilityInfo, 'announceForAccessibility').mockImplementation(() => {});
 });
@@ -132,10 +130,7 @@ describe('AvisoProvider', () => {
     expect(screen.getByText('não consegui salvar')).toBeTruthy();
   });
 
-  /**
-   * Feedback que só existe na tela não existe para quem não a vê. A barra
-   * aparece no rodapé, longe do foco do leitor — sem o anúncio, seria silêncio.
-   */
+  /** Feedback que só existe na tela não existe para quem não a vê. */
   it('anuncia o texto ao leitor de tela', async () => {
     await render(<TelaFalsa />, { wrapper: comProvider });
 

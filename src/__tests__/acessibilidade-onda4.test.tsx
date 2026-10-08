@@ -35,9 +35,7 @@ function estiloDe(no: { props: { style?: unknown } }): Record<string, unknown> {
   return plano;
 }
 
-/* ------------------------------------------------------------------ *
- * A-07 · a fonte do sistema pode crescer, o layout não pode quebrar
- * ------------------------------------------------------------------ */
+// A-07 · a fonte do sistema pode crescer, o layout não pode quebrar.
 
 describe('A-07 · ampliação da fonte do sistema', () => {
   it('o rótulo da calha tem teto: ele mora numa caixa de largura fixa', async () => {
@@ -64,13 +62,7 @@ describe('A-07 · ampliação da fonte do sistema', () => {
     expect(escalaDeFonte.emAba).toBeLessThan(escalaDeFonte.emCaixaFixa);
   });
 
-  /*
-    Este bloco existe por causa de um defeito que só o emulador pegou: com a
-    fonte do sistema em 200%, "TENT." quebrava em "TEN" / "T." dentro da
-    calha. O teto de ampliação segurava o tamanho do texto, mas a calha
-    continuava com os 46pt do tamanho padrão — e 1,3× de caixa alta não cabe
-    ali. Quem tinha de crescer era a caixa.
-  */
+  // Defeito que só o emulador pegou: a 200%, "TENT." quebrava dentro da calha.
   describe('a calha cresce junto com a fonte, em vez de espremer o rótulo', () => {
     const larguraDaCalha = async () => {
       await render(<CartaoExecucao execucao={EXECUCOES[0]} variante="ficha" onPress={() => {}} />, {
@@ -80,11 +72,7 @@ describe('A-07 · ampliação da fonte do sistema', () => {
       return (estiloDe(rotulo.parent as never).width ?? 0) as number;
     };
 
-    /*
-      `jest.restoreAllMocks()` aqui derruba a suíte inteira: ele restaura
-      TAMBÉM os mocks que o preset do jest-expo instala no carregamento, e a
-      renderização para de funcionar. Restaurar só este espião é o certo.
-    */
+    // `jest.restoreAllMocks()` derrubaria a suíte: restaura os mocks do preset também.
     let espiao: jest.SpyInstance<number, []> | undefined;
     const comEscalaDeFonte = (valor: number) => {
       espiao = jest.spyOn(PixelRatio, 'getFontScale').mockReturnValue(valor);
@@ -149,11 +137,7 @@ describe('A-07 · ampliação da fonte do sistema', () => {
     });
   });
 
-  /*
-    O teto é exceção, não regra. Texto corrido é justamente o que precisa
-    crescer para quem enxerga pouco, e travá-lo trocaria um problema de
-    layout por um de acessibilidade.
-  */
+  // O teto é exceção: texto corrido precisa crescer para quem enxerga pouco.
   it('o texto do corpo da ficha NÃO tem teto — ele pode crescer à vontade', async () => {
     await render(<CartaoExecucao execucao={EXECUCOES[0]} variante="ficha" onPress={() => {}} />, { wrapper: comArea });
 
@@ -162,9 +146,7 @@ describe('A-07 · ampliação da fonte do sistema', () => {
   });
 });
 
-/* ------------------------------------------------------------------ *
- * A-16 · vão morto entre alvos vizinhos
- * ------------------------------------------------------------------ */
+// A-16 · vão morto entre alvos vizinhos.
 
 describe('A-16 · alvos vizinhos não podem se encostar', () => {
   it('cada aba reserva meia folga de cada lado', async () => {
@@ -184,10 +166,7 @@ describe('A-16 · alvos vizinhos não podem se encostar', () => {
     expect(vao.width - touch.fabSize).toBe(touch.deadSpace * 2);
   });
 
-  /*
-    O alvo de 44pt é piso da WCAG; o vão morto é recomendação da Aula 10.
-    Quando as duas não cabem, quem cede é a recomendação — nunca o piso.
-  */
+  // O alvo de 44pt é piso da WCAG; o vão morto é recomendação da Aula 10.
   it.each([308, 320, 360, 375, 390, 412, 430])(
     'em %ipt de largura a fatia da aba continua acima do alvo mínimo',
     (largura) => {
@@ -199,12 +178,7 @@ describe('A-16 · alvos vizinhos não podem se encostar', () => {
       };
       const vao = (estilosBarraAbas.vao as { width: number }).width;
 
-      /*
-        A conta desconta TUDO o que a barra come — inclusive a borda. Ela
-        ficou de fora na primeira versão, e o aparelho entregou 43,4dp num
-        ecrã de 308dp: a função achava que havia 2dp a mais e distribuía
-        folga demais. Por isso 308 está na lista.
-      */
+      // A conta desconta TUDO o que a barra come — inclusive a borda.
       const util =
         largura - barra.left - barra.right - barra.borderWidth * 2 - barra.paddingHorizontal * 2 - vao;
       const fatia = util / 4 - folgaEntreAbas(largura) * 2;
@@ -219,9 +193,7 @@ describe('A-16 · alvos vizinhos não podem se encostar', () => {
   });
 });
 
-/* ------------------------------------------------------------------ *
- * A-18 · o idioma é declarado
- * ------------------------------------------------------------------ */
+// A-18 · o idioma é declarado.
 
 describe('A-18 · o leitor de tela precisa saber que o texto é português', () => {
   const appJson = JSON.parse(readFileSync('app.json', 'utf8')) as {
@@ -242,9 +214,7 @@ describe('A-18 · o leitor de tela precisa saber que o texto é português', () 
   });
 });
 
-/* ------------------------------------------------------------------ *
- * A-14 · as estrelas se anunciam uma vez, como número
- * ------------------------------------------------------------------ */
+// A-14 · as estrelas se anunciam uma vez, como número.
 
 describe('A-14 · estrelas', () => {
   it('os glifos saem da árvore: quem diz a nota é o rótulo do grupo', async () => {
@@ -258,12 +228,7 @@ describe('A-14 · estrelas', () => {
   });
 });
 
-/* ------------------------------------------------------------------ *
- * D5 · nenhuma função do repositório entrega dados de outro dono
- *
- * Este era um vazamento real: `/execucao/e1` por link direto mostrava a
- * ficha da usuária de exemplo para uma conta que nunca cozinhou nada.
- * ------------------------------------------------------------------ */
+// D5 · nenhuma função do repositório entrega dados de outro dono.
 
 describe('a porta de dados respeita o dono em TODAS as funções', () => {
   it('buscar uma execução por id não atravessa contas', async () => {

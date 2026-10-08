@@ -14,8 +14,7 @@ import { EXECUCOES, MES_CORRENTE, USUARIO_EXEMPLO } from '@/features/execucoes/f
 
 describe('buscarExecucao', () => {
   it('devolve a execução do id pedido', async () => {
-    // Do próprio conjunto, para o teste não depender de qual prato é o
-    // primeiro — isso muda quando os dados de exemplo crescem.
+    // Do próprio conjunto, para o teste não depender de qual prato é o primeiro.
     const esperada = EXECUCOES[0];
 
     const execucao = await buscarExecucao(esperada.id);
@@ -25,10 +24,7 @@ describe('buscarExecucao', () => {
     expect(execucao?.tentativa).toBe(esperada.tentativa);
   });
 
-  /**
-   * O id vem da rota, e rota é entrada externa: um deep link com id inválido
-   * precisa cair num estado tratável, não derrubar a tela.
-   */
+  /** O id vem da rota, e rota é entrada externa. */
   it('devolve null para id desconhecido, em vez de estourar', async () => {
     await expect(buscarExecucao('nao-existe')).resolves.toBeNull();
   });
@@ -172,10 +168,7 @@ describe('listarPratos', () => {
     });
   });
 
-  /**
-   * A tira de evolução lê este vetor da esquerda para a direita. Se ele vier
-   * invertido, a tela mostra a pessoa piorando quando ela melhorou.
-   */
+  /** A tira de evolução lê este vetor da esquerda para a direita. */
   it('a evolução vai da primeira tentativa para a última', async () => {
     const pratos = await listarPratos();
     const bolo = pratos.find((prato) => prato.nome === 'Bolo de cenoura');
@@ -235,10 +228,7 @@ describe('listarExecucoesDoPrato', () => {
 });
 
 describe('obterResumoDoMes', () => {
-  /**
-   * Os números do cartão são contados, não escritos. Este teste existe para
-   * que mexer na lista de execuções não deixe o cartão mentindo.
-   */
+  /** Os números do cartão são contados, não escritos. */
   it('conta as execuções do mês corrente a partir dos dados', async () => {
     const doMes = EXECUCOES.filter((execucao) => execucao.mes === MES_CORRENTE);
     const media = doMes.reduce((soma, e) => soma + e.nota, 0) / doMes.length;

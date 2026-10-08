@@ -7,7 +7,7 @@ import { color } from '@/theme';
 
 type Props = {
   children: ReactNode;
-  /** `escura` usa backgroundDark — só cronômetro, gravação e resumo. */
+  /** `escura` só no cronômetro, na gravação e no resumo. */
   tom?: 'clara' | 'escura';
   /** Bordas onde aplicar a área segura. Padrão: topo e base. */
   edges?: readonly Edge[];

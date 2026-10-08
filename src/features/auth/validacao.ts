@@ -1,8 +1,7 @@
 /** Mínimo pedido na tela de criar conta ("use 8 caracteres ou mais"). */
 export const MINIMO_SENHA = 8;
 
-// Simples de propósito: validação de e-mail por regex nunca é completa, e a
-// confirmação real acontece no servidor. Aqui só evitamos o erro óbvio.
+// Simples de propósito: a confirmação real acontece no servidor.
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export type ErrosEntrar = { email?: string; senha?: string };

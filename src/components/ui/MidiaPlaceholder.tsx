@@ -13,8 +13,7 @@ type Props = {
 };
 
 export function MidiaPlaceholder({ largura = '100%', altura, raio = 10, style }: Props) {
-  // A diagonal exige faixas mais longas que a caixa; 2x a maior dimensão cobre
-  // qualquer proporção sem deixar canto vazio.
+  // A diagonal pede faixas mais longas que a caixa, senão sobra canto vazio.
   const faixas = useMemo(() => {
     const alcance = altura * 2 + 200;
     const total = Math.ceil(alcance / (LARGURA_FAIXA * 2));

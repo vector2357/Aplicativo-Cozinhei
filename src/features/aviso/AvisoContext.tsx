@@ -12,10 +12,7 @@ type AvisoContextValor = {
   mostrar: (conteudo: ConteudoAviso) => void;
   /** Tira o aviso antes da hora. */
   esconder: () => void;
-  /**
-   * Altura a deixar livre no rodapé, para o aviso não cobrir o que já está
-   * ancorado ali. Quem declara é o layout dono do elemento fixo.
-   */
+  /** Altura livre no rodapé, declarada pelo layout dono do elemento fixo. */
   reservarRodape: (altura: number) => void;
 };
 
@@ -42,8 +39,7 @@ export function AvisoProvider({ children }: { children: ReactNode }) {
     (conteudo: ConteudoAviso) => {
       limparRelogio();
       setAviso(conteudo);
-      // O leitor de tela não repara numa barra que aparece no rodapé; o
-      // anúncio é o que torna o feedback perceptível sem a visão.
+      // O leitor de tela não repara numa barra que só aparece no rodapé.
       AccessibilityInfo.announceForAccessibility(conteudo.texto);
       relogio.current = setTimeout(() => setAviso(null), DURACAO_MS);
     },
@@ -68,13 +64,7 @@ export function AvisoProvider({ children }: { children: ReactNode }) {
   );
 }
 
-/**
- * Declara, enquanto a tela estiver montada, quanto espaço o rodapé já ocupa.
- *
- * A barra de abas é flutuante e vive fora da árvore das telas; sem isto, o
- * aviso apareceria por cima dela. Ao desmontar, a reserva volta a zero — que
- * é o certo para as telas de entrada, que não têm barra nenhuma.
- */
+/** Reserva espaço no rodapé enquanto a tela estiver montada. */
 export function useReservaDeRodape(altura: number) {
   const { reservarRodape } = useAviso();
 

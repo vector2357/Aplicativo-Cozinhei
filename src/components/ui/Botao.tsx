@@ -16,12 +16,7 @@ type Props = {
   style?: ViewStyle;
   /** Complementa o título para leitores de tela quando ele não basta. */
   accessibilityHint?: string;
-  /**
-   * Substitui o título na leitura de tela.
-   *
-   * Para quando o título é abreviação visual: "MS" no avatar diz o nome a
-   * quem vê, e não significa nada falado.
-   */
+  /** Substitui o título na leitura: "MS" no avatar não significa nada falado. */
   accessibilityLabel?: string;
 };
 
@@ -38,7 +33,6 @@ export function Botao({
 }: Props) {
   const inativo = desabilitado || carregando;
   const paleta = PALETA[variante];
-  // Uma superfície só, escolhida pelo estado: normal ou inativa.
   const superficie = inativo ? paleta.inativo : paleta;
 
   return (
@@ -59,8 +53,7 @@ export function Botao({
       ]}
     >
       {carregando ? (
-        // Indicador próprio: o `ActivityIndicator` do RN renderiza com poucos
-        // pontos no Android e some dentro do botão.
+        // Indicador próprio: o do RN some dentro do botão no Android.
         <Indicador tamanho={20} cor={superficie.texto} rotulo={`${titulo}, carregando`} />
       ) : (
         <>
@@ -82,20 +75,10 @@ type Paleta = {
   borda: string;
   texto: string;
   tamanho?: { fontSize: number };
-  /** As mesmas três cores, para quando o botão está desabilitado. */
   inativo: { fundo: string; borda: string; texto: string };
 };
 
-/**
- * O estado inativo NÃO é a cor normal esmaecida.
- *
- * `opacity` derrubaria o contraste do texto junto com o fundo, e o texto do
- * botão desabilitado é justamente o que precisa continuar legível: é ele que
- * diz o que ainda não dá para fazer. Cada variante declara o próprio trio.
- *
- * Fantasma é link, não caixa: fica sem fundo nos dois estados. Contorno
- * escuro vive sobre `backgroundDark` e por isso usa o cinza claro.
- */
+// Cada variante declara o próprio trio inativo, em vez de esmaecer com `opacity`.
 const PALETA: Record<VarianteBotao, Paleta> = {
   principal: {
     fundo: color.amber,
@@ -140,7 +123,7 @@ const estilos = StyleSheet.create({
     paddingHorizontal: 16,
   },
   comBorda: { borderWidth: 1 },
-  // Fantasma é um link: alvo de 44pt sem caixa visível.
+  // Fantasma é link: alvo de 44pt sem caixa visível.
   fantasma: { minHeight: touch.minTarget, paddingHorizontal: 8 },
   pressionado: { opacity: interacao.opacidadePressionado },
   icone: { alignItems: 'center', justifyContent: 'center' },

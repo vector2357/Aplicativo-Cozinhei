@@ -22,19 +22,9 @@ export default function LayoutAbas() {
   // Sobe a barra acima da barra de gestos; em aparelho sem ela, respiro fixo.
   const base = Math.max(insets.bottom, spacing.xl);
 
-  // A barra é flutuante e não empurra nada: sem esta reserva, o aviso de
-  // rodapé apareceria por cima dela.
+  // A barra flutua e não empurra nada: sem a reserva, o aviso cairia sob ela.
   useReservaDeRodape(base + touch.tabBarHeight - Math.max(insets.bottom, spacing.lg));
 
-  /*
-    A guarda da sessão. Sem ela, um link direto para `/inicio` abre o app
-    inteiro sem nunca ter havido login — e o app passa a afirmar estar logado
-    sem estar. É aqui que a etapa 04 vai checar o token do Supabase, e por
-    isso a checagem vive no layout: uma só, para as quatro abas.
-
-    `Redirect` em vez de navegar dentro de um efeito: assim a tela protegida
-    não chega a montar, e nenhuma busca de dados dispara antes do desvio.
-  */
   if (!autenticado) return <Redirect href="/" />;
 
   return (
@@ -67,8 +57,7 @@ export default function LayoutAbas() {
         visivel={sheetRegistrar}
         onFechar={() => setSheetRegistrar(false)}
         onEscolherCaminho={(destino) => {
-          // Fecha um sheet antes de abrir o outro: dois modais empilhados
-          // deixam o leitor de tela preso no de baixo.
+          // Um sheet fecha antes do outro abrir: empilhados, prendem o foco.
           setSheetRegistrar(false);
           emConstrucao.anunciar(destino);
         }}

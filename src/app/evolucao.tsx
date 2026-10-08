@@ -84,8 +84,7 @@ export default function TelaEvolucao() {
                   <View
                     key={prato.id}
                     style={estilos.linha}
-                    // Um nó por prato. Sem isto seriam três paradas de foco
-                    // por linha, e a terceira repetiria o que a segunda disse.
+                    // Um nó por prato, em vez de três paradas de foco por linha.
                     accessible
                     accessibilityLabel={
                       `${prato.nome}: de ${formatarNota(prato.evolucao[0])} a ` +
@@ -156,11 +155,7 @@ function Metrica({ valor, rotulo }: { valor: string; rotulo: string }) {
 const estilos = StyleSheet.create({
   margem: { paddingHorizontal: spacing.screenH, paddingTop: spacing.md },
   rolagem: { paddingHorizontal: spacing.screenH, paddingBottom: spacing.huge },
-  /*
-    Superfície clara, e não `backgroundDark`: a regra do projeto reserva o
-    fundo escuro para três contextos — resumo do mês, gravação de áudio e
-    cronômetro. Esta tela não é nenhum deles.
-  */
+  // Clara: o fundo escuro é reservado ao resumo, à gravação e ao cronômetro.
   painel: {
     backgroundColor: color.surface,
     borderWidth: 1,

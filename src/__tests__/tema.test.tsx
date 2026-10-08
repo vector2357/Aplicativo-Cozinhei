@@ -26,19 +26,7 @@ function estiloDe(no: { props: { style?: unknown } }): Record<string, unknown> {
   return plano;
 }
 
-/**
- * Todo estilo de "pressionado" declarado no código de componente.
- *
- * O estado pressionado do `Pressable` não é observável no renderizador de
- * teste: `props.style` chega já resolvido para o estado solto, e o evento
- * sintético de toque não muda o estado interno do componente. Medir o valor
- * renderizado exigiria o aparelho.
- *
- * O que dá para verificar — e é o que a regra realmente diz — é que nenhum
- * componente ESCREVE o número à mão. A regra do projeto é que valor que não
- * existe em `src/theme` não deveria existir na interface; aqui ela vira
- * teste, lendo a fonte em vez do resultado.
- */
+/** Todo estilo de "pressionado" declarado no código de componente. */
 function estilosPressionadoDeclarados(): { arquivo: string; corpo: string }[] {
   const raiz = path.join(__dirname, '..', 'components');
   const encontrados: { arquivo: string; corpo: string }[] = [];
@@ -91,10 +79,7 @@ describe('X-01 · um só feedback de toque', () => {
     expect(interacao.opacidadePressionado).toBeLessThan(1);
   });
 
-  /**
-   * O `+` é a exceção declarada: clarear âmbar tira dele a cor que o
-   * identifica como a ação principal, então ele encolhe em vez de esmaecer.
-   */
+  /** O `+` é a exceção: clarear o âmbar tiraria dele a cor da ação principal. */
   it('o botão de registrar encolhe em vez de esmaecer', () => {
     const fab = estilosPressionadoDeclarados().find((e) => e.arquivo === 'BotaoRegistrar.tsx');
 
@@ -121,11 +106,7 @@ describe('A-05 · o anel do botão de registrar', () => {
 });
 
 describe('I-02 · piso de tamanho de texto', () => {
-  /**
-   * `overline` é o rótulo dos campos de formulário; `dataMeta` carrega as
-   * mensagens de erro. Os dois eram os menores textos do app, justamente
-   * onde o tamanho mais importa.
-   */
+  /** `overline` é o rótulo dos campos de formulário; `dataMeta` carrega as mensagens de erro. */
   it('nenhum estilo de texto fica abaixo de 11px', () => {
     Object.entries(text).forEach(([nome, estilo]) => {
       expect({ nome, fontSize: estilo.fontSize }).toMatchObject({

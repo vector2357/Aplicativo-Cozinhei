@@ -15,8 +15,7 @@ describe('formatarNota', () => {
 
 describe('formatarMoeda', () => {
   it('formata em reais com duas casas', () => {
-    // O separador de milhar do pt-BR é um espaço não separável em algumas
-    // versões do ICU; normalizamos para comparar só os dígitos.
+    // O separador de milhar do pt-BR é um espaço não separável em algumas versões do ICU.
     expect(formatarMoeda(12.8).replace(/\s/g, ' ')).toBe('R$ 12,80');
     expect(formatarMoeda(62).replace(/\s/g, ' ')).toBe('R$ 62,00');
   });

@@ -31,8 +31,7 @@ export function PainelDeEntrada({ abaInicial }: Props) {
   const { compacta } = useLayoutResponsivo();
   const reduzirMovimento = useReduzirMovimento();
   const alturaDoTeclado = useAlturaDoTeclado();
-  // Com o teclado aberto, o recuo é a altura dele mais o respiro de sempre:
-  // é o que faz sobrar conteúdo para rolar até a ação principal.
+  // Com o teclado aberto, o recuo cresce para sobrar o que rolar até a ação.
   const recuoInferior = alturaDoTeclado ? alturaDoTeclado + spacing.lg : spacing.xxl;
 
   const [aba, setAba] = useState<AbaDeEntrada>(abaInicial);
@@ -45,14 +44,7 @@ export function PainelDeEntrada({ abaInicial }: Props) {
     router.replace('/entrando');
   }
 
-  /*
-    Aparecer e sumir, sem deslocamento lateral.
-
-    O que desliza é a pílula do seletor, e ela basta para ligar o "de onde"
-    ao "para onde". Deslizar o formulário junto somaria dois movimentos na
-    mesma direção e daria de novo a sensação de tela trocando — que é
-    exatamente o que se queria tirar.
-  */
+  // Só opacidade: quem desliza é a pílula do seletor, e ela já basta.
   const entrada = reduzirMovimento ? undefined : FadeIn.duration(DURACAO_MS);
   const saida = reduzirMovimento ? undefined : FadeOut.duration(DURACAO_MS / 2);
 
@@ -61,13 +53,7 @@ export function PainelDeEntrada({ abaInicial }: Props) {
       <ScrollView
         testID="rolagem-do-formulario"
         style={estilos.preenche}
-        /*
-          O espaço do teclado é reservado no PRÓPRIO conteúdo, e não por um
-          `KeyboardAvoidingView`: com `edgeToEdgeEnabled` no `app.json` a
-          janela do Android não é redimensionada quando o teclado sobe, e a
-          moldura não tinha o que encolher. Sem esta reserva, a ação principal
-          ficava atrás do teclado e não havia excesso para rolar até ela.
-        */
+        // Reservado no conteúdo: com `edgeToEdgeEnabled` a janela não encolhe.
         contentContainerStyle={[estilos.conteudo, { paddingBottom: recuoInferior }]}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
@@ -89,13 +75,7 @@ export function PainelDeEntrada({ abaInicial }: Props) {
           onChange={setAba}
         />
 
-        {/*
-          `key` por aba: é o que faz o React trocar a árvore em vez de
-          reaproveitá-la, e portanto o que dá à animação um começo e um fim.
-          Cada formulário guarda o próprio estado — voltar para "entrar"
-          depois de digitar no cadastro devolve o formulário limpo, que é o
-          comportamento que se esperava das duas rotas separadas.
-        */}
+        {/* `key` por aba: troca a árvore, dá fim à animação e limpa o estado. */}
         <Animated.View
           key={aba}
           entering={entrada}
@@ -139,6 +119,6 @@ const estilos = StyleSheet.create({
   cabecalho: { marginTop: spacing.xl },
   cabecalhoCompacto: { marginTop: spacing.sm },
   assinatura: { marginTop: spacing.sm, color: color.inkFaint },
-  /** Ocupa o que sobra, para o espaçador interno do formulário ter o que dividir. */
+  /** Ocupa o que sobra, para o espaçador do formulário ter o que dividir. */
   formulario: { flex: 1 },
 });

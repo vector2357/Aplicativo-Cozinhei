@@ -12,19 +12,11 @@ export default function TelaEntrando() {
   const { autenticar, usuarioPendente } = useAuth();
   const aviso = useAviso();
 
-  /*
-    O número vem do usuário, não de um texto fixo. Uma conta recém-criada tem
-    zero execuções, e prometer "suas 21 execuções" para ela contradiz os dados
-    que o próprio app acabou de gerar.
-  */
+  // O número vem do usuário: conta nova não tem 21 execuções a prometer.
   const legenda = usuarioPendente.totalExecucoes
     ? `trazendo suas ${usuarioPendente.totalExecucoes} execuções e a despensa salva.`
     : 'preparando sua primeira ficha.';
-  /**
-   * Um sinal só para as duas coisas que o cancelamento precisa impedir: a
-   * navegação para dentro do app, e a sessão ser aplicada quando a promessa
-   * em voo resolver.
-   */
+  // Um sinal só impede as duas coisas: navegar para dentro e aplicar a sessão.
   const desistencia = useRef(new AbortController());
 
   useEffect(() => {
@@ -41,9 +33,7 @@ export default function TelaEntrando() {
   function cancelar() {
     desistencia.current.abort();
     router.replace('/');
-    // Voltar para o login sem dizer nada deixa a dúvida de ter tocado no
-    // lugar certo. O aviso sobrevive à troca de tela porque vive no layout
-    // raiz, fora do Stack.
+    // Voltar em silêncio deixa a dúvida de ter tocado no lugar certo.
     aviso.mostrar({ texto: 'entrada cancelada' });
   }
 

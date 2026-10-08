@@ -9,11 +9,7 @@ type Props = {
   /** O que esta tela vai mostrar quando existir. */
   descricao: string;
   etapa: string;
-  /**
-   * De onde se chega aqui, em caixa baixa: "início", "histórico". Presente,
-   * troca o título simples por um cabeçalho com voltar. Ausente, a tela é
-   * uma aba e não tem retorno.
-   */
+  /** Presente, troca o título por um cabeçalho com voltar. Ausente, é aba. */
   origem?: string;
 };
 

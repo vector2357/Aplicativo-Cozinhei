@@ -12,10 +12,7 @@ type Props = {
   onEscolher: (conta: Conta) => void;
   /** Muda só o verbo da frase de contexto. */
   acao: 'entrar' | 'criar conta';
-  /**
-   * Chamado por "usar outra conta". Enquanto o fluxo oficial do provedor não
-   * existe, a tela de cima anuncia o destino em vez de deixar o toque mudo.
-   */
+  /** "usar outra conta": a tela de cima anuncia, em vez de deixar o toque mudo. */
   onOutraConta: () => void;
 };
 

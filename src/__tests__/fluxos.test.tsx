@@ -3,13 +3,7 @@ import { act, fireEvent, renderRouter, screen } from 'expo-router/testing-librar
 import { EXECUCOES_RECENTES } from '@/features/execucoes/fixtures';
 import { DESTINOS } from '@/features/navegacao/destinos';
 
-/**
- * Monta o app a partir das rotas reais e devolve o caminho atual.
- *
- * `renderRouter` devolve a própria promessa do render, com `getPathname`
- * pendurado nela; como uma função `async` desembrulha thenables, o método
- * precisa ser repassado à mão ou chega aqui como `undefined`.
- */
+/** Monta o app a partir das rotas reais e devolve o caminho atual. */
 async function montarEm(url: string) {
   const promessa = renderRouter('src/app', { initialUrl: url });
   const render = await promessa;
@@ -26,13 +20,7 @@ async function esperarAutenticacao() {
   });
 }
 
-/**
- * Entra no app de verdade e para na rota pedida.
- *
- * As abas e tudo que vem delas são protegidas pela guarda de sessão: montar
- * direto numa rota interna devolve o login. Este helper percorre o caminho
- * que o usuário percorre.
- */
+/** Entra no app de verdade e para na rota pedida. */
 async function entrarEIrPara(rota: string) {
   const app = await montarEm('/');
 
@@ -62,9 +50,7 @@ describe('fluxo · entrar por e-mail e senha', () => {
     await esperarAutenticacao();
     expect(app.caminho()).toBe('/inicio');
 
-    // O coração do B1: com `push`, o login continuava vivo embaixo das abas e
-    // o voltar do Android o trazia de volta com os erros da tentativa
-    // anterior. A tela de entrada não pode mais existir na pilha.
+    // Com `push`, o login seguia vivo sob as abas e o voltar do Android o ressuscitava.
     expect(screen.queryByRole('button', { name: 'esqueci minha senha' })).toBeNull();
 
     app.desmontar();
@@ -104,11 +90,7 @@ describe('fluxo · criar conta', () => {
     app.desmontar();
   });
 
-  /*
-    O seletor deixou de navegar: entrar e criar conta são o mesmo lugar, e o
-    que troca é o formulário. A pilha não é tocada — nem para empilhar, nem
-    para substituir.
-  */
+  // O seletor deixou de navegar: entrar e criar conta são o mesmo lugar.
   it('alternar entre entrar e criar conta não mexe na pilha', async () => {
     const app = await montarEm('/');
 
@@ -228,8 +210,7 @@ describe('fluxo · a barra de abas continua inteira', () => {
 
     await fireEvent.press(screen.getByRole('button', { name: /gravar um áudio/ }));
 
-    // Um sheet fecha antes de o outro abrir: modais empilhados prendem o foco
-    // do leitor de tela no de baixo.
+    // Um sheet fecha antes do outro abrir: empilhados, prendem o foco no de baixo.
     expect(screen.queryByText('como você quer registrar?')).toBeNull();
     expect(screen.getByText(/chega na etapa 04/)).toBeTruthy();
 
@@ -248,11 +229,7 @@ describe('fluxo · a barra de abas continua inteira', () => {
 });
 
 describe('fluxo · o aviso de rodapé no app montado', () => {
-  /**
-   * O provider vive no layout raiz, por fora do Stack. Este teste confirma
-   * que ele existe em todas as telas — sem ele, qualquer `useAviso()` de
-   * tela nova estouraria só em execução.
-   */
+  /** O provider vive no layout raiz, por fora do Stack. */
   it('o app monta com o provedor de avisos em volta das telas', async () => {
     const app = await entrarEIrPara('/inicio');
 
@@ -305,10 +282,7 @@ describe('fluxo · nenhum controle fica mudo', () => {
 });
 
 describe('fluxo · a sessão protege o que é de dentro', () => {
-  /**
-   * O app abria `/inicio` por link direto e afirmava estar logado sem nunca
-   * ter havido login. É também onde a etapa 04 vai checar o token.
-   */
+  /** O app abria `/inicio` por link direto e afirmava estar logado sem nunca ter havido login. */
   it('link direto para uma aba, sem sessão, devolve o login', async () => {
     const app = await montarEm('/inicio');
 
@@ -318,8 +292,7 @@ describe('fluxo · a sessão protege o que é de dentro', () => {
     app.desmontar();
   });
 
-  // Uma montagem por teste: montar o roteador várias vezes dentro do mesmo
-  // caso deixa resíduo na árvore consultada por `screen`.
+  // Uma montagem por teste: repetir deixa resíduo na árvore que `screen` consulta.
   it.each(['/historico', '/pratos', '/perfil'])('o mesmo vale para %s', async (rota) => {
     const app = await montarEm(rota);
 
@@ -417,11 +390,7 @@ describe('fluxo · dos pratos à evolução de um prato', () => {
 });
 
 describe('fluxo · conta nova encontra o app vazio', () => {
-  /**
-   * Quem acaba de criar conta não pode ver o histórico de outra pessoa. E é
-   * este percurso que torna os estados vazios visíveis no app rodando, não só
-   * em teste.
-   */
+  /** Quem acaba de criar conta não pode ver o histórico de outra pessoa. */
   async function criarContaEEntrar() {
     const app = await montarEm('/criar-conta');
 
@@ -485,11 +454,7 @@ describe('fluxo · conta nova encontra o app vazio', () => {
     app.desmontar();
   });
 
-  /*
-    O painel de números não aparece para quem não tem números: três zeros e
-    um travessão informam o que a pessoa já sabe e não oferecem saída. O
-    convite ocupa o lugar dele — é a regra dos três estados (§6).
-  */
+  // O painel de números não aparece para quem não tem números.
   it('o perfil convida ao primeiro registro em vez de mostrar zeros', async () => {
     const app = await criarContaEEntrar();
     await fireEvent.press(screen.getByRole('tab', { name: 'perfil' }));

@@ -7,29 +7,21 @@ export const NOMES_ICONE_ABA = ['inicio', 'historico', 'pratos', 'perfil'] as co
 
 export type NomeIconeAba = (typeof NOMES_ICONE_ABA)[number];
 
-/**
- * Aresta do ícone na barra. Acima dos 18pt da forma geométrica antiga porque
- * contorno lê menor que sólido — e ainda cabe com folga na aba, que tem 62pt
- * de altura: 24 do ícone + 6 do respiro + 17 da linha do rótulo = 47pt.
- */
+/** 24, e não 18: contorno lê menor que sólido, e ainda cabe na aba de 62pt. */
 export const TAMANHO_ICONE_ABA = 24;
 
-/** Grade de desenho. Área útil de 20pt, com 2pt de folga em cada borda. */
+/** Área útil de 20pt, com 2pt de folga em cada borda. */
 const GRADE = 24;
 
-/** Peso do traço no contorno. O mesmo nos quatro, para que pesem igual. */
+/** O mesmo nos quatro, para que pesem igual. */
 const TRACO = 1.7;
 
 type Props = {
   nome: NomeIconeAba;
   /** Aba selecionada: o ícone passa de contorno a sólido. */
   ativo?: boolean;
-  /** Aresta do quadrado. Igual para os quatro — não varie por ícone. */
   tamanho?: number;
-  /**
-   * Cor da superfície atrás do ícone. Só o `historico` usa: os marcos da linha
-   * do tempo são vazados sobre o trilho, e vazar exige saber o que há atrás.
-   */
+  /** Só o `historico` usa: vazar os marcos exige saber o que há atrás. */
   corDeFundo?: string;
 };
 
@@ -47,12 +39,10 @@ export function IconeAba({
       width={tamanho}
       height={tamanho}
       viewBox={`0 0 ${GRADE} ${GRADE}`}
-      // O ícone é redundante com o rótulo logo abaixo e com o
-      // `accessibilityLabel` da aba: para o leitor de tela ele é ruído.
+      // Redundante com o rótulo logo abaixo e com o rótulo da aba.
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
-      // Refletem o estado no elemento raiz — é por aqui que o teste verifica
-      // que tocar na aba de fato troca contorno por sólido.
+      // O estado no elemento raiz é o que o teste verifica.
       fill={ativo ? cor : 'none'}
       stroke={cor}
       strokeWidth={TRACO}
@@ -66,15 +56,7 @@ export function IconeAba({
 
 type ArgsDesenho = { ativo: boolean; cor: string; corDeFundo: string };
 
-/**
- * Um desenho por aba. Cada um recebe os mesmos argumentos e usa o MESMO
- * caminho nos dois estados — trocam-se preenchimento e traço, nunca a
- * geometria.
- *
- * `início` e `pratos` são um caminho só, com `evenodd`: a porta da casa e o
- * centro do prato são buracos de verdade, não uma forma pintada da cor do
- * fundo. Assim o sólido funciona sobre qualquer superfície.
- */
+// Mesma geometria nos dois estados: trocam-se só o preenchimento e o traço.
 const DESENHOS: Record<NomeIconeAba, (args: ArgsDesenho) => React.ReactNode> = {
   /** Casa, com a porta vazada. */
   inicio: ({ ativo, cor }) => (
@@ -87,10 +69,10 @@ const DESENHOS: Record<NomeIconeAba, (args: ArgsDesenho) => React.ReactNode> = {
     />
   ),
 
-  /** Linha do tempo: trilho vertical, três marcos e o que cada marco registra. */
+  /** Linha do tempo: trilho vertical, três marcos e o que cada um registra. */
   historico: ({ ativo, cor, corDeFundo }) => (
     <>
-      {/* O trilho e as linhas são traço nos dois estados: linha não se preenche. */}
+      {/* Traço nos dois estados: linha não se preenche. */}
       <Path d="M6.4 4.7v14.6M11.2 7.6h9.2M11.2 12h6.8M11.2 16.4h8.4" fill="none" stroke={cor} />
       {MARCOS.map((cy) => (
         <Circle

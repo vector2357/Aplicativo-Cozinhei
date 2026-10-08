@@ -38,15 +38,13 @@ export function TiraDeEvolucao({ notas, prato }: Props) {
     >
       {notas.map((nota, indice) => (
         <View
-          // A posição É a identidade aqui: duas tentativas podem ter a mesma
-          // nota, e a ordem é o que a tira comunica.
+          // A posição é a identidade: duas tentativas podem ter a mesma nota.
           key={indice}
           style={[
             estilos.barra,
             {
               height: Math.max(3, (nota / NOTA_MAXIMA) * ALTURA),
-              // A última tentativa é a que importa: ela ganha o âmbar da nota;
-              // as anteriores ficam neutras, como rastro.
+              // A última leva o âmbar; as anteriores ficam neutras, como rastro.
               backgroundColor: indice === notas.length - 1 ? color.amber : color.fillNeutral,
             },
           ]}

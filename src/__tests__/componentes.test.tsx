@@ -119,12 +119,7 @@ describe('SeletorSegmentado', () => {
 });
 
 describe('CartaoExecucao', () => {
-  /*
-    `includeHiddenElements` aqui não é detalhe de teste: o conteúdo do cartão
-    é invisível para o leitor de tela DE PROPÓSITO, porque o rótulo do cartão
-    já diz tudo. Estas consultas olham o que o usuário VÊ; a árvore do leitor
-    é assunto do teste logo abaixo.
-  */
+  // O conteúdo do cartão é invisível ao leitor de propósito: o rótulo já diz tudo.
   const visivel = { includeHiddenElements: true } as const;
 
   it('na variante ficha mostra a calha da tentativa, custo e chips', async () => {
@@ -143,12 +138,7 @@ describe('CartaoExecucao', () => {
     expect(screen.getByText('tentativa 04 · 19 ago', visivel)).toBeTruthy();
   });
 
-  /*
-    Medido com `uiautomator` num aparelho real: o chip e as estrelas apareciam
-    como nós próprios DENTRO do cartão, e o TalkBack parava três vezes na
-    mesma ficha, repetindo "qualidade: massa fofa". O `accessible` do
-    `Pressable` resolve isso no iOS e não resolve no Android.
-  */
+  // Medido com `uiautomator`: o TalkBack parava três vezes na mesma ficha.
   it('o leitor de tela para UMA vez por ficha, não uma vez por peça', async () => {
     await render(<CartaoExecucao execucao={EXECUCAO} variante="ficha" onPress={() => {}} />);
 
@@ -166,8 +156,7 @@ describe('CartaoExecucao', () => {
   it('é tocável e identifica a execução para o leitor de tela', async () => {
     const aoTocar = jest.fn();
     await render(<CartaoExecucao execucao={EXECUCAO} onPress={aoTocar} />);
-    // O rótulo passou a carregar também a nota — sem ela, a lista era
-    // percorrida sem se ouvir o dado que ela existe para dar.
+    // O rótulo passou a carregar a nota, que é o dado que a lista existe para dar.
     await fireEvent.press(
       screen.getByLabelText('Bolo de cenoura, tentativa 04, 19 ago, nota 4,5 de 5'),
     );

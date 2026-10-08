@@ -16,12 +16,7 @@ function estiloDe(elemento: { props: { style?: unknown } }): Record<string, unkn
   return plano;
 }
 
-/**
- * O ícone é escondido do leitor de tela de propósito — quem fala é o rótulo.
- * Por isso a consulta precisa de `includeHiddenElements`: o testing-library
- * ignora subárvores marcadas como inacessíveis, e ignorar é o comportamento
- * certo. O `react-native-svg` deixa medida, cor e traço no elemento raiz.
- */
+/** O ícone é escondido do leitor de tela de propósito — quem fala é o rótulo. */
 const svgDe = (nome: NomeIconeAba) =>
   screen.getByTestId(`icone-aba-${nome}`, { includeHiddenElements: true });
 
@@ -151,11 +146,7 @@ describe('BotaoAba com ícone', () => {
     expect(estiloDe(screen.getByText('início')).color).toBe(color.ink);
   });
 
-  /**
-   * A conta que garante que o ícone não empurra o rótulo para fora da barra:
-   * 22 (ícone) + 5 (respiro) + 17 (linha do rótulo) = 44pt, dentro dos 56pt
-   * da fatia, que por sua vez cabem nos 64pt da barra.
-   */
+  /** A conta que garante que o ícone não empurra o rótulo para fora da barra. */
   it('o ícone e o rótulo cabem na altura da aba, e a aba cabe na barra', async () => {
     await render(<BotaoAba rotulo="histórico" icone="historico" />);
 

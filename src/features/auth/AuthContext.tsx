@@ -11,20 +11,10 @@ type Cadastro = Credenciais & { nome: string };
 
 type AuthContextValor = {
   usuario: Usuario | null;
-  /**
-   * Quem está entrando, antes de a sessão existir.
-   *
-   * A tela de espera precisa dele: durante a autenticação `usuario` ainda é
-   * `null`, e é o pendente que sabe se a conta é nova ou tem histórico.
-   */
+  /** Quem está entrando, enquanto `usuario` ainda é `null`. */
   usuarioPendente: Usuario;
   autenticado: boolean;
-  /**
-   * Resolve quando a sessão está pronta. Usada pela tela "entrando".
-   *
-   * O sinal permite desistir no meio: cancelada, a sessão NÃO é aplicada.
-   * Na etapa 04 o mesmo sinal aborta a requisição ao servidor.
-   */
+  /** Resolve quando a sessão está pronta. Cancelada, não aplica sessão. */
   autenticar: (sinal?: AbortSignal) => Promise<void>;
   entrar: (credenciais: Credenciais) => void;
   criarConta: (cadastro: Cadastro) => void;
@@ -44,8 +34,7 @@ function iniciaisDe(nome: string): string {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // `pendente` guarda quem vai entrar; `usuario` só é preenchido depois que
-  // `autenticar` resolve, para que a tela "entrando" tenha o que mostrar.
+  // `usuario` só é preenchido quando `autenticar` resolve.
   const [pendente, setPendente] = useState<Usuario>(USUARIO_EXEMPLO);
   const [usuario, setUsuario] = useState<Usuario | null>(null);
 
@@ -75,9 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const autenticar = useCallback(
     async (sinal?: AbortSignal) => {
       await new Promise((resolve) => setTimeout(resolve, ATRASO_AUTENTICACAO_MS));
-      // Sem esta checagem, cancelar bloquearia só a navegação: a sessão ficava
-      // autenticada com o usuário de volta na tela de login. Vira bug de
-      // verdade assim que existe guarda de rota — e agora existe.
+      // Sem isto, cancelar deixava a sessão autenticada na tela de login.
       if (sinal?.aborted) return;
       setUsuario(pendente);
     },
@@ -111,13 +98,8 @@ export function useAuth(): AuthContextValor {
   return contexto;
 }
 
-/**
- * Usuário garantido, para telas que só existem depois do login. Cai no
- * usuário de exemplo se alguém abrir a rota direto (deep link em dev).
- */
+/** Usuário garantido, para telas que só existem depois do login. */
 export function useUsuario(): Usuario {
-  // As telas de dentro do app só montam com sessão — quem garante isso é a
-  // guarda em `(tabs)/_layout.tsx`. O usuário de exemplo continua como rede
-  // de segurança para o instante entre a saída e o redirecionamento.
+  // Rede de segurança para o instante entre sair e ser redirecionado.
   return useAuth().usuario ?? USUARIO_EXEMPLO;
 }

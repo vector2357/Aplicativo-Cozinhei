@@ -21,23 +21,11 @@ const ABAS = [
   { rotulo: 'perfil', rota: '/perfil', icone: 'perfil' },
 ] as const;
 
-/**
- * O ícone é escondido do leitor de tela de propósito, então a consulta
- * precisa de `includeHiddenElements`. `fill` diz o estado: `none` é contorno,
- * a cor de tinta é sólido.
- */
+/** O ícone é escondido do leitor de tela de propósito. */
 const iconeDe = (nome: string) =>
   screen.getByTestId(`icone-aba-${nome}`, { includeHiddenElements: true });
 
-/**
- * Monta o app inteiro a partir das rotas reais e espera a renderização.
- *
- * `renderRouter` não aguarda o `render`, que é assíncrono na v14 do
- * testing-library: ele devolve a própria promessa, com `getPathname` e
- * companhia pendurados nela. Como uma função `async` desembrulha qualquer
- * thenable que retorne, os métodos precisam ser repassados à mão — senão
- * chegam aqui como `undefined`.
- */
+/** Monta o app inteiro a partir das rotas reais e espera a renderização. */
 async function montarEm(url: string) {
   const promessa = renderRouter('src/app', { initialUrl: url });
   const render = await promessa;
@@ -48,13 +36,7 @@ async function montarEm(url: string) {
   };
 }
 
-/**
- * Monta o app JÁ DENTRO da sessão, numa rota de aba.
- *
- * As abas passaram a ser protegidas: sem sessão, o layout devolve
- * `<Redirect href="/" />` e a barra nem chega a montar. Testá-las exige
- * entrar de verdade — que é também o único caminho que o usuário tem.
- */
+/** Monta o app JÁ DENTRO da sessão, numa rota de aba. */
 async function montarLogadoEm(rota: string) {
   const roteador = await montarEm('/');
 
@@ -84,8 +66,7 @@ const ROTULO_DA_ROTA: Record<string, string> = {
 
 describe('navegador de abas', () => {
   it('monta com as quatro rotas registradas', async () => {
-    // A regressão original: se os triggers não forem encontrados, este render
-    // lança "Couldn't find any screens for the navigator".
+    // Regressão: sem achar os triggers, o render lançava "Couldn't find any screens".
     await montarLogadoEm('/inicio');
 
     for (const aba of ABAS) {
@@ -126,13 +107,7 @@ describe('navegador de abas', () => {
     }
   });
 
-  /**
-   * Regressão: o `<TabTrigger>` injeta um `style` próprio com
-   * `flexDirection: 'row'` e `justifyContent: 'space-between'`. Quando esse
-   * estilo vem depois do nosso no array, ele vence — o ícone vai para a borda
-   * esquerda da fatia, o rótulo para a direita, e cada rótulo passa a encostar
-   * no ícone da aba seguinte. A barra fica esmagada, sem respiro entre abas.
-   */
+  /** Regressão: o estilo do TabTrigger vencia e jogava ícone e rótulo para as bordas. */
   it('empilha ícone e rótulo, sem deixar o estilo do TabTrigger vencer', async () => {
     await montarLogadoEm('/inicio');
 
@@ -167,11 +142,7 @@ describe('navegador de abas', () => {
     }
   });
 
-  /**
-   * A promessa central da proposta de ícones: só a aba em que o usuário está
-   * aparece sólida. Se duas ficassem sólidas — ou nenhuma — o ícone deixaria
-   * de dizer onde ele está.
-   */
+  /** Só a aba em que o usuário está aparece sólida; duas sólidas não diriam nada. */
   it.each(ABAS)('em $rota só o ícone de $rotulo fica sólido', async ({ rota, icone }) => {
     await montarLogadoEm(rota);
 

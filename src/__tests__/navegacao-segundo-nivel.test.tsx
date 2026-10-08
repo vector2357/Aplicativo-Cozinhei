@@ -7,8 +7,7 @@ const METRICAS = {
   insets: { top: 47, left: 0, right: 0, bottom: 34 },
 };
 
-// Prefixo `mock` obrigatório: a fábrica de `jest.mock` é içada para antes
-// das declarações do módulo, e só nomes assim escapam da checagem.
+// Prefixo `mock` obrigatório: a fábrica de `jest.mock` é içada para antes do módulo.
 const mockVoltar = jest.fn();
 const mockEmpurrar = jest.fn();
 let mockParametrosDaRota: { id: string } = { id: 'e1' };
@@ -54,8 +53,7 @@ describe('CabecalhoTela', () => {
   it('o título é um cabeçalho para o leitor de tela', async () => {
     await render(<CabecalhoTela titulo="sua evolução" origem="início" />, { wrapper: comArea });
 
-    // Sem o papel declarado, a tela vira uma lista plana de textos e o leitor
-    // perde o atalho de navegar por cabeçalhos.
+    // Sem o papel declarado, o leitor perde o atalho de navegar por cabeçalhos.
     expect(screen.getByRole('header', { name: 'sua evolução' })).toBeTruthy();
   });
 
@@ -91,8 +89,7 @@ describe('CabecalhoTela', () => {
   it('a seta é desenho: quem fala é o rótulo do botão', async () => {
     await render(<CabecalhoTela titulo="sua evolução" origem="início" />, { wrapper: comArea });
 
-    // Escondido da árvore de acessibilidade, por isso `includeHiddenElements`:
-    // é justamente essa ausência que o teste verifica.
+    // Escondido da árvore de acessibilidade, por isso `includeHiddenElements`.
     const seta = screen.getByTestId('icone-voltar', { includeHiddenElements: true });
     expect(seta.props.accessibilityElementsHidden).toBe(true);
     expect(seta.props.importantForAccessibility).toBe('no-hide-descendants');
@@ -129,8 +126,7 @@ describe('/execucao/[id]', () => {
   it('usa o nome do prato como título, confirmando onde se chegou', async () => {
     await render(<TelaExecucao />, { wrapper: comSessao });
 
-    // Do próprio conjunto: qual prato é o primeiro muda quando os dados de
-    // exemplo crescem, e o teste não deveria quebrar por isso.
+    // Do próprio conjunto: qual prato é o primeiro muda quando os dados de exemplo crescem.
     expect(await screen.findByRole('header', { name: EXECUCOES[0].prato })).toBeTruthy();
   });
 

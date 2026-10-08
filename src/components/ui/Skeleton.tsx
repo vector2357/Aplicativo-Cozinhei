@@ -37,7 +37,7 @@ export function Skeleton({ largura = '100%', altura = 14, raio = 6, style }: Pro
     opacidade.value = OPACIDADE_MIN;
     opacidade.value = withRepeat(
       withTiming(OPACIDADE_MAX, { duration: DURACAO_MS }),
-      // -1 repete para sempre; `true` faz a volta, em vez de saltar ao início.
+      // -1 repete sem fim; `true` faz a volta em vez de saltar ao início.
       -1,
       true,
     );

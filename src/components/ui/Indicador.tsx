@@ -60,8 +60,7 @@ export function Indicador({ tamanho = 36, cor = color.amber, rotulo = 'carregand
             borderRadius: tamanho / 2,
             borderWidth: traco,
             borderColor: cor,
-            // Um lado transparente é o que transforma o círculo em arco, e o
-            // arco é o que deixa o giro visível.
+            // Um lado transparente vira arco, e é o arco que deixa ver o giro.
             borderTopColor: 'transparent',
           },
           animado,

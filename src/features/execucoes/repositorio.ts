@@ -13,23 +13,13 @@ import type {
   ResumoMes,
 } from '@/types/dominio';
 
-/**
- * Conta que ainda não cozinhou nada.
- *
- * As telas pedem os dados pelo `dono`, e não por um booleano de "tem dados":
- * é o mesmo lugar onde a etapa 04 vai passar o id do usuário autenticado.
- */
+// Onde a etapa 04 vai passar o id do usuário autenticado.
 export type DonoDosDados = 'exemplo' | 'conta-nova';
 
 const vazio = <T,>(dono: DonoDosDados, dados: T[]): T[] =>
   dono === 'conta-nova' ? [] : dados;
 
-/**
- * Uma execução pelo id. `null` quando não existe — o id vem da rota.
- *
- * Recebe o dono como todas as outras: sem isso, uma conta que não tem
- * execução nenhuma abriria a ficha de outra pessoa por link direto.
- */
+/** Uma execução pelo id. `null` quando não existe — o id vem da rota. */
 export async function buscarExecucao(
   id: string,
   dono: DonoDosDados = 'exemplo',
@@ -49,12 +39,7 @@ export async function listarExecucoesRecentes(
   return vazio(dono, EXECUCOES_RECENTES);
 }
 
-/**
- * O histórico agrupado por mês, do mês mais recente ao mais antigo.
- *
- * O agrupamento acontece aqui, e não na tela, porque é regra de domínio: na
- * etapa 04 isto vira um `GROUP BY` e a tela continua recebendo a mesma forma.
- */
+/** O histórico agrupado por mês, do mais recente ao mais antigo. */
 export async function listarHistoricoPorMes(
   dono: DonoDosDados = 'exemplo',
 ): Promise<MesDeExecucoes[]> {
@@ -63,8 +48,7 @@ export async function listarHistoricoPorMes(
 
   for (const execucao of execucoes) {
     const atual = meses[meses.length - 1];
-    // As execuções já vêm em ordem cronológica inversa, então um mês novo só
-    // aparece quando o anterior termina — não é preciso ordenar de novo.
+    // Já vêm em ordem inversa: mês novo só começa quando o anterior termina.
     if (atual && atual.rotulo === execucao.mes) atual.execucoes.push(execucao);
     else meses.push({ rotulo: execucao.mes, execucoes: [execucao] });
   }
@@ -72,17 +56,7 @@ export async function listarHistoricoPorMes(
   return meses;
 }
 
-/**
- * Os pratos do usuário, derivados das execuções.
- *
- * Derivar em vez de guardar evita a inconsistência clássica: a lista de
- * pratos dizendo "3 tentativas" enquanto o histórico mostra 4. Na etapa 04
- * isto vira uma view no banco, pela mesma razão.
- *
- * Ordem: quem foi feito mais vezes primeiro — é o que o usuário está
- * repetindo, e repetir é o que o produto acompanha. Empate desempata pela
- * execução mais recente.
- */
+// Derivados das execuções: guardar deixaria a contagem descolar do histórico.
 export async function listarPratos(dono: DonoDosDados = 'exemplo'): Promise<Prato[]> {
   const execucoes = vazio(dono, EXECUCOES);
   const porPrato = new Map<string, Execucao[]>();
@@ -134,14 +108,7 @@ export async function listarReceitasGuia(
   return vazio(dono, RECEITAS_GUIA);
 }
 
-/**
- * O resumo do mês corrente, contado a partir das execuções.
- *
- * Os números são calculados, nunca escritos à mão: número escrito descola dos
- * dados na primeira vez que alguém mexe na lista, e aí o cartão do mês passa
- * a mentir. A frase de destaque continua vindo de fora, porque é texto de
- * interpretação — na etapa 04, do módulo de IA.
- */
+// Os números são contados, nunca escritos à mão. Só a frase vem de fora.
 export async function obterResumoDoMes(dono: DonoDosDados = 'exemplo'): Promise<ResumoMes> {
   const doMes = vazio(dono, EXECUCOES).filter((execucao) => execucao.mes === MES_CORRENTE);
   const soma = doMes.reduce((total, execucao) => total + execucao.nota, 0);
@@ -154,13 +121,7 @@ export async function obterResumoDoMes(dono: DonoDosDados = 'exemplo'): Promise<
   };
 }
 
-/**
- * Estatísticas gerais, para a tela de perfil.
- *
- * `custoTotal` e `tempoTotal` ficam de fora por enquanto: o tempo é texto
- * formatado ("1h05"), e somar texto exigiria um campo em minutos que os
- * fixtures ainda não têm. Entra junto com o banco, que guarda número.
- */
+// Sem `tempoTotal`: somar "1h05" pede um campo em minutos que só vem com o banco.
 export async function obterEstatisticas(dono: DonoDosDados = 'exemplo'): Promise<{
   execucoes: number;
   pratos: number;

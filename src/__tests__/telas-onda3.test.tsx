@@ -164,8 +164,7 @@ describe('prato em detalhe', () => {
     await render(<TelaPrato />, { wrapper: comSessao });
 
     expect(await screen.findByText('não encontrei este prato')).toBeTruthy();
-    // Rótulo diferente do voltar do cabeçalho, de propósito: dois controles
-    // com o mesmo nome na mesma tela são ambíguos para o leitor de tela.
+    // Rótulo diferente do voltar do cabeçalho, de propósito.
     await fireEvent.press(screen.getByRole('button', { name: 'ver todos os pratos' }));
     expect(mockVoltar).toHaveBeenCalled();
   });
@@ -239,10 +238,7 @@ describe('perfil', () => {
     expect(await screen.findByLabelText(`${EXECUCOES.length} execuções`)).toBeTruthy();
   });
 
-  /**
-   * Sair é destrutivo para a sessão. A Lei de Fitts diz que ação destrutiva
-   * pede distância: ela fica no fim da rolagem, longe do polegar em repouso.
-   */
+  /** Sair é destrutivo para a sessão. */
   it('oferece sair da conta, e avisa que saiu', async () => {
     await render(<TelaPerfil />, { wrapper: comSessao });
 

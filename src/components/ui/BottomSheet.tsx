@@ -24,13 +24,7 @@ export function BottomSheet({ visivel, onFechar, children, tituloAcessivel }: Pr
       onRequestClose={onFechar}
     >
       <View style={estilos.raiz}>
-        {/*
-          O scrim continua fechando ao toque, mas sai da árvore de
-          acessibilidade: por vir antes do conteúdo, era a PRIMEIRA coisa
-          anunciada ao abrir o sheet — "fechar, botão" antes de dizer o que o
-          sheet é. Os dois sheets do app já oferecem um fechar explícito
-          dentro deles, então nada se perde.
-        */}
+        {/* Fecha ao toque, mas fora da árvore: era o primeiro nó anunciado. */}
         <Pressable
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants"

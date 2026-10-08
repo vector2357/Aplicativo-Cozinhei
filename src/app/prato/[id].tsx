@@ -29,8 +29,7 @@ export default function TelaPrato() {
   );
 
   const prato = dados?.prato ?? null;
-  // Id que não existe é entrada externa, não defeito: deep link velho, link
-  // compartilhado, rota digitada. Trata-se como "não encontrei", não como erro.
+  // Id inexistente é entrada externa — deep link velho —, não defeito.
   const naoEncontrado = estado === 'pronto' && !prato;
 
   return (
@@ -61,10 +60,7 @@ export default function TelaPrato() {
 
       {estado === 'pronto' && prato && dados ? (
         <ScrollView contentContainerStyle={estilos.rolagem} showsVerticalScrollIndicator={false}>
-          {/*
-            O painel responde "estou melhorando?" antes de qualquer lista: é a
-            pergunta que traz o usuário até aqui.
-          */}
+          {/* O painel responde "estou melhorando?" antes de qualquer lista. */}
           <View
             style={estilos.painel}
             accessible
@@ -86,12 +82,7 @@ export default function TelaPrato() {
               <View style={estilos.separador} />
 
               <View>
-                {/*
-                  Sem âmbar aqui, por duas razões: sobre superfície branca ele
-                  marca 2.27:1, e o projeto reserva a cor para exatamente três
-                  usos (estrelas, cronômetro, ação principal). A hierarquia
-                  desta métrica já vem do tamanho.
-                */}
+                {/* Sem âmbar: marca 2.27:1 no branco, e a hierarquia vem do tamanho. */}
                 <Text style={text.metric}>{formatarNota(prato.notaMedia)}</Text>
                 <Text style={[text.bodyMuted, estilos.legenda]}>nota média</Text>
               </View>

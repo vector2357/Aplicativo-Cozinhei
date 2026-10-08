@@ -8,11 +8,7 @@ import { color, interacao, shadow, spacing, text, touch } from '@/theme';
 
 type Props = {
   titulo: string;
-  /**
-   * Para onde o voltar leva, em caixa baixa: "início", "histórico". Entra no
-   * rótulo de acessibilidade — "voltar para o histórico" diz mais que
-   * "voltar". Omita quando a origem for variável.
-   */
+  /** Para onde o voltar leva: "voltar para o histórico" diz mais que "voltar". */
   origem?: string;
   /** Renderizado à direita do título: filtro, editar, o que a tela precisar. */
   acao?: ReactNode;
@@ -20,12 +16,7 @@ type Props = {
 
 export function CabecalhoTela({ titulo, origem, acao }: Props) {
   const router = useRouter();
-  /*
-    Ao empilhar uma tela, o leitor de tela costuma manter o foco onde estava —
-    no controle que a abriu, que agora está na tela de baixo. Quem entrou fica
-    sem saber que chegou. Mover o foco para o título resolve, e o título é o
-    lugar certo: ele diz onde se está.
-  */
+  // Sem isto o leitor de tela deixa o foco no controle da tela de baixo.
   const tituloRef = useFocoNoTitulo();
 
   return (
@@ -54,14 +45,7 @@ export function CabecalhoTela({ titulo, origem, acao }: Props) {
 }
 
 const estilos = StyleSheet.create({
-  /*
-    Fica parado enquanto o conteúdo rola por baixo, e é a sombra que diz
-    isso. Sem ela o título e a primeira ficha encostam e viram um bloco só.
-
-    O `backgroundColor` não é decoração: sem fundo opaco a sombra pinta sobre
-    conteúdo transparente e o texto de baixo aparece através dela. E o
-    `zIndex` substitui a `elevation` que o token não tem — ver `shadow.cabecalho`.
-  */
+  // A sombra separa do que rola; o fundo opaco é o que a deixa existir.
   cabecalho: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -76,8 +60,7 @@ const estilos = StyleSheet.create({
   voltar: {
     width: touch.minTarget,
     height: touch.minTarget,
-    // O ícone é menor que o alvo; a margem negativa devolve o título à margem
-    // da tela sem que o alvo encolha.
+    // Devolve o título à margem da tela sem encolher o alvo.
     marginLeft: -11,
     alignItems: 'center',
     justifyContent: 'center',

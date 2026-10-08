@@ -17,15 +17,7 @@ export function CabecalhoDeAba({ titulo }: Props) {
 }
 
 const estilos = StyleSheet.create({
-  /*
-    Mesma regra do `CabecalhoTela`: ele fica parado e a lista corre por
-    baixo, então precisa de sombra para se distinguir do que rola. O fundo
-    opaco é o que permite a sombra existir — sem ele a sombra pinta sobre
-    conteúdo transparente e o texto de baixo aparece através dela.
-
-    A diferença para o `CabecalhoTela` é só a ausência do voltar: aba não
-    volta, porque não há de onde.
-  */
+  // Como o `CabecalhoTela`, menos o voltar: aba não tem de onde voltar.
   cabecalho: {
     paddingHorizontal: spacing.screenH,
     paddingTop: spacing.xs,

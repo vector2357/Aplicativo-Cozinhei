@@ -2,7 +2,7 @@ import Svg, { Circle, Path } from 'react-native-svg';
 
 import { color } from '@/theme';
 
-/** Os ícones de ação disponíveis. Um nome por gesto, não por desenho. */
+/** Um nome por gesto, não por desenho. */
 export const NOMES_ICONE = [
   'voltar',
   'fechar',
@@ -19,20 +19,17 @@ export const NOMES_ICONE = [
 
 export type NomeIcone = (typeof NOMES_ICONE)[number];
 
-/** Aresta padrão. Combina com a altura da linha de texto de corpo. */
 export const TAMANHO_ICONE = 22;
 
-/** Grade de desenho, igual à dos ícones de aba: área útil de 20 com 2 de folga. */
+/** Área útil de 20, com 2 de folga em cada borda. */
 const GRADE = 24;
 
-/** Peso do traço. O mesmo de `IconeAba`, para que os dois pesem igual na tela. */
+/** O mesmo peso de `IconeAba`, para os dois pesarem igual na tela. */
 const TRACO = 1.7;
 
 type Props = {
   nome: NomeIcone;
-  /** Aresta do quadrado. Varie com parcimônia: 22 é o tamanho do sistema. */
   tamanho?: number;
-  /** Por padrão herda a tinta principal. */
   cor?: string;
 };
 
@@ -43,8 +40,7 @@ export function Icone({ nome, tamanho = TAMANHO_ICONE, cor = color.ink }: Props)
       width={tamanho}
       height={tamanho}
       viewBox={`0 0 ${GRADE} ${GRADE}`}
-      // Ícone é desenho: quem fala é o `accessibilityLabel` do controle que o
-      // contém. Deixá-lo na árvore só acrescenta ruído à leitura.
+      // Ícone é desenho: quem fala é o rótulo do controle que o contém.
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
       fill="none"
@@ -58,25 +54,11 @@ export function Icone({ nome, tamanho = TAMANHO_ICONE, cor = color.ink }: Props)
   );
 }
 
-/**
- * Um desenho por nome, todos em traço puro — nenhum preenchido.
- *
- * É o que os separa de `IconeAba`, que alterna contorno e sólido para dizer
- * qual aba está selecionada. Ícone de ação não tem estado: ele sempre
- * significa a mesma coisa, e quem muda de aparência é o controle em volta.
- */
+// Todos em traço puro: quem muda de aparência é o controle em volta, não o ícone.
 const DESENHOS: Record<NomeIcone, (cor: string) => React.ReactNode> = {
-  /** Seta para a esquerda. Retorno. */
   voltar: () => <Path d="M14.5 5.2 7.7 12l6.8 6.8" />,
 
-  /*
-    Olho aberto e olho riscado: mostrar e esconder a senha.
-
-    O par é um só desenho com um traço a mais, de propósito. Dois desenhos
-    diferentes fariam o controle parecer que muda de função ao ser tocado,
-    quando ele faz sempre a mesma coisa — alternar. O risco diagonal é a
-    convenção que todo mundo já conhece de "está oculto".
-  */
+  // Um desenho só com um traço a mais: o controle alterna, não troca de função.
   olho: () => (
     <>
       <Path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z" />
@@ -92,10 +74,9 @@ const DESENHOS: Record<NomeIcone, (cor: string) => React.ReactNode> = {
     </>
   ),
 
-  /** X. Fecha sem decidir nada — diferente de voltar, que desfaz um passo. */
+  /** Fecha sem decidir nada — diferente de voltar, que desfaz um passo. */
   fechar: () => <Path d="M6.4 6.4l11.2 11.2M17.6 6.4 6.4 17.6" />,
 
-  /** Lupa. */
   busca: (cor) => (
     <>
       <Circle cx={10.8} cy={10.8} r={6.2} stroke={cor} />
@@ -103,10 +84,8 @@ const DESENHOS: Record<NomeIcone, (cor: string) => React.ReactNode> = {
     </>
   ),
 
-  /** Funil. Recorta uma lista sem alterá-la. */
   filtro: () => <Path d="M4.2 5.4h15.6l-6.1 7v5.4l-3.4 1.8v-7.2z" />,
 
-  /** Lápis. */
   editar: () => (
     <>
       <Path d="M15.6 4.6 19.4 8.4 8.6 19.2 4 20l.8-4.6z" />
@@ -114,7 +93,7 @@ const DESENHOS: Record<NomeIcone, (cor: string) => React.ReactNode> = {
     </>
   ),
 
-  /** Lixeira. Só aparece em ação destrutiva, e nunca perto da ação principal. */
+  /** Só em ação destrutiva, e nunca perto da ação principal. */
   excluir: () => (
     <>
       <Path d="M4.8 6.6h14.4" />
@@ -124,15 +103,9 @@ const DESENHOS: Record<NomeIcone, (cor: string) => React.ReactNode> = {
     </>
   ),
 
-  /** Cruz. Acrescentar um item. */
   mais: () => <Path d="M12 5.2v13.6M5.2 12h13.6" />,
 
-  /**
-   * Triângulo com exclamação. Erro e atenção.
-   *
-   * Existe por causa do daltonismo: vinho sozinho não distingue um estado de
-   * erro para quem não separa vermelho de verde. A forma faz esse trabalho.
-   */
+  // Existe por causa do daltonismo: a forma distingue o que o vinho não distingue.
   alerta: () => (
     <>
       <Path d="M12 4.3 21 19.4H3z" />
@@ -140,6 +113,6 @@ const DESENHOS: Record<NomeIcone, (cor: string) => React.ReactNode> = {
     </>
   ),
 
-  /** Tique. Confirmação, sucesso, qualidade. O par do alerta. */
+  /** O par do alerta: confirmação, sucesso, qualidade. */
   certo: () => <Path d="M5 12.6 9.8 17.4 19 6.9" />,
 };

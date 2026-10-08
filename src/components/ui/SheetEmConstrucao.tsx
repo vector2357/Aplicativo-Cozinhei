@@ -10,7 +10,7 @@ export type DestinoEmConstrucao = {
   titulo: string;
   /** Quando chega: "etapa 03", "etapa 04". */
   etapa: string;
-  /** O que ela vai mostrar. Mesma frase que o vault da tela promete. */
+  /** O que ela vai mostrar. */
   descricao: string;
 };
 

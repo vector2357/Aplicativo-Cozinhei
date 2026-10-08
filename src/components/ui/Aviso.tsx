@@ -20,21 +20,11 @@ type Props = {
   /** `null` mantém o aviso fora da tela. */
   aviso: ConteudoAviso | null;
   onFechar: () => void;
-  /**
-   * Espaço a reservar embaixo, além da área segura. Nas telas com a barra de
-   * abas, é a altura dela: o aviso fica acima, nunca por cima.
-   */
+  /** Espaço a reservar embaixo, além da área segura: a altura da barra. */
   margemInferior?: number;
 };
 
-/**
- * Sucesso usa `oliveInk`, e não `olive`.
- *
- * O oliva da marca com texto claro por cima marca 4.3:1 — reprova por pouco,
- * e "por pouco" continua sendo reprovar. O tom escuro do mesmo verde fecha
- * 7.2:1 e não introduz cor nova na paleta. Os três tons são verificados em
- * `contraste.test.ts`.
- */
+// Sucesso usa `oliveInk` e não `olive`: o oliva da marca marca 4.3:1.
 const PALETA: Record<TomAviso, { fundo: string; texto: string; icone: NomeIcone | null }> = {
   sucesso: { fundo: color.oliveInk, texto: color.inkOnDark, icone: 'certo' },
   erro: { fundo: color.wine, texto: color.inkOnWine, icone: 'alerta' },
@@ -54,14 +44,12 @@ export function Aviso({ aviso, onFechar, margemInferior = 0 }: Props) {
       testID="aviso"
       style={[estilos.ancora, { bottom: base }]}
       pointerEvents="box-none"
-      // Anuncia sozinho quando aparece, sem roubar o foco de quem está lendo
-      // outra coisa. É o que faz o feedback existir para quem não vê a tela.
+      // Anuncia sozinho ao aparecer, sem roubar o foco de quem está lendo.
       accessibilityLiveRegion="polite"
     >
       <View style={[estilos.barra, { backgroundColor: paleta.fundo }]}>
         {paleta.icone ? (
-          // A forma acompanha a cor: oliva e vinho não se distinguem para
-          // quem não separa verde de vermelho.
+          // A forma acompanha a cor, para quem não separa verde de vermelho.
           <Icone nome={paleta.icone} tamanho={18} cor={paleta.texto} />
         ) : null}
 

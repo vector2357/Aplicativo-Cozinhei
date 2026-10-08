@@ -10,17 +10,13 @@ import { color, escalaDeFonte, text } from '@/theme';
 /** Respiro entre o ícone e o rótulo. */
 const RESPIRO = 6;
 
-/**
- * Altura da fatia. Comporta o ícone (24), o respiro (6) e a linha do rótulo
- * (~16) com folga dentro da barra de 72pt.
- */
+/** Comporta ícone, respiro e rótulo com folga dentro da barra de 72pt. */
 const ALTURA_ABA = 62;
 
 type Props = Omit<React.ComponentProps<typeof Pressable>, 'style' | 'children'> & {
   /** O TabTrigger repassa um estilo simples; a forma de função não é usada. */
   style?: StyleProp<ViewStyle>;
   rotulo: string;
-  /** Qual dos quatro ícones semânticos esta aba mostra. */
   icone: NomeIconeAba;
   /** Injetado pelo TabTrigger. */
   isFocused?: boolean;
@@ -56,8 +52,7 @@ export const BotaoAba = forwardRef<ViewTipo, Props>(function BotaoAba(
 const estilos = StyleSheet.create({
   aba: {
     flex: 1,
-    // Volume mínimo da fatia: quatro abas precisam caber junto com o vão do
-    // botão flutuante mesmo num aparelho de 320pt de largura.
+    // Quatro abas mais o vão do `+` precisam caber em 320pt de largura.
     flexBasis: 0,
     minWidth: 0,
     height: ALTURA_ABA,
@@ -67,14 +62,9 @@ const estilos = StyleSheet.create({
     gap: RESPIRO,
     paddingHorizontal: 2,
   },
-  /**
-   * `stretch` + `center` prendem o rótulo à largura da fatia. Sem isso o
-   * texto assume a largura natural e transborda para a aba vizinha, porque
-   * `alignItems: 'center'` centraliza mas não limita.
-   */
+  // Prende o rótulo à largura da fatia: `alignItems` centraliza mas não limita.
   rotulo: { fontSize: 12, alignSelf: 'stretch', textAlign: 'center' },
 });
 
-/** Reexportado para quem monta a barra não precisar conhecer dois módulos. */
 export type { NomeIconeAba };
 export { TAMANHO_ICONE_ABA };

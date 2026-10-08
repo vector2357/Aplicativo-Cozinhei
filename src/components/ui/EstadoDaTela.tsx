@@ -16,10 +16,7 @@ type Props = {
 export function EstadoVazio({ titulo, descricao, acao }: Props) {
   return (
     <View style={estilos.centro}>
-      {/*
-        O grupo cobre só o TEXTO. Envolver o botão junto o tiraria da árvore
-        de acessibilidade no iOS — e ele é a única saída da tela vazia.
-      */}
+      {/* Só o texto: envolver o botão o tiraria da árvore no iOS. */}
       <View accessible accessibilityLabel={`${titulo}. ${descricao}`}>
         <Text style={[text.stateTitle, estilos.titulo]}>{titulo}</Text>
         <Text style={[text.bodyMuted, estilos.descricao]}>{descricao}</Text>
@@ -41,16 +38,10 @@ export function EstadoErro({ titulo, descricao, acao }: Props) {
     <View
       style={estilos.centro}
       accessibilityRole="alert"
-      // `role="alert"` é dica de papel, não gatilho de anúncio no Android. Sem
-      // a região viva, o esqueleto some e o erro entra em silêncio — o usuário
-      // segue esperando um carregamento que já falhou.
+      // No Android o papel de alerta não anuncia: sem região viva o erro é mudo.
       accessibilityLiveRegion="assertive"
     >
-      {/*
-        O triângulo faz o que a cor sozinha não faz: distingue erro de vazio
-        para quem não separa vermelho de verde. Decorativo para o leitor de
-        tela, que já recebe o texto pelo papel de alerta.
-      */}
+      {/* O triângulo distingue erro de vazio sem depender da cor. */}
       <Icone nome="alerta" tamanho={28} cor={color.wine} />
       <Text style={[text.stateTitle, estilos.tituloErro]}>{titulo}</Text>
       <Text style={[text.bodyMuted, estilos.descricao]}>{descricao}</Text>

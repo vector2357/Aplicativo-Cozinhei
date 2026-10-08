@@ -1,8 +1,6 @@
 import { color } from '@/theme';
 
-/* ------------------------------------------------------------------ *
- * A fórmula, direto da especificação
- * ------------------------------------------------------------------ */
+// A fórmula, direto da especificação.
 
 /** Canal sRGB de 0–255 para luminância linear. */
 function canalLinear(valor: number): number {
@@ -25,9 +23,7 @@ export function razaoDeContraste(umaCor: string, outraCor: string): number {
   return (clara + 0.05) / (escura + 0.05);
 }
 
-/* ------------------------------------------------------------------ *
- * Os pares que o app de fato desenha
- * ------------------------------------------------------------------ */
+// Os pares que o app de fato desenha.
 
 const PISO_TEXTO_NORMAL = 4.5;
 const PISO_TEXTO_GRANDE = 3;
@@ -59,19 +55,12 @@ const TEXTO_SOBRE_SUPERFICIE: Par[] = [
   { uso: 'metadado em cartão', frente: color.inkFaint, fundo: color.surface, piso: PISO_TEXTO_NORMAL },
   { uso: 'nome de conta no sheet', frente: color.inkSoft, fundo: color.surface, piso: PISO_TEXTO_NORMAL },
   { uso: 'placeholder de campo', frente: color.stoneOnLight, fundo: color.surface, piso: PISO_TEXTO_NORMAL },
-  // O par que faltava: âmbar puro sobre branco marca 2.27:1, e foi assim que
-  // uma métrica de 40px e os glifos das estrelas passaram despercebidos.
+  // O par que faltava: âmbar puro sobre branco marca 2.27:1.
   { uso: 'glifos das estrelas', frente: color.amberInk, fundo: color.surface, piso: PISO_TEXTO_NORMAL },
   { uso: 'métrica de painel claro', frente: color.ink, fundo: color.surface, piso: PISO_TEXTO_NORMAL },
 ];
 
-/**
- * Controle desabilitado.
- *
- * O par mais fácil de esquecer: como o controle está inativo, dá para achar
- * que a legibilidade não importa. Importa mais — é esse texto que diz o que
- * ainda não dá para fazer, e ele precisa ser lido para a espera fazer sentido.
- */
+/** Controle desabilitado. */
 const TEXTO_DESABILITADO: Par[] = [
   { uso: 'texto de botão desabilitado', frente: color.inativoTexto, fundo: color.inativoFundo, piso: PISO_TEXTO_NORMAL },
   { uso: 'link desabilitado sobre o fundo claro', frente: color.inativoTexto, fundo: color.background, piso: PISO_TEXTO_NORMAL },
@@ -106,15 +95,10 @@ const TEXTO_EM_CHIP: Par[] = [
   { uso: 'chip de defeito', frente: color.wineInk, fundo: '#EDE0E1', piso: PISO_TEXTO_NORMAL },
 ];
 
-/**
- * Componentes não textuais. O `+` é o caso que motivou o critério 1.4.11
- * aqui: âmbar sobre o fundo claro marca 2.04:1, e quem resolve é o ANEL
- * escuro em volta — por isso quem se mede é a borda, não o preenchimento.
- */
+/** Componentes não textuais. */
 const COMPONENTES: Par[] = [
   { uso: 'anel do botão de registrar', frente: color.ink, fundo: color.background, piso: PISO_COMPONENTE },
-  // A caixa dos termos é marcável, e quando está desmarcada a borda é a
-  // única coisa que a desenha: aqui o piso de 3:1 vale por inteiro.
+  // A caixa dos termos é marcável, e quando está desmarcada a borda é a única coisa que a desenha.
   { uso: 'borda da caixa de termos', frente: color.borderControl, fundo: color.surface, piso: PISO_COMPONENTE },
   { uso: 'borda de campo de formulário', frente: '#DDE0DC', fundo: color.surface, piso: 1.3 },
   // Não precisa gritar: precisa ser visivelmente outra superfície.
@@ -158,16 +142,7 @@ describe('contraste da paleta (WCAG 2.1 AA)', () => {
     });
   });
 
-  /**
-   * O par claro e o par escuro de `stone` existem justamente porque uma cor
-   * só não serve aos dois fundos. Este teste trava a separação: se alguém
-   * unificar os tokens de novo, um dos dois lados reprova e o teste avisa.
-   */
-  /**
- * O âmbar é cor de identidade e vive sobre fundo escuro ou como superfície
- * de ação — nunca como texto sobre claro. Este teste trava a fronteira: se
- * alguém voltar a pintar texto de âmbar sobre branco, falha aqui.
- */
+  /** O âmbar vive sobre fundo escuro ou como superfície — nunca como texto no claro. */
 describe('o âmbar sabe onde pode aparecer', () => {
   it('sobre fundo escuro, serve como texto', () => {
     expect(razaoDeContraste(color.amber, color.backgroundDark)).toBeGreaterThanOrEqual(4.5);
@@ -179,6 +154,7 @@ describe('o âmbar sabe onde pode aparecer', () => {
   });
 });
 
+/** Uma cor só não serve aos dois fundos; unificar os tokens reprovaria um lado. */
 describe('tokens de dupla face', () => {
     it('stone serve ao fundo escuro e reprovaria no claro', () => {
       expect(razaoDeContraste(color.stone, color.backgroundDark)).toBeGreaterThanOrEqual(4.5);

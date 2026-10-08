@@ -37,9 +37,7 @@ function estiloDe(no: { props: { style?: unknown } }): Record<string, unknown> {
 const svgDe = (nome: NomeIcone) =>
   screen.getByTestId(`icone-${nome}`, { includeHiddenElements: true });
 
-/* ------------------------------------------------------------------ *
- * I-09 · família de ícones
- * ------------------------------------------------------------------ */
+// I-09 · família de ícones.
 
 describe('I-09 · Icone', () => {
   it('existe um desenho para cada nome declarado', async () => {
@@ -58,8 +56,7 @@ describe('I-09 · Icone', () => {
       caixas.add(`${svg.props.width}x${svg.props.height}@${svg.props.vbWidth}x${svg.props.vbHeight}`);
       await unmount();
     }
-    // Um único formato para a família inteira: ícone que muda de tamanho
-    // conforme o nome desalinha tudo que o contém.
+    // Um formato só para a família: tamanho variável por nome desalinha o que o contém.
     expect(caixas.size).toBe(1);
     expect([...caixas][0]).toBe(`${TAMANHO_ICONE}x${TAMANHO_ICONE}@24x24`);
   });
@@ -100,9 +97,7 @@ describe('I-09 · Icone', () => {
   });
 });
 
-/* ------------------------------------------------------------------ *
- * I-05 · estado desabilitado legível
- * ------------------------------------------------------------------ */
+// I-05 · estado desabilitado legível.
 
 describe('I-05 · botão desabilitado', () => {
   it('não usa opacidade: ela derrubaria o contraste do texto junto', async () => {
@@ -159,9 +154,7 @@ describe('I-05 · botão desabilitado', () => {
   });
 });
 
-/* ------------------------------------------------------------------ *
- * I-07 · Skeleton
- * ------------------------------------------------------------------ */
+// I-07 · Skeleton.
 
 describe('I-07 · Skeleton', () => {
   it('desenha um bloco com a medida pedida', async () => {
@@ -179,10 +172,7 @@ describe('I-07 · Skeleton', () => {
     expect(bloco.props.importantForAccessibility).toBe('no-hide-descendants');
   });
 
-  /**
-   * O esqueleto substitui o spinner, e o spinner ao menos dizia "carregando".
-   * Sem este rótulo, quem usa leitor de tela encontraria silêncio.
-   */
+  /** O esqueleto substitui o spinner, e o spinner ao menos dizia "carregando". */
   it('a lista inteira se anuncia como carregando', async () => {
     await render(<SkeletonFicha />, { wrapper: comArea });
 
@@ -199,9 +189,7 @@ describe('I-07 · Skeleton', () => {
   });
 });
 
-/* ------------------------------------------------------------------ *
- * I-08 · Aviso
- * ------------------------------------------------------------------ */
+// I-08 · Aviso.
 
 describe('I-08 · Aviso', () => {
   it('sem conteúdo, não ocupa a tela', async () => {
@@ -241,10 +229,7 @@ describe('I-08 · Aviso', () => {
     expect(screen.getByTestId('icone-alerta', { includeHiddenElements: true })).toBeTruthy();
   });
 
-  /**
-   * Daltonismo de eixo vermelho-verde é o mais comum: oliva e vinho podem
-   * ficar indistinguíveis. A forma do ícone carrega o sentido junto da cor.
-   */
+  /** No daltonismo mais comum, oliva e vinho se confundem; a forma carrega o sentido. */
   it('sucesso e erro se distinguem também pela forma', async () => {
     const { unmount } = await render(
       <Aviso aviso={{ texto: 'salvo', tom: 'sucesso' }} onFechar={() => {}} />,

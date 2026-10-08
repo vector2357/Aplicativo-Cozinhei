@@ -82,11 +82,7 @@ export default function TelaInicio() {
             />
           ) : null}
 
-          {/*
-            Conta nova não tem resumo, nem recentes, nem guias. Mostrar o
-            cartão do mês com zeros seria pior que não mostrar: ele existe
-            para responder "estou melhorando?", e não há o que responder.
-          */}
+          {/* O cartão do mês com zeros seria pior que cartão nenhum. */}
           {semNada ? (
             <EstadoVazio
               titulo="sua cozinha começa aqui"
@@ -138,11 +134,7 @@ export default function TelaInicio() {
           ) : null}
         </View>
 
-        {/*
-          O carrossel sangra até a borda da tela: fica FORA da View de margem
-          e repõe o recuo no `contentContainerStyle`. Um cartão cortado na
-          margem é o que sinaliza que há mais conteúdo à direita.
-        */}
+        {/* Sangra até a borda: cartão cortado é o que sinaliza mais conteúdo. */}
         {estado === 'pronto' && dados && !semNada ? (
           <ScrollView
             horizontal
@@ -167,12 +159,7 @@ export default function TelaInicio() {
 
 const estilos = StyleSheet.create({
   rolagem: { paddingTop: spacing.xs, paddingBottom: spacing.scrollBottom },
-  /*
-    Conta nova: o convite é a tela inteira, e `flexGrow` é o que dá a ele
-    altura para se centralizar. Sem isto o conteúdo rolável assume a altura
-    natural, o convite cola na saudação e sobra branco embaixo — que foi
-    exatamente o que se via.
-  */
+  // `flexGrow` é o que dá altura ao convite para ele se centralizar.
   rolagemVazia: { flexGrow: 1 },
   /** O `flexGrow` acima só chega ao convite se a margem também crescer. */
   margemVazia: { flex: 1 },

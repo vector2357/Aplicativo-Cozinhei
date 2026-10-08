@@ -1,27 +1,20 @@
 import type { Execucao, ReceitaGuia, Usuario } from '@/types/dominio';
 
 export const USUARIO_EXEMPLO: Usuario = {
-  nome: 'Marina Salles',
-  email: 'marina.salles@gmail.com',
-  iniciais: 'MS',
+  nome: 'Marina Cintra Marinho',
+  email: 'marina.cintramarinho@gmail.com',
+  iniciais: 'MC',
   desde: 'cozinhando desde abril de 2026',
   totalExecucoes: 21,
 };
 
 /** Contas oferecidas no bottom sheet de login com o Google. */
 export const CONTAS_GOOGLE = [
-  { iniciais: 'MS', nome: 'Marina Salles', email: 'marina.salles@gmail.com' },
+  { iniciais: 'MC', nome: 'Marina Cintra Marinho', email: 'marina.cintramarinho@gmail.com' },
   { iniciais: 'MC', nome: 'Marina · cozinha', email: 'cozinhadamarina@gmail.com' },
 ] as const;
 
-/**
- * A frase de destaque do cartão de resumo.
- *
- * Os NÚMEROS do resumo não moram aqui: são calculados pelo repositório a
- * partir das execuções, porque número que se escreve à mão descola dos dados
- * na primeira vez que alguém mexe na lista. Na etapa 04 isso vira agregação
- * no banco, e a frase passa a vir do módulo de IA — que é onde ela nasce.
- */
+// Só a frase: os números do resumo são contados pelo repositório.
 export const INSIGHT_DO_MES = {
   antes: 'seu bolo de cenoura subiu de 3,0 para 4,5 em quatro tentativas. o defeito que mais volta é ',
   destaque: 'massa crua no meio',
@@ -31,18 +24,7 @@ export const INSIGHT_DO_MES = {
 /** O mês corrente do conjunto de exemplo. */
 export const MES_CORRENTE = 'agosto de 2026';
 
-/**
- * As 21 execuções da Marina, de abril a agosto de 2026.
- *
- * Os números seguem `local/CLAUDE.md` §10 e existem para exercitar o produto
- * inteiro de uma vez: a tira de evolução do bolo de cenoura (4 tentativas,
- * 2,0 → 3,0 → 3,0 → 4,5), o defeito que mais volta ("massa crua no meio"),
- * pratos repetidos e pratos de primeira vez, e a tendência de alta que o
- * resumo do mês anuncia.
- *
- * Em ordem cronológica inversa: a mais recente primeiro, como as listas
- * mostram.
- */
+/** As 21 execuções de exemplo, da mais recente para a mais antiga. */
 export const EXECUCOES: Execucao[] = [
   // ── agosto de 2026 · 6 execuções ──────────────────────────────────────
   {

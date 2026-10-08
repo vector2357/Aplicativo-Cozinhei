@@ -19,8 +19,7 @@ export function useCarregamento<T>(
   const [dados, setDados] = useState<T | null>(null);
   const [tentativa, setTentativa] = useState(0);
 
-  // `buscar` costuma ser uma função anônima, que muda a cada render; quem
-  // controla o efeito são as dependências que a tela declara.
+  // Quem controla o efeito são as dependências que a tela declara.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const buscarEstavel = useCallback(buscar, dependencias);
 
@@ -30,8 +29,7 @@ export function useCarregamento<T>(
 
     buscarEstavel()
       .then((resultado) => {
-        // A tela pode ter saído de cena, ou uma busca mais nova ter começado:
-        // aplicar o resultado aqui sobrescreveria dados mais recentes.
+        // Busca vencida: aplicar aqui sobrescreveria dados mais recentes.
         if (!atual) return;
         setDados(resultado);
         setEstado('pronto');

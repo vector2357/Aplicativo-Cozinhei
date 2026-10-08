@@ -63,10 +63,7 @@ export default function TelaHistorico() {
         <ScrollView contentContainerStyle={estilos.rolagem} showsVerticalScrollIndicator={false}>
           {meses.map((mes) => (
             <View key={mes.rotulo} style={estilos.mes}>
-              {/*
-                O mês é cabeçalho de verdade: é por ele que o leitor de tela
-                salta de período em período, sem percorrer ficha por ficha.
-              */}
+              {/* Cabeçalho de verdade: é por ele que o leitor salta de mês em mês. */}
               <Text style={[text.overline, estilos.rotuloMes]} accessibilityRole="header">
                 {mes.rotulo}
               </Text>

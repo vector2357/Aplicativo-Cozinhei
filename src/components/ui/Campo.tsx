@@ -18,13 +18,7 @@ type Props = TextInputProps & {
   dica?: string;
   /** Mensagem de erro. Substitui a dica e pinta a borda de vinho. */
   erro?: string;
-  /**
-   * Campo de senha: esconde o texto e oferece o olho para revelá-lo.
-   *
-   * Prop própria em vez de `secureTextEntry` solto porque as duas coisas
-   * andam juntas — esconder sem dar como conferir é o que faz o usuário
-   * errar a senha e não saber onde. Quem escolhe é o campo, não a tela.
-   */
+  /** Esconde o texto e oferece o olho para revelá-lo. */
   senha?: boolean;
   containerStyle?: ViewStyle;
 };
@@ -38,11 +32,7 @@ export const Campo = forwardRef<TextInput, Props>(function Campo(
   return (
     <View style={containerStyle}>
       <Text style={[text.overline, estilos.rotulo]}>{rotulo}</Text>
-      {/*
-        O olho é posicionado sobre o campo, então precisa de um pai que seja
-        só o campo. Sem esta caixa ele cairia sobre a mensagem de erro, que
-        fica abaixo.
-      */}
+      {/* Pai só do campo: sem esta caixa o olho cairia sobre o erro. */}
       <View style={estilos.caixa}>
         <TextInput
           ref={ref}
@@ -61,8 +51,7 @@ export const Campo = forwardRef<TextInput, Props>(function Campo(
         {senha ? (
           <Pressable
             accessibilityRole="button"
-            // Diz o que vai acontecer, não o que está acontecendo: o rótulo de
-            // um botão é a ação dele.
+            // O rótulo é a ação, não o estado.
             accessibilityLabel={revelada ? 'ocultar senha' : 'mostrar senha'}
             accessibilityState={{ selected: revelada }}
             onPress={() => setRevelada((antes) => !antes)}
@@ -98,11 +87,7 @@ const estilos = StyleSheet.create({
   campoComErro: { borderColor: color.wine },
   /** Abre espaço para o olho não ficar por cima do que se digita. */
   campoComOlho: { paddingRight: touch.minTarget + spacing.xs },
-  /*
-    Sobreposto ao campo, e não ao lado: pôr os dois em linha encolheria a
-    área de digitação em todo aparelho estreito. O alvo tem os 44pt inteiros
-    mesmo com o ícone medindo 22.
-  */
+  // O olho fica sobreposto: em linha, encolheria a área de digitação.
   caixa: { justifyContent: 'center' },
   olho: {
     position: 'absolute',

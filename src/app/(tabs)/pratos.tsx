@@ -25,11 +25,7 @@ export default function TelaPratos() {
 
   const { estado, dados, recarregar } = useCarregamento(() => listarPratos(dono), [dono]);
 
-  /**
-   * A separação que o produto pede: o que está sendo repetido vem primeiro,
-   * porque repetir é o que o app acompanha. O que foi feito uma vez só ainda
-   * não tem evolução para mostrar.
-   */
+  // Repetir é o que o app acompanha, então vem primeiro.
   const { repetindo, primeiraVez } = useMemo(() => {
     const pratos = dados ?? [];
     return {

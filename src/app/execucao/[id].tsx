@@ -59,11 +59,7 @@ export default function TelaExecucao() {
 
       {estado === 'pronto' && execucao ? (
         <ScrollView contentContainerStyle={estilos.rolagem} showsVerticalScrollIndicator={false}>
-          {/*
-            A calha numerada é o elemento-assinatura do produto: o número da
-            tentativa codifica a repetição deliberada, que é o que o app
-            acompanha. Por isso ele vem antes da foto, e maior que ela.
-          */}
+          {/* O número da tentativa vem antes da foto, e maior que ela. */}
           <View
             style={estilos.cabecalhoFicha}
             accessible

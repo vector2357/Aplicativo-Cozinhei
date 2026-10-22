@@ -14,6 +14,7 @@ import { useAuth, useUsuario } from '@/features/auth/AuthContext';
 import { useAviso } from '@/features/aviso/AvisoContext';
 import { obterEstatisticas } from '@/features/execucoes/repositorio';
 import { useDonoDosDados } from '@/features/execucoes/useDonoDosDados';
+import { useVersaoDosDados } from '@/features/execucoes/versaoDosDados';
 import { DESTINOS } from '@/features/navegacao/destinos';
 import { useCarregamento } from '@/hooks/useCarregamento';
 import { useEmConstrucao } from '@/hooks/useEmConstrucao';
@@ -26,9 +27,14 @@ export default function TelaPerfil() {
   const { sair } = useAuth();
   const aviso = useAviso();
   const dono = useDonoDosDados();
+  // Nas dependências da busca, faz a tela reler depois de uma mutação.
+  const versao = useVersaoDosDados();
   const emConstrucao = useEmConstrucao();
 
-  const { estado, dados, recarregar } = useCarregamento(() => obterEstatisticas(dono), [dono]);
+  const { estado, dados, recarregar } = useCarregamento(
+    () => obterEstatisticas(dono),
+    [dono, versao],
+  );
 
   function encerrarSessao() {
     sair();
@@ -60,7 +66,7 @@ export default function TelaPerfil() {
         {estado === 'erro' ? (
           <EstadoErro
             titulo="não consegui trazer seus números"
-            descricao="seus registros continuam salvos. pode ser a conexão."
+            descricao="seus registros continuam salvos. pode ser o armazenamento do aparelho."
             acao={{ rotulo: 'tentar de novo', onPress: recarregar }}
           />
         ) : null}
@@ -70,7 +76,10 @@ export default function TelaPerfil() {
           <EstadoVazio
             titulo="seus números começam na primeira execução"
             descricao="assim que você registrar algo, aparecem aqui quantas vezes cozinhou, quantos pratos tem e quanto gastou."
-            acao={{ rotulo: 'como registrar', onPress: () => emConstrucao.anunciar(DESTINOS.registrarAMao) }}
+            acao={{
+              rotulo: 'registrar a primeira',
+              onPress: () => router.push('/execucao/ficha'),
+            }}
           />
         ) : null}
 
@@ -98,7 +107,7 @@ export default function TelaPerfil() {
             registro.
           </Text>
           <View style={estilos.chips}>
-            <Chip texto="despensa · etapa 04" />
+            <Chip texto="despensa · etapa 05" />
           </View>
         </View>
 

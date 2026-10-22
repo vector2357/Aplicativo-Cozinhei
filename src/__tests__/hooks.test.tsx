@@ -75,7 +75,7 @@ describe('useErrosFormulario', () => {
 describe('useEmConstrucao', () => {
   const DESTINO = {
     titulo: 'importar receita-guia',
-    etapa: 'etapa 04',
+    etapa: 'etapa 05',
     descricao: 'trazer uma receita de link, pdf ou foto.',
   };
 
@@ -102,7 +102,7 @@ describe('useEmConstrucao', () => {
     const hook = await executarHook(() => useEmConstrucao());
     await act(async () => hook.atual().anunciar(DESTINO));
     await act(async () =>
-      hook.atual().anunciar({ titulo: 'receita-guia', etapa: 'etapa 04', descricao: 'outra.' }),
+      hook.atual().anunciar({ titulo: 'receita-guia', etapa: 'etapa 05', descricao: 'outra.' }),
     );
     expect(hook.atual().destino?.titulo).toBe('receita-guia');
   });

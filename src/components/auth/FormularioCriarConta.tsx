@@ -5,14 +5,10 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { EntradaComGoogle } from './EntradaComGoogle';
 import { Botao, Campo } from '@/components/ui';
 import { useAuth } from '@/features/auth/AuthContext';
-import {
-  ErrosCriarConta,
-  MINIMO_SENHA,
-  semErros,
-  validarCriarConta,
-} from '@/features/auth/validacao';
+import { ErrosCriarConta, MINIMO_SENHA, validarCriarConta } from '@/features/auth/validacao';
 import { useErrosFormulario } from '@/hooks/useErrosFormulario';
 import { color, spacing, text } from '@/theme';
+import { semErros } from '@/utils/validacao';
 
 type Props = {
   /** Abre o sheet de contas Google, que vive no painel. */

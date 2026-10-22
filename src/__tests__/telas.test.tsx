@@ -4,7 +4,12 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AuthProvider } from '@/features/auth/AuthContext';
 import { AvisoProvider } from '@/features/aviso/AvisoContext';
-import { EXECUCOES, EXECUCOES_RECENTES, MES_CORRENTE } from '@/features/execucoes/fixtures';
+import {
+  CONTAS_GOOGLE,
+  EXECUCOES,
+  EXECUCOES_RECENTES,
+  MES_CORRENTE,
+} from '@/features/execucoes/fixtures';
 
 /** As execuções do mês corrente, que o cartão de resumo conta. */
 const EXECUCOES_DE_AGOSTO = EXECUCOES.filter((execucao) => execucao.mes === MES_CORRENTE);
@@ -150,7 +155,8 @@ describe('01 · Entrar (tela inicial)', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'continuar com o Google' }));
     expect(screen.getByText(/escolha a conta Google/)).toBeTruthy();
 
-    await fireEvent.press(screen.getByLabelText('Marina Salles, marina.salles@gmail.com'));
+    const conta = CONTAS_GOOGLE[0];
+    await fireEvent.press(screen.getByLabelText(`${conta.nome}, ${conta.email}`));
     expect(mockSubstituir).toHaveBeenCalledWith('/entrando');
     expect(mockEmpurrar).not.toHaveBeenCalled();
   });

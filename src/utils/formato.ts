@@ -20,3 +20,28 @@ export const dataPorExtenso = (data: Date): string =>
   data
     .toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })
     .replace('-feira', '');
+
+// Escrito à mão em vez de `toLocaleDateString`: a abreviação de mês do ICU
+// varia entre o Hermes e o Node ("ago" aqui, "ago." ali), e a lista precisa
+// bater exatamente com o `data` e o `mes` já guardados nas execuções.
+const MESES = [
+  'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+  'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro',
+];
+
+/** Tempo gasto a partir dos minutos: 65 -> "1h05", 55 -> "55 min", 60 -> "1h". */
+export const formatarTempo = (minutos: number): string => {
+  const inteiros = Math.max(0, Math.round(minutos));
+  if (inteiros < 60) return `${inteiros} min`;
+  const horas = Math.floor(inteiros / 60);
+  const resto = inteiros % 60;
+  return resto ? `${horas}h${String(resto).padStart(2, '0')}` : `${horas}h`;
+};
+
+/** Data curta da ficha: "19 ago". Sem ano — quem o carrega é `mes`. */
+export const formatarDataCurta = (data: Date): string =>
+  `${String(data.getDate()).padStart(2, '0')} ${MESES[data.getMonth()].slice(0, 3)}`;
+
+/** Rótulo do período, como o histórico agrupa: "agosto de 2026". */
+export const formatarMes = (data: Date): string =>
+  `${MESES[data.getMonth()]} de ${data.getFullYear()}`;

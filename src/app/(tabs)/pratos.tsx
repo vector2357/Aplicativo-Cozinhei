@@ -7,23 +7,25 @@ import {
   CabecalhoDeAba,
   EstadoErro,
   EstadoVazio,
-  SheetEmConstrucao,
   SkeletonFicha,
   Tela,
 } from '@/components/ui';
 import { listarPratos } from '@/features/execucoes/repositorio';
 import { useDonoDosDados } from '@/features/execucoes/useDonoDosDados';
-import { DESTINOS } from '@/features/navegacao/destinos';
+import { useVersaoDosDados } from '@/features/execucoes/versaoDosDados';
 import { useCarregamento } from '@/hooks/useCarregamento';
-import { useEmConstrucao } from '@/hooks/useEmConstrucao';
 import { spacing, text } from '@/theme';
 
 export default function TelaPratos() {
   const router = useRouter();
   const dono = useDonoDosDados();
-  const emConstrucao = useEmConstrucao();
+  // Nas dependências da busca, faz a tela reler depois de uma mutação.
+  const versao = useVersaoDosDados();
 
-  const { estado, dados, recarregar } = useCarregamento(() => listarPratos(dono), [dono]);
+  const { estado, dados, recarregar } = useCarregamento(
+    () => listarPratos(dono),
+    [dono, versao],
+  );
 
   // Repetir é o que o app acompanha, então vem primeiro.
   const { repetindo, primeiraVez } = useMemo(() => {
@@ -49,7 +51,7 @@ export default function TelaPratos() {
       {estado === 'erro' ? (
         <EstadoErro
           titulo="não consegui trazer seus pratos"
-          descricao="suas execuções continuam salvas. pode ser a conexão."
+          descricao="suas execuções continuam salvas. pode ser o armazenamento do aparelho."
           acao={{ rotulo: 'tentar de novo', onPress: recarregar }}
         />
       ) : null}
@@ -59,8 +61,8 @@ export default function TelaPratos() {
           titulo="nenhum prato ainda"
           descricao="cada execução que você registrar entra num prato. quando repetir o mesmo prato, aparece aqui a curva da sua nota."
           acao={{
-            rotulo: 'como registrar',
-            onPress: () => emConstrucao.anunciar(DESTINOS.registrarAMao),
+            rotulo: 'registrar a primeira',
+            onPress: () => router.push('/execucao/ficha'),
           }}
         />
       ) : null}
@@ -106,8 +108,6 @@ export default function TelaPratos() {
           ) : null}
         </ScrollView>
       ) : null}
-
-      <SheetEmConstrucao destino={emConstrucao.destino} onFechar={emConstrucao.fechar} />
     </Tela>
   );
 }

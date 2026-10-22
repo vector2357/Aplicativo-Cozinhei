@@ -18,6 +18,7 @@ export { MarcaGoogle } from './MarcaGoogle';
 export { MidiaPlaceholder } from './MidiaPlaceholder';
 export { SeletorSegmentado } from './SeletorSegmentado';
 export type { OpcaoSegmento } from './SeletorSegmentado';
+export { SheetConfirmar } from './SheetConfirmar';
 export { SheetEmConstrucao } from './SheetEmConstrucao';
 export type { DestinoEmConstrucao } from './SheetEmConstrucao';
 export { Skeleton, SkeletonFicha } from './Skeleton';

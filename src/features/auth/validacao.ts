@@ -30,4 +30,4 @@ export function validarCriarConta(valores: {
   return erros;
 }
 
-export const semErros = (erros: object): boolean => Object.keys(erros).length === 0;
+

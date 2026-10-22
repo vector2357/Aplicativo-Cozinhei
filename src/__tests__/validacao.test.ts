@@ -1,9 +1,5 @@
-import {
-  MINIMO_SENHA,
-  semErros,
-  validarCriarConta,
-  validarEntrar,
-} from '@/features/auth/validacao';
+import { MINIMO_SENHA, validarCriarConta, validarEntrar } from '@/features/auth/validacao';
+import { semErros } from '@/utils/validacao';
 
 describe('validarEntrar', () => {
   it('aceita e-mail e senha preenchidos', () => {

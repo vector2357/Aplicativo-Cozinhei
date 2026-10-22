@@ -17,8 +17,10 @@ O foco não é ensinar receitas, e sim guardar de forma estruturada a prática d
 - **Armazenamento local:** SQLite (expo-sqlite) e AsyncStorage
 - **APIs externas:** API de LLM para o módulo de IA e API de transcrição de áudio
 
-> As camadas de backend, banco, autenticação e armazenamento estão previstas
-> para as próximas etapas. A etapa atual implementa apenas a camada visual.
+> O **armazenamento local** está implementado desde a etapa 04: as execuções
+> ficam num banco SQLite no aparelho e a sessão em AsyncStorage. As camadas de
+> backend, banco remoto, autenticação e mídia seguem previstas para as
+> próximas etapas.
 
 ## Estado do projeto
 
@@ -27,6 +29,7 @@ O foco não é ensinar receitas, e sim guardar de forma estruturada a prática d
 | 01 — Proposta e planejamento | concluída | [`docs/proposta.md`](docs/proposta.md) |
 | 02 — Protótipo de interface | concluída | [`docs/etapa-02.md`](docs/etapa-02.md) |
 | 03 — Navegação, UX e acessibilidade | concluída | [`docs/etapa-03.md`](docs/etapa-03.md) |
+| 04 — Persistência local de dados | concluída | [`docs/etapa-04.md`](docs/etapa-04.md) |
 
 ### Telas implementadas
 
@@ -42,13 +45,21 @@ O foco não é ensinar receitas, e sim guardar de forma estruturada a prática d
 | Prato | `/prato/[id]` | tocar um prato na lista de pratos |
 | Execução | `/execucao/[id]` | tocar uma ficha no histórico, no início ou num prato |
 | Evolução | `/evolucao` | botão "ver sua evolução", no cartão do mês |
+| Ficha de execução | `/execucao/ficha` | `+` → "preencher à mão", ou "editar" numa execução |
 
 Mais os bottom sheets de escolha de conta Google e de "como registrar", e a
 barra de abas flutuante com botão de ação central. As capturas estão em
 [`docs/telas/`](docs/telas/).
 
-Ainda **não há persistência de dados nem comunicação com servidor**: os dados
-exibidos vêm de um conjunto fixo de exemplo, conforme o enunciado.
+Os dados são **persistidos no aparelho**: as execuções ficam numa tabela SQLite
+(`expo-sqlite`) e a sessão em AsyncStorage, de modo que tudo continua lá depois
+de encerrar e reabrir o aplicativo. As 21 execuções de exemplo passaram a ser a
+semente do banco — entram na primeira entrada e dali em diante são criadas,
+alteradas e removidas pelo próprio usuário. Uma conta nova começa vazia.
+
+Ainda **não há comunicação com servidor**: nada sai do aparelho. Ver
+[`docs/etapa-04.md`](docs/etapa-04.md) para o mecanismo, o esquema das tabelas
+e o roteiro de verificação da persistência.
 
 ## Como executar
 
@@ -79,8 +90,9 @@ npm run web       # navegador
 ### Verificação
 
 ```bash
-npm run typecheck   # TypeScript, modo estrito
-npm test            # 368 testes automatizados, em 19 suítes
+npm run typecheck                   # TypeScript, modo estrito
+npm test                            # 428 testes automatizados, em 21 suítes
+npx expo export --platform android  # pega erro de resolução de módulo
 ```
 
 > O `.npmrc` na raiz fixa `legacy-peer-deps=true`, para resolver um conflito de
@@ -106,3 +118,4 @@ src/
 - Proposta completa do projeto: [`docs/proposta.md`](docs/proposta.md)
 - Relatório da etapa 02: [`docs/etapa-02.md`](docs/etapa-02.md)
 - Relatório da etapa 03: [`docs/etapa-03.md`](docs/etapa-03.md)
+- Relatório da etapa 04: [`docs/etapa-04.md`](docs/etapa-04.md)

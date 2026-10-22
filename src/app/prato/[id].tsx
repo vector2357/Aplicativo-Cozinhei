@@ -11,6 +11,7 @@ import {
 } from '@/components/ui';
 import { buscarPrato, listarExecucoesDoPrato } from '@/features/execucoes/repositorio';
 import { useDonoDosDados } from '@/features/execucoes/useDonoDosDados';
+import { useVersaoDosDados } from '@/features/execucoes/versaoDosDados';
 import { useCarregamento } from '@/hooks/useCarregamento';
 import { color, radius, spacing, text } from '@/theme';
 import { formatarNota } from '@/utils/formato';
@@ -19,13 +20,15 @@ export default function TelaPrato() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const dono = useDonoDosDados();
+  // Nas dependências da busca, faz a tela reler depois de uma mutação.
+  const versao = useVersaoDosDados();
 
   const { estado, dados, recarregar } = useCarregamento(
     async () => ({
       prato: await buscarPrato(id, dono),
       execucoes: await listarExecucoesDoPrato(id, dono),
     }),
-    [id, dono],
+    [id, dono, versao],
   );
 
   const prato = dados?.prato ?? null;
@@ -45,7 +48,7 @@ export default function TelaPrato() {
       {estado === 'erro' ? (
         <EstadoErro
           titulo="não consegui abrir este prato"
-          descricao="suas execuções continuam salvas. pode ser a conexão."
+          descricao="suas execuções continuam salvas. pode ser o armazenamento do aparelho."
           acao={{ rotulo: 'tentar de novo', onPress: recarregar }}
         />
       ) : null}

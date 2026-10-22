@@ -8,7 +8,7 @@ import { spacing, text } from '@/theme';
 export type DestinoEmConstrucao = {
   /** Nome da tela que vai existir, em caixa baixa: "evolução", "importar". */
   titulo: string;
-  /** Quando chega: "etapa 03", "etapa 04". */
+  /** Quando chega: "etapa 05", "etapa 06". */
   etapa: string;
   /** O que ela vai mostrar. */
   descricao: string;

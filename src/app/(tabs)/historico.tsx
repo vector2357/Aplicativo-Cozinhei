@@ -6,25 +6,24 @@ import {
   CabecalhoDeAba,
   EstadoErro,
   EstadoVazio,
-  SheetEmConstrucao,
   SkeletonFicha,
   Tela,
 } from '@/components/ui';
 import { listarHistoricoPorMes } from '@/features/execucoes/repositorio';
 import { useDonoDosDados } from '@/features/execucoes/useDonoDosDados';
-import { DESTINOS } from '@/features/navegacao/destinos';
+import { useVersaoDosDados } from '@/features/execucoes/versaoDosDados';
 import { useCarregamento } from '@/hooks/useCarregamento';
-import { useEmConstrucao } from '@/hooks/useEmConstrucao';
 import { spacing, text } from '@/theme';
 
 export default function TelaHistorico() {
   const router = useRouter();
   const dono = useDonoDosDados();
-  const emConstrucao = useEmConstrucao();
+  // Nas dependências da busca, faz a tela reler depois de uma mutação.
+  const versao = useVersaoDosDados();
 
   const { estado, dados, recarregar } = useCarregamento(
     () => listarHistoricoPorMes(dono),
-    [dono],
+    [dono, versao],
   );
 
   const meses = dados ?? [];
@@ -43,7 +42,7 @@ export default function TelaHistorico() {
       {estado === 'erro' ? (
         <EstadoErro
           titulo="não consegui trazer seu histórico"
-          descricao="suas execuções continuam salvas. pode ser a conexão."
+          descricao="suas execuções continuam salvas. pode ser o armazenamento do aparelho."
           acao={{ rotulo: 'tentar de novo', onPress: recarregar }}
         />
       ) : null}
@@ -53,8 +52,8 @@ export default function TelaHistorico() {
           titulo="nenhuma execução ainda"
           descricao="assim que você registrar a primeira, ela aparece aqui — e o app começa a montar sua linha do tempo."
           acao={{
-            rotulo: 'como registrar',
-            onPress: () => emConstrucao.anunciar(DESTINOS.registrarAMao),
+            rotulo: 'registrar a primeira',
+            onPress: () => router.push('/execucao/ficha'),
           }}
         />
       ) : null}
@@ -84,8 +83,6 @@ export default function TelaHistorico() {
           ))}
         </ScrollView>
       ) : null}
-
-      <SheetEmConstrucao destino={emConstrucao.destino} onFechar={emConstrucao.fechar} />
     </Tela>
   );
 }

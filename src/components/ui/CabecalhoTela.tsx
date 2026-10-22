@@ -12,9 +12,14 @@ type Props = {
   origem?: string;
   /** Renderizado à direita do título: filtro, editar, o que a tela precisar. */
   acao?: ReactNode;
+  /**
+   * Substitui o `router.back()`. É o que permite a uma tela de criação
+   * confirmar a saída antes de descartar o que foi digitado.
+   */
+  onVoltar?: () => void;
 };
 
-export function CabecalhoTela({ titulo, origem, acao }: Props) {
+export function CabecalhoTela({ titulo, origem, acao, onVoltar }: Props) {
   const router = useRouter();
   // Sem isto o leitor de tela deixa o foco no controle da tela de baixo.
   const tituloRef = useFocoNoTitulo();
@@ -24,7 +29,7 @@ export function CabecalhoTela({ titulo, origem, acao }: Props) {
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={origem ? `voltar para ${origem}` : 'voltar'}
-        onPress={() => router.back()}
+        onPress={onVoltar ?? (() => router.back())}
         style={({ pressed }) => [estilos.voltar, pressed && estilos.pressionado]}
       >
         <Icone nome="voltar" />

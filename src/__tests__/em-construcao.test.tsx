@@ -55,7 +55,9 @@ describe('controles sem rota anunciam o destino', () => {
 
     expect(screen.getByText(DESTINOS.recuperarSenha.titulo)).toBeTruthy();
     expect(screen.getByText(DESTINOS.recuperarSenha.descricao)).toBeTruthy();
-    expect(screen.getByText(/chega na etapa 04/)).toBeTruthy();
+    expect(
+      screen.getByText(new RegExp(`chega na ${DESTINOS.recuperarSenha.etapa}`)),
+    ).toBeTruthy();
   });
 
   it('o aviso fecha no "entendi"', async () => {
@@ -166,10 +168,16 @@ describe('catálogo de destinos', () => {
     });
   });
 
-  /** O recorte da etapa 03 é navegação, UX e acessibilidade. */
-  it('nenhum destino promete a etapa 03, que não vai entregá-los', () => {
+  /**
+   * Um destino só existe enquanto a tela não existe. Prometer uma etapa já
+   * entregue é dizer ao usuário que ele esperou por nada — foi o que aconteceu
+   * com "preencher à mão", que saiu do catálogo quando a ficha nasceu.
+   */
+  it('nenhum destino promete uma etapa já entregue', () => {
+    const ENTREGUES = ['etapa 01', 'etapa 02', 'etapa 03', 'etapa 04'];
+
     Object.values(DESTINOS).forEach((destino) => {
-      expect(destino.etapa).not.toBe('etapa 03');
+      expect(ENTREGUES).not.toContain(destino.etapa);
     });
   });
 });

@@ -7,11 +7,13 @@ import { CartaoExecucao } from '@/components/execucao';
 import { estilosBarraAbas, folgaEntreAbas } from '@/components/navegacao/estilosBarraAbas';
 import { BotaoAba } from '@/components/navegacao/BotaoAba';
 import { Estrelas } from '@/components/ui';
-import { EXECUCOES } from '@/features/execucoes/fixtures';
+import { EXECUCOES, USUARIO_EXEMPLO } from '@/features/execucoes/fixtures';
 import {
   buscarExecucao,
+  garantirDadosDoDono,
   listarExecucoesDoPrato,
   listarExecucoes,
+  obterEstatisticas,
 } from '@/features/execucoes/repositorio';
 import { escalaDeFonte, touch } from '@/theme';
 
@@ -231,22 +233,35 @@ describe('A-14 · estrelas', () => {
 // D5 · nenhuma função do repositório entrega dados de outro dono.
 
 describe('a porta de dados respeita o dono em TODAS as funções', () => {
+  const DONO = USUARIO_EXEMPLO.email;
+  const OUTRA_CONTA = 'acessibilidade-outra@exemplo.com';
+
+  beforeAll(async () => {
+    await garantirDadosDoDono(OUTRA_CONTA, false);
+  });
+
   it('buscar uma execução por id não atravessa contas', async () => {
-    const daMarina = await buscarExecucao(EXECUCOES[0].id, 'exemplo');
+    const daMarina = await buscarExecucao(EXECUCOES[0].id, DONO);
     expect(daMarina).not.toBeNull();
 
-    expect(await buscarExecucao(EXECUCOES[0].id, 'conta-nova')).toBeNull();
+    expect(await buscarExecucao(EXECUCOES[0].id, OUTRA_CONTA)).toBeNull();
   });
 
   it('listar as execuções de um prato não atravessa contas', async () => {
     const pratoId = EXECUCOES[0].pratoId;
 
-    expect((await listarExecucoesDoPrato(pratoId, 'exemplo')).length).toBeGreaterThan(0);
-    expect(await listarExecucoesDoPrato(pratoId, 'conta-nova')).toHaveLength(0);
+    expect((await listarExecucoesDoPrato(pratoId, DONO)).length).toBeGreaterThan(0);
+    expect(await listarExecucoesDoPrato(pratoId, OUTRA_CONTA)).toHaveLength(0);
   });
 
-  it('o padrão continua sendo a conta de exemplo, como nas demais', async () => {
-    expect(await buscarExecucao(EXECUCOES[0].id)).not.toBeNull();
-    expect((await listarExecucoes()).length).toBe(EXECUCOES.length);
+  /** Sem padrão: o dono é obrigatório justamente para não haver conta implícita. */
+  it('conta sem dados devolve vazio em vez dos dados de alguém', async () => {
+    expect(await listarExecucoes(OUTRA_CONTA)).toHaveLength(0);
+    expect(await obterEstatisticas(OUTRA_CONTA)).toEqual({
+      execucoes: 0,
+      pratos: 0,
+      notaMedia: 0,
+      custoTotal: 0,
+    });
   });
 });

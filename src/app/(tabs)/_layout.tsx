@@ -1,4 +1,4 @@
-import { Redirect } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { TabList, TabSlot, Tabs, TabTrigger } from 'expo-router/ui';
 import { useState } from 'react';
 import { View } from 'react-native';
@@ -16,6 +16,7 @@ import { spacing, touch } from '@/theme';
 
 export default function LayoutAbas() {
   const { autenticado } = useAuth();
+  const router = useRouter();
   const [sheetRegistrar, setSheetRegistrar] = useState(false);
   const emConstrucao = useEmConstrucao();
   const insets = useSafeAreaInsets();
@@ -56,6 +57,10 @@ export default function LayoutAbas() {
       <SheetComoRegistrar
         visivel={sheetRegistrar}
         onFechar={() => setSheetRegistrar(false)}
+        onPreencherAMao={() => {
+          setSheetRegistrar(false);
+          router.push('/execucao/ficha');
+        }}
         onEscolherCaminho={(destino) => {
           // Um sheet fecha antes do outro abrir: empilhados, prendem o foco.
           setSheetRegistrar(false);

@@ -5,11 +5,12 @@ import { StyleSheet, Text, View } from 'react-native';
 import { EntradaComGoogle } from './EntradaComGoogle';
 import { Botao, Campo } from '@/components/ui';
 import { useAuth } from '@/features/auth/AuthContext';
-import { ErrosEntrar, semErros, validarEntrar } from '@/features/auth/validacao';
+import { ErrosEntrar, validarEntrar } from '@/features/auth/validacao';
 import { DESTINOS } from '@/features/navegacao/destinos';
 import type { DestinoEmConstrucao } from '@/components/ui';
 import { useErrosFormulario } from '@/hooks/useErrosFormulario';
 import { color, radius, spacing, text } from '@/theme';
+import { semErros } from '@/utils/validacao';
 
 type Props = {
   /** Abre o sheet de contas Google, que vive no painel. */

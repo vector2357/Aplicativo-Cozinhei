@@ -3,8 +3,11 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AuthProvider } from '@/features/auth/AuthContext';
 import { AvisoProvider } from '@/features/aviso/AvisoContext';
-import { EXECUCOES } from '@/features/execucoes/fixtures';
+import { EXECUCOES, USUARIO_EXEMPLO } from '@/features/execucoes/fixtures';
 import { listarPratos } from '@/features/execucoes/repositorio';
+
+/** O mesmo dono que as telas usam sob o `AuthProvider` sem sessão. */
+const DONO = USUARIO_EXEMPLO.email;
 
 const METRICAS = {
   frame: { x: 0, y: 0, width: 390, height: 844 },
@@ -99,7 +102,7 @@ describe('pratos', () => {
   });
 
   it('o cartão do prato diz tudo num rótulo só', async () => {
-    const pratos = await listarPratos();
+    const pratos = await listarPratos(DONO);
     const bolo = pratos.find((prato) => prato.nome === 'Bolo de cenoura')!;
     await render(<TelaPratos />, { wrapper: comSessao });
 
@@ -109,7 +112,7 @@ describe('pratos', () => {
   });
 
   it('tocar num prato abre aquele prato', async () => {
-    const pratos = await listarPratos();
+    const pratos = await listarPratos(DONO);
     const primeiro = pratos[0];
     await render(<TelaPratos />, { wrapper: comSessao });
 
@@ -229,7 +232,13 @@ describe('perfil', () => {
   it('mostra quem está logado', async () => {
     await render(<TelaPerfil />, { wrapper: comSessao });
 
-    expect(screen.getByLabelText(/Marina Salles, marina.salles@gmail.com/)).toBeTruthy();
+    // Do fixture, não escrito à mão: renomear a usuária de exemplo já quebrou
+    // esta asserção uma vez.
+    expect(
+      screen.getByLabelText(
+        new RegExp(`${USUARIO_EXEMPLO.nome}, ${USUARIO_EXEMPLO.email}`),
+      ),
+    ).toBeTruthy();
   });
 
   it('mostra os números da conta', async () => {

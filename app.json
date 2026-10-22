@@ -12,13 +12,17 @@
       "backgroundColor": "#12211C",
       "resizeMode": "contain"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "br.com.cozinhei.app",
       "infoPlist": {
         "CFBundleDevelopmentRegion": "pt-BR",
-        "CFBundleLocalizations": ["pt-BR"]
+        "CFBundleLocalizations": [
+          "pt-BR"
+        ]
       }
     },
     "android": {
@@ -41,7 +45,8 @@
           "backgroundColor": "#12211C",
           "resizeMode": "contain"
         }
-      ]
+      ],
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true

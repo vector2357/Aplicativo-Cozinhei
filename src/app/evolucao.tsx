@@ -12,6 +12,7 @@ import {
 } from '@/components/ui';
 import { listarPratos, obterEstatisticas } from '@/features/execucoes/repositorio';
 import { useDonoDosDados } from '@/features/execucoes/useDonoDosDados';
+import { useVersaoDosDados } from '@/features/execucoes/versaoDosDados';
 import { useCarregamento } from '@/hooks/useCarregamento';
 import { color, radius, spacing, text } from '@/theme';
 import { formatarMoeda, formatarNota } from '@/utils/formato';
@@ -19,13 +20,15 @@ import { formatarMoeda, formatarNota } from '@/utils/formato';
 export default function TelaEvolucao() {
   const router = useRouter();
   const dono = useDonoDosDados();
+  // Nas dependências da busca, faz a tela reler depois de uma mutação.
+  const versao = useVersaoDosDados();
 
   const { estado, dados, recarregar } = useCarregamento(
     async () => ({
       pratos: await listarPratos(dono),
       estatisticas: await obterEstatisticas(dono),
     }),
-    [dono],
+    [dono, versao],
   );
 
   const comEvolucao = (dados?.pratos ?? []).filter((prato) => prato.tentativas > 1);
@@ -44,7 +47,7 @@ export default function TelaEvolucao() {
       {estado === 'erro' ? (
         <EstadoErro
           titulo="não consegui montar sua evolução"
-          descricao="suas execuções continuam salvas. pode ser a conexão."
+          descricao="suas execuções continuam salvas. pode ser o armazenamento do aparelho."
           acao={{ rotulo: 'tentar de novo', onPress: recarregar }}
         />
       ) : null}

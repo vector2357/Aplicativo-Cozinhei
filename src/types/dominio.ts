@@ -25,6 +25,21 @@ export type Execucao = {
   chips: ChipAvaliacao[];
 };
 
+/**
+ * O que a tela de ficha pergunta. Todo o resto de `Execucao` — id, prato,
+ * tentativa, data, mês, tempo formatado — é derivado pelo repositório.
+ */
+export type RascunhoExecucao = {
+  prato: string;
+  tempoMinutos: number;
+  custo: number;
+  nota: number;
+  /** Vira um chip de qualidade, quando preenchido. */
+  qualidade?: string;
+  /** Vira um chip de defeito, quando preenchido. */
+  defeito?: string;
+};
+
 /** Um prato: o agrupador de execuções da mesma receita. */
 export type Prato = {
   id: string;

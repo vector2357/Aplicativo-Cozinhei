@@ -21,10 +21,15 @@ export const INSIGHT_DO_MES = {
   depois: '.',
 };
 
-/** O mês corrente do conjunto de exemplo. */
+// O mês corrente do conjunto de exemplo. Em execução quem o determina é a
+// execução mais recente do banco; esta constante é a referência dos testes.
 export const MES_CORRENTE = 'agosto de 2026';
 
-/** As 21 execuções de exemplo, da mais recente para a mais antiga. */
+/**
+ * As 21 execuções de exemplo, da mais recente para a mais antiga. A partir da
+ * etapa 04 elas são a **semente** do banco local: entram uma vez, na primeira
+ * entrada de um dono que traz o conjunto de exemplo.
+ */
 export const EXECUCOES: Execucao[] = [
   // ── agosto de 2026 · 6 execuções ──────────────────────────────────────
   {
@@ -313,7 +318,8 @@ export const EXECUCOES: Execucao[] = [
   },
 ];
 
-/** As duas execuções mais recentes: bloco "continuar de onde parou". */
+// As duas execuções mais recentes do conjunto de exemplo. O recorte de verdade
+// é feito pelo repositório sobre o banco; aqui ele serve de referência aos testes.
 export const EXECUCOES_RECENTES: Execucao[] = EXECUCOES.slice(0, 2);
 
 export const RECEITAS_GUIA: ReceitaGuia[] = [

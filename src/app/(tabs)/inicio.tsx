@@ -18,6 +18,7 @@ import {
   obterResumoDoMes,
 } from '@/features/execucoes/repositorio';
 import { useDonoDosDados } from '@/features/execucoes/useDonoDosDados';
+import { useVersaoDosDados } from '@/features/execucoes/versaoDosDados';
 import { DESTINOS } from '@/features/navegacao/destinos';
 import { useCarregamento } from '@/hooks/useCarregamento';
 import { useEmConstrucao } from '@/hooks/useEmConstrucao';
@@ -28,6 +29,8 @@ export default function TelaInicio() {
   const router = useRouter();
   const usuario = useUsuario();
   const dono = useDonoDosDados();
+  // Nas dependências da busca, faz a tela reler depois de uma mutação.
+  const versao = useVersaoDosDados();
   const emConstrucao = useEmConstrucao();
   const hoje = useMemo(() => dataPorExtenso(new Date()), []);
   // Só o primeiro nome no cumprimento — "oi, Marina Salles" soa a cadastro.
@@ -39,7 +42,7 @@ export default function TelaInicio() {
       recentes: await listarExecucoesRecentes(dono),
       guias: await listarReceitasGuia(dono),
     }),
-    [dono],
+    [dono, versao],
   );
 
   const semNada = estado === 'pronto' && dados?.recentes.length === 0;
@@ -77,7 +80,7 @@ export default function TelaInicio() {
           {estado === 'erro' ? (
             <EstadoErro
               titulo="não consegui trazer sua cozinha"
-              descricao="seus registros continuam salvos. pode ser a conexão."
+              descricao="seus registros continuam salvos. pode ser o armazenamento do aparelho."
               acao={{ rotulo: 'tentar de novo', onPress: recarregar }}
             />
           ) : null}
@@ -88,8 +91,8 @@ export default function TelaInicio() {
               titulo="sua cozinha começa aqui"
               descricao="registre a primeira execução e o app passa a mostrar sua evolução, o que deu certo e o que mais volta a dar errado."
               acao={{
-                rotulo: 'como registrar',
-                onPress: () => emConstrucao.anunciar(DESTINOS.registrarAMao),
+                rotulo: 'registrar a primeira',
+                onPress: () => router.push('/execucao/ficha'),
               }}
             />
           ) : null}

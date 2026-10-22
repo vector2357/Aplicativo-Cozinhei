@@ -1,17 +1,22 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import {
+  Botao,
   CabecalhoTela,
   Chip,
   EstadoErro,
   Estrelas,
   MidiaPlaceholder,
+  SheetConfirmar,
   SkeletonFicha,
   Tela,
 } from '@/components/ui';
-import { buscarExecucao } from '@/features/execucoes/repositorio';
+import { useAviso } from '@/features/aviso/AvisoContext';
+import { buscarExecucao, removerExecucao } from '@/features/execucoes/repositorio';
 import { useDonoDosDados } from '@/features/execucoes/useDonoDosDados';
+import { useVersaoDosDados } from '@/features/execucoes/versaoDosDados';
 import { useCarregamento } from '@/hooks/useCarregamento';
 import { color, radius, spacing, text } from '@/theme';
 import { formatarMoeda, formatarNota } from '@/utils/formato';
@@ -20,10 +25,14 @@ export default function TelaExecucao() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const dono = useDonoDosDados();
+  // Nas dependências da busca, faz a tela reler depois de uma mutação.
+  const versao = useVersaoDosDados();
+  const aviso = useAviso();
+  const [confirmandoRemocao, setConfirmandoRemocao] = useState(false);
 
   const { estado, dados: execucao, recarregar } = useCarregamento(
     () => buscarExecucao(id, dono),
-    [id, dono],
+    [id, dono, versao],
   );
 
   const naoEncontrada = estado === 'pronto' && !execucao;
@@ -33,7 +42,20 @@ export default function TelaExecucao() {
 
   return (
     <Tela edges={['top']}>
-      <CabecalhoTela titulo={execucao ? execucao.prato : 'execução'} origem="a lista" />
+      <CabecalhoTela
+        titulo={execucao ? execucao.prato : 'execução'}
+        origem="a lista"
+        acao={
+          execucao ? (
+            <Botao
+              titulo="editar"
+              variante="secundaria"
+              onPress={() => router.push(`/execucao/ficha?id=${execucao.id}`)}
+              accessibilityHint="abre a ficha para alterar tempo, custo, nota e chips"
+            />
+          ) : null
+        }
+      />
 
       {estado === 'carregando' ? (
         <View style={estilos.margem}>
@@ -44,7 +66,7 @@ export default function TelaExecucao() {
       {estado === 'erro' ? (
         <EstadoErro
           titulo="não consegui abrir esta execução"
-          descricao="sua ficha continua salva. pode ser a conexão."
+          descricao="sua ficha continua salva. pode ser o armazenamento do aparelho."
           acao={{ rotulo: 'tentar de novo', onPress: recarregar }}
         />
       ) : null}
@@ -119,8 +141,47 @@ export default function TelaExecucao() {
               </View>
             </View>
           ) : null}
+
+          {/* Ação destrutiva pede distância: fica no fim, como o "sair da conta". */}
+          <View style={estilos.remocao}>
+            <Botao
+              titulo="remover execução"
+              variante="fantasma"
+              onPress={() => setConfirmandoRemocao(true)}
+              accessibilityHint="pede confirmação antes de apagar esta ficha do aparelho"
+            />
+          </View>
         </ScrollView>
       ) : null}
+
+      <SheetConfirmar
+        visivel={confirmandoRemocao}
+        titulo="remover esta execução?"
+        descricao={
+          execucao
+            ? `a tentativa ${execucao.tentativa} de ${execucao.prato} sai do seu histórico e da contagem do prato. não há como desfazer.`
+            : 'a ficha sai do seu histórico e da contagem do prato. não há como desfazer.'
+        }
+        rotuloConfirmar="remover"
+        onConfirmar={async () => {
+          try {
+            await removerExecucao(dono, id);
+          } catch {
+            // Fechar o sheet antes de ter certeza deixaria a falha invisível:
+            // a ficha continuaria na lista sem ninguém dizer por quê.
+            aviso.mostrar({
+              texto: 'não consegui remover. a ficha continua aqui — tente de novo.',
+              tom: 'erro',
+            });
+            return;
+          }
+
+          setConfirmandoRemocao(false);
+          router.back();
+          aviso.mostrar({ texto: 'execução removida' });
+        }}
+        onCancelar={() => setConfirmandoRemocao(false)}
+      />
     </Tela>
   );
 }
@@ -165,6 +226,7 @@ const estilos = StyleSheet.create({
   rotuloMedida: {},
   separador: { width: 1, height: 32, backgroundColor: color.borderHairline },
   bloco: { marginTop: spacing.lg },
+  remocao: { marginTop: spacing.huge, alignItems: 'center' },
   rotulo: { marginBottom: spacing.sm },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs },
 });

@@ -7,6 +7,7 @@ import { BotaoAba } from '@/components/navegacao/BotaoAba';
 import { TAMANHO_ICONE_ABA } from '@/components/navegacao/IconeAba';
 import { AuthProvider } from '@/features/auth/AuthContext';
 import { AvisoProvider } from '@/features/aviso/AvisoContext';
+import { USUARIO_EXEMPLO } from '@/features/execucoes/fixtures';
 import { shadow, touch } from '@/theme';
 
 const METRICAS = {
@@ -188,6 +189,6 @@ describe('perfil · sem título de tela', () => {
   it('e quem identifica a tela é o nome da pessoa', async () => {
     await render(<TelaPerfil />, { wrapper: comSessao });
 
-    expect(await screen.findByText('Marina Salles')).toBeTruthy();
+    expect(await screen.findByText(USUARIO_EXEMPLO.nome)).toBeTruthy();
   });
 });

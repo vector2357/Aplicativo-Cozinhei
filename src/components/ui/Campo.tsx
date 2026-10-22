@@ -31,7 +31,15 @@ export const Campo = forwardRef<TextInput, Props>(function Campo(
 
   return (
     <View style={containerStyle}>
-      <Text style={[text.overline, estilos.rotulo]}>{rotulo}</Text>
+      {/* Decoração: quem rotula o campo é o `accessibilityLabel` do input.
+          Sem esconder, o leitor de tela anuncia o nome duas vezes. */}
+      <Text
+        style={[text.overline, estilos.rotulo]}
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+      >
+        {rotulo}
+      </Text>
       {/* Pai só do campo: sem esta caixa o olho cairia sobre o erro. */}
       <View style={estilos.caixa}>
         <TextInput

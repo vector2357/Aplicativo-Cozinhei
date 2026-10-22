@@ -1,8 +1,8 @@
 import { useUsuario } from '@/features/auth/AuthContext';
-import type { DonoDosDados } from '@/features/execucoes/repositorio';
+import { donoDe, type DonoDosDados } from '@/features/execucoes/repositorio';
 
 export function useDonoDosDados(): DonoDosDados {
-  const usuario = useUsuario();
-  // Conta nova nasce com zero, e é isso que leva as telas ao estado vazio.
-  return usuario.totalExecucoes > 0 ? 'exemplo' : 'conta-nova';
+  // As linhas do banco são por dono: trocar de conta troca o conjunto inteiro,
+  // e é isso que faz uma conta nova nascer nos estados vazios.
+  return donoDe(useUsuario());
 }

@@ -1,5 +1,6 @@
 import { act, fireEvent, renderRouter, screen } from 'expo-router/testing-library';
 
+import { limparSessao } from '@/features/auth/sessaoArmazenada';
 import { color } from '@/theme';
 
 /** Achata o style de um elemento, que pode ser objeto ou array aninhado. */
@@ -38,6 +39,10 @@ async function montarEm(url: string) {
 
 /** Monta o app JÁ DENTRO da sessão, numa rota de aba. */
 async function montarLogadoEm(rota: string) {
+  // Entrar de verdade pressupõe começar sem sessão guardada — com uma, o app
+  // pula a tela de entrada, que é justamente o que este caminho exercita.
+  await limparSessao();
+
   const roteador = await montarEm('/');
 
   await fireEvent.changeText(screen.getByLabelText('e-mail'), 'marina@email.com');

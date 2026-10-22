@@ -212,7 +212,9 @@ describe('fluxo · a barra de abas continua inteira', () => {
 
     // Um sheet fecha antes do outro abrir: empilhados, prendem o foco no de baixo.
     expect(screen.queryByText('como você quer registrar?')).toBeNull();
-    expect(screen.getByText(/chega na etapa 04/)).toBeTruthy();
+    expect(
+      screen.getByText(new RegExp(`chega na ${DESTINOS.registrarPorAudio.etapa}`)),
+    ).toBeTruthy();
 
     app.desmontar();
   });
@@ -461,17 +463,61 @@ describe('fluxo · conta nova encontra o app vazio', () => {
 
     expect(await screen.findByText('seus números começam na primeira execução')).toBeTruthy();
     expect(screen.queryByLabelText('0 execuções')).toBeNull();
-    expect(screen.getByRole('button', { name: 'como registrar' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'registrar a primeira' })).toBeTruthy();
 
     app.desmontar();
   });
 
-  it('e o convite do perfil tem destino: abre o sheet de como registrar', async () => {
+  it('e o convite do perfil tem destino: abre a ficha de registro', async () => {
     const app = await criarContaEEntrar();
     await fireEvent.press(screen.getByRole('tab', { name: 'perfil' }));
-    await fireEvent.press(await screen.findByRole('button', { name: 'como registrar' }));
+    await fireEvent.press(await screen.findByRole('button', { name: 'registrar a primeira' }));
 
-    expect(await screen.findByText(DESTINOS.registrarAMao.titulo)).toBeTruthy();
+    // Deixou de ser um sheet "em construção": a tela existe desde a etapa 04.
+    expect(await screen.findByRole('header', { name: 'nova execução' })).toBeTruthy();
+    expect(app.caminho()).toBe('/execucao/ficha');
+
+    app.desmontar();
+  });
+});
+
+describe('fluxo · registrar uma execução de ponta a ponta', () => {
+  it('do + até a lista: a ficha nova entra no histórico', async () => {
+    const app = await entrarEIrPara('/inicio');
+
+    await fireEvent.press(screen.getByRole('button', { name: 'registrar execução' }));
+    await fireEvent.press(screen.getByRole('button', { name: /preencher à mão/ }));
+
+    expect(app.caminho()).toBe('/execucao/ficha');
+    expect(await screen.findByRole('header', { name: 'nova execução' })).toBeTruthy();
+
+    await fireEvent.changeText(screen.getByLabelText('prato'), 'Pudim de leite');
+    await fireEvent.changeText(screen.getByLabelText('tempo'), '75');
+    await fireEvent.changeText(screen.getByLabelText('custo'), '16,30');
+    await fireEvent.press(screen.getByRole('tab', { name: '4' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'salvar execução' }));
+
+    expect(app.caminho()).toBe('/inicio');
+    expect(await screen.findByText('execução registrada')).toBeTruthy();
+
+    // A aba já estava montada quando a execução nasceu: se ela não relesse, a
+    // ficha nova só apareceria depois de fechar e abrir o app.
+    await fireEvent.press(screen.getByRole('tab', { name: 'histórico' }));
+    expect(await screen.findByLabelText(/^Pudim de leite, tentativa 01/)).toBeTruthy();
+
+    app.desmontar();
+  });
+
+  /**
+   * `execucao/ficha.tsx` convive com `execucao/[id].tsx`. O roteador prefere o
+   * segmento estático ao dinâmico, mas isso só se descobre em execução — nem o
+   * TypeScript nem o `expo export` montam o navegador.
+   */
+  it('/execucao/ficha abre a ficha, e não a execução de id "ficha"', async () => {
+    const app = await montarEm('/execucao/ficha');
+
+    expect(await screen.findByRole('header', { name: 'nova execução' })).toBeTruthy();
+    expect(app.caminho()).toBe('/execucao/ficha');
 
     app.desmontar();
   });

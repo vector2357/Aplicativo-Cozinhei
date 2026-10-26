@@ -10,17 +10,19 @@ O foco não é ensinar receitas, e sim guardar de forma estruturada a prática d
 
 - **Mobile:** React Native com Expo (TypeScript)
 - **Navegação:** Expo Router
-- **Backend:** Supabase Edge Functions (TypeScript / Deno)
+- **Backend:** Supabase (PostgreSQL + Auth), com Edge Functions previstas para o módulo de IA
 - **Banco de dados:** PostgreSQL (Supabase), com pgvector para busca semântica
 - **Autenticação:** Supabase Auth
 - **Armazenamento de mídia:** Supabase Storage
 - **Armazenamento local:** SQLite (expo-sqlite) e AsyncStorage
 - **APIs externas:** API de LLM para o módulo de IA e API de transcrição de áudio
 
-> O **armazenamento local** está implementado desde a etapa 04: as execuções
-> ficam num banco SQLite no aparelho e a sessão em AsyncStorage. As camadas de
-> backend, banco remoto, autenticação e mídia seguem previstas para as
-> próximas etapas.
+> O **armazenamento local** está implementado desde a etapa 04, e o **backend**
+> desde a etapa 05: a conta é verificada pelo Supabase Auth e as execuções vivem
+> numa tabela PostgreSQL, com isolamento por conta garantido por políticas de
+> RLS. Sem credenciais configuradas, a aplicação executa em **modo local**,
+> contra o SQLite do aparelho. O armazenamento de mídia, a busca semântica e as
+> Edge Functions do módulo de IA seguem previstos para as próximas etapas.
 
 ## Estado do projeto
 
@@ -30,6 +32,7 @@ O foco não é ensinar receitas, e sim guardar de forma estruturada a prática d
 | 02 — Protótipo de interface | concluída | [`docs/etapa-02.md`](docs/etapa-02.md) |
 | 03 — Navegação, UX e acessibilidade | concluída | [`docs/etapa-03.md`](docs/etapa-03.md) |
 | 04 — Persistência local de dados | concluída | [`docs/etapa-04.md`](docs/etapa-04.md) |
+| 05 — Primeira versão funcional com backend | concluída | [`docs/etapa-05.md`](docs/etapa-05.md) |
 
 ### Telas implementadas
 
@@ -57,9 +60,17 @@ de encerrar e reabrir o aplicativo. As 21 execuções de exemplo passaram a ser 
 semente do banco — entram na primeira entrada e dali em diante são criadas,
 alteradas e removidas pelo próprio usuário. Uma conta nova começa vazia.
 
-Ainda **não há comunicação com servidor**: nada sai do aparelho. Ver
-[`docs/etapa-04.md`](docs/etapa-04.md) para o mecanismo, o esquema das tabelas
-e o roteiro de verificação da persistência.
+Desde a etapa 05 há **backend**: a conta é criada e verificada pelo Supabase
+Auth, e as execuções são gravadas numa tabela PostgreSQL, onde políticas de RLS
+impedem que uma conta alcance os dados de outra. O fluxo completo de negócio
+entregue é o ciclo `criar → visualizar → alterar → excluir` de uma execução.
+
+A aplicação funciona nos dois modos, por decisão de projeto: **conectado**
+quando há credenciais em `.env`, e **local** quando não há — e aí tudo responde
+contra o SQLite, como na etapa 04. Ver
+[`docs/etapa-04.md`](docs/etapa-04.md) para o esquema local e
+[`docs/etapa-05.md`](docs/etapa-05.md) para o backend, o fluxo e o roteiro de
+verificação.
 
 ## Como executar
 
@@ -78,6 +89,11 @@ npm install
 npm start
 ```
 
+Isso basta para executar em **modo local**. Para o backend, copie `.env.example`
+para `.env` e preencha as duas variáveis do seu projeto no Supabase — o passo a
+passo, incluindo a migração do banco, está em
+[`docs/etapa-05.md`](docs/etapa-05.md) seção 7.
+
 O terminal mostra um QR Code: leia com o Expo Go (Android) ou com a câmera
 (iOS). Para abrir direto num destino:
 
@@ -91,7 +107,7 @@ npm run web       # navegador
 
 ```bash
 npm run typecheck                   # TypeScript, modo estrito
-npm test                            # 428 testes automatizados, em 21 suítes
+npm test                            # 477 testes automatizados, em 23 suítes
 npx expo export --platform android  # pega erro de resolução de módulo
 ```
 
@@ -106,11 +122,15 @@ src/
 ├── app/            # rotas (Expo Router)
 ├── components/     # ui/ · execucao/ · navegacao/ · auth/
 ├── features/       # regras de negócio: auth/ · execucoes/ · aviso/ · navegacao/
+├── services/       # o cliente do backend
 ├── hooks/          # carregamento, teclado, foco, movimento, layout
 ├── theme/          # cor, tipografia, espaçamento
 ├── types/          # tipos do domínio
 ├── utils/          # formatação brasileira
 └── __tests__/      # testes
+
+supabase/
+└── migrations/     # o esquema do banco remoto, para rodar no painel
 ```
 
 ## Documentação
@@ -119,3 +139,4 @@ src/
 - Relatório da etapa 02: [`docs/etapa-02.md`](docs/etapa-02.md)
 - Relatório da etapa 03: [`docs/etapa-03.md`](docs/etapa-03.md)
 - Relatório da etapa 04: [`docs/etapa-04.md`](docs/etapa-04.md)
+- Relatório da etapa 05: [`docs/etapa-05.md`](docs/etapa-05.md)

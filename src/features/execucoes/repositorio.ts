@@ -1,13 +1,8 @@
-import {
-  apagarExecucao,
-  atualizarExecucao as gravarAtualizacao,
-  donoSemeado,
-  inserirExecucao,
-  lerExecucoes,
-  registrarDono,
-} from '@/features/execucoes/bancoLocal';
+import { donoSemeado, inserirExecucao, registrarDono } from '@/features/execucoes/bancoLocal';
 import { EXECUCOES, INSIGHT_DO_MES, RECEITAS_GUIA } from '@/features/execucoes/fixtures';
+import { fonte } from '@/features/execucoes/fonteDeDados';
 import { notificarMudanca } from '@/features/execucoes/versaoDosDados';
+import { modoConectado } from '@/services/supabase';
 import type {
   ChipAvaliacao,
   Execucao,
@@ -52,6 +47,11 @@ export async function garantirDadosDoDono(
   dono: DonoDosDados,
   semearExemplo: boolean,
 ): Promise<void> {
+  // No servidor uma conta nova começa vazia de verdade: a semente é um recurso
+  // do modo local, para o aplicativo ter o que mostrar sem backend nenhum.
+  // Semear no remoto inventaria 21 execuções que o usuário nunca cozinhou.
+  if (modoConectado()) return;
+
   if (donoSemeado(dono) !== null) return;
 
   registrarDono(dono, semearExemplo);
@@ -66,9 +66,11 @@ export async function garantirDadosDoDono(
   notificarMudanca();
 }
 
-// A única porta de leitura: todo o resto do arquivo deriva daqui.
+// A única porta de leitura: todo o resto do arquivo deriva daqui. Quem decide
+// se as linhas vêm do SQLite ou do Postgres é `fonte()`, e nada acima desta
+// função precisa saber qual das duas respondeu.
 async function todas(dono: DonoDosDados): Promise<Execucao[]> {
-  return lerExecucoes(dono);
+  return fonte().lerExecucoes(dono);
 }
 
 /** Uma execução pelo id. `null` quando não existe — o id vem da rota. */
@@ -149,7 +151,9 @@ export async function listarExecucoesDoPrato(
 /** As receitas-guia importadas pelo usuário. */
 export async function listarReceitasGuia(dono: DonoDosDados): Promise<ReceitaGuia[]> {
   // Importar receita-guia é de etapa posterior, e sem fluxo de criação uma
-  // tabela própria seria peso morto: só o conjunto de exemplo as tem.
+  // tabela própria seria peso morto: só o conjunto de exemplo as tem — e ele
+  // só existe no modo local, junto com a semente.
+  if (modoConectado()) return [];
   return donoSemeado(dono) ? RECEITAS_GUIA : [];
 }
 
@@ -214,7 +218,7 @@ export async function criarExecucao(
     chips: chipsDe(rascunho),
   };
 
-  inserirExecucao(dono, execucao, proximoCriadoEm());
+  await fonte().inserirExecucao(dono, execucao, proximoCriadoEm());
   notificarMudanca();
   return execucao;
 }
@@ -240,14 +244,14 @@ export async function atualizarExecucao(
     chips: chipsDe(rascunho),
   };
 
-  gravarAtualizacao(dono, execucao);
+  await fonte().atualizarExecucao(dono, execucao);
   notificarMudanca();
   return execucao;
 }
 
 /** Apaga a execução. Id desconhecido não é erro: a lista já não o tem. */
 export async function removerExecucao(dono: DonoDosDados, id: string): Promise<void> {
-  apagarExecucao(dono, id);
+  await fonte().apagarExecucao(dono, id);
   notificarMudanca();
 }
 
@@ -276,7 +280,9 @@ function chipsDe(rascunho: Pick<RascunhoExecucao, 'qualidade' | 'defeito'>): Chi
 // do defeito que mais volta. Quem interpreta o fato é a etapa da análise — aqui
 // ele já sai pronto dos dados, como manda a regra de produto.
 function insightDoMes(dono: DonoDosDados, doMes: Execucao[]): ResumoMes['insight'] {
-  if (donoSemeado(dono)) return INSIGHT_DO_MES;
+  // A frase escrita acompanha o conjunto de exemplo, que só existe no modo
+  // local. Conta de servidor é conta real: a frase sai dos dados dela.
+  if (!modoConectado() && donoSemeado(dono)) return INSIGHT_DO_MES;
 
   const defeito = defeitoQueMaisVolta(doMes);
   if (!defeito) {

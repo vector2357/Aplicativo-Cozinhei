@@ -1,8 +1,8 @@
 import { useRouter } from 'expo-router';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { Botao, Indicador, Tela } from '@/components/ui';
+import { Botao, EstadoErro, Indicador, Tela } from '@/components/ui';
 import { useAuth } from '@/features/auth/AuthContext';
 import { useAviso } from '@/features/aviso/AvisoContext';
 import { spacing, text } from '@/theme';
@@ -18,23 +18,57 @@ export default function TelaEntrando() {
     : 'preparando sua primeira ficha.';
   // Um sinal só impede as duas coisas: navegar para dentro e aplicar a sessão.
   const desistencia = useRef(new AbortController());
+  // A falha do servidor, já traduzida pelo contexto. `null` é "ainda esperando".
+  const [erro, setErro] = useState<string | null>(null);
+  // Sobe a cada "tentar de novo" e é o que reexecuta o efeito.
+  const [tentativa, setTentativa] = useState(0);
 
   useEffect(() => {
     const controlador = new AbortController();
     desistencia.current = controlador;
+    setErro(null);
 
-    autenticar(controlador.signal).then(() => {
-      if (!controlador.signal.aborted) router.replace('/inicio');
-    });
+    autenticar(controlador.signal)
+      .then(() => {
+        if (!controlador.signal.aborted) router.replace('/inicio');
+      })
+      .catch((falha: unknown) => {
+        // Cancelar não é erro: quem desistiu já está voltando para o login, e
+        // mostrar "não consegui entrar" ali seria culpar o usuário pela escolha.
+        if (controlador.signal.aborted) return;
+
+        setErro(
+          falha instanceof Error && falha.message
+            ? falha.message
+            : 'não consegui entrar agora. tente de novo.',
+        );
+      });
 
     return () => controlador.abort();
-  }, [autenticar, router]);
+  }, [autenticar, router, tentativa]);
 
-  function cancelar() {
+  const cancelar = useCallback(() => {
     desistencia.current.abort();
     router.replace('/');
     // Voltar em silêncio deixa a dúvida de ter tocado no lugar certo.
     aviso.mostrar({ texto: 'entrada cancelada' });
+  }, [aviso, router]);
+
+  if (erro) {
+    return (
+      <Tela>
+        <EstadoErro
+          titulo="não consegui entrar"
+          descricao={erro}
+          acao={{ rotulo: 'tentar de novo', onPress: () => setTentativa((n) => n + 1) }}
+        />
+
+        <View style={estilos.rodape}>
+          {/* A segunda saída: insistir pode não ser o que resolve. */}
+          <Botao titulo="voltar para a entrada" variante="fantasma" onPress={cancelar} />
+        </View>
+      </Tela>
+    );
   }
 
   return (

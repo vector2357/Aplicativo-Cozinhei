@@ -45,3 +45,13 @@ export const formatarDataCurta = (data: Date): string =>
 /** Rótulo do período, como o histórico agrupa: "agosto de 2026". */
 export const formatarMes = (data: Date): string =>
   `${MESES[data.getMonth()]} de ${data.getFullYear()}`;
+
+/** Iniciais para o avatar: "Marina Salles" -> "MS". Nome vazio devolve "?". */
+export const iniciaisDoNome = (nome: string): string => {
+  const partes = nome.trim().split(/\s+/).filter(Boolean);
+  if (partes.length === 0) return '?';
+
+  const primeira = partes[0][0] ?? '';
+  const ultima = partes.length > 1 ? (partes[partes.length - 1][0] ?? '') : '';
+  return (primeira + ultima).toUpperCase();
+};
